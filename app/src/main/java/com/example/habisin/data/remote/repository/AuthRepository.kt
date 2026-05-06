@@ -1,9 +1,9 @@
-package com.example.habisin.data.repository
+package com.example.habisin.data.remote.repository
 
-import com.example.habisin.data.dto.AuthResponse
-import com.example.habisin.data.dto.LoginRequest
-import com.example.habisin.data.dto.RegisterRequest
-import com.example.habisin.data.service.AuthService
+import com.example.habisin.data.remote.dto.AuthResponse
+import com.example.habisin.data.remote.dto.LoginRequest
+import com.example.habisin.data.remote.dto.RegisterRequest
+import com.example.habisin.data.remote.service.AuthService
 import com.example.habisin.util.SessionManager
 import retrofit2.Response
 

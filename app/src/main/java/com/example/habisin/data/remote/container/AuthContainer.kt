@@ -1,8 +1,8 @@
-package com.example.habisin.data.container
+package com.example.habisin.data.remote.container
 
 import android.content.Context
-import com.example.habisin.data.repository.AuthRepository
-import com.example.habisin.data.service.AuthService
+import com.example.habisin.data.remote.repository.AuthRepository
+import com.example.habisin.data.remote.service.AuthService
 import com.example.habisin.util.SessionManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,4 +1,4 @@
-package com.example.habisin.data.dto
+package com.example.habisin.data.remote.dto
 
 //Request
 data class LoginRequest(

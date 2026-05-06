@@ -3,15 +3,21 @@ package com.example.habisin.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.habisin.ui.theme.HabisinLime
+import com.example.habisin.ui.theme.HabisinOlive
+import com.example.habisin.ui.theme.HabisinWhite
 
 @Composable
 fun HabisinBottomNav(
@@ -19,58 +25,75 @@ fun HabisinBottomNav(
     onNavigate: (String) -> Unit,
     onPlusClick: () -> Unit
 ) {
-    val darkGreen = Color(0xFF1B4332)
-    val lightGreen = Color(0xFFB7E4C7)
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(90.dp)
+            .height(96.dp)
     ) {
-        // Background Bar Hijau Tua
+        // Bar olive
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(72.dp)
                 .align(Alignment.BottomCenter)
-                .background(darkGreen)
-                .padding(bottom = 8.dp, top = 8.dp),
+                .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
+                .background(HabisinOlive),
             horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment     = Alignment.CenterVertically
         ) {
-            NavItem(Icons.Default.Home, "Home", currentRoute == "Home") { onNavigate("Home") }
-            // Note: Menggunakan icon yang relevan karena Icons.Default.Kitchen tidak selalu ada di material standard
-            // Jika error, gunakan Icons.Default.Menu atau icon lain yang ada di project kamu.
-            NavItem(Icons.Default.ShoppingCart, "Fridge", currentRoute == "Fridge") { onNavigate("Fridge") }
+            NavIcon(Icons.Default.Home,     "Home",    currentRoute == "Home")    { onNavigate("Home") }
+            NavIcon(Icons.Default.Kitchen,  "Fridge",  currentRoute == "Fridge")  { onNavigate("Fridge") }
 
-            Spacer(modifier = Modifier.width(50.dp)) // Space untuk tombol Plus
+            Spacer(modifier = Modifier.width(64.dp)) // ruang utk FAB
 
-            NavItem(Icons.Default.MenuBook, "Recipe", currentRoute == "Recipe") { onNavigate("Recipe") }
-            NavItem(Icons.Default.Person, "Account", currentRoute == "Profile") { onNavigate("Profile") }
+            NavIcon(Icons.Default.MenuBook, "Recipe",  currentRoute == "Recipe")  { onNavigate("Recipe") }
+            NavIcon(Icons.Default.Person,   "Profile", currentRoute == "Profile") { onNavigate("Profile") }
         }
 
-        // Tombol Plus Melayang
+        // FAB plus
         FloatingActionButton(
-            onClick = onPlusClick,
-            shape = CircleShape,
-            containerColor = lightGreen,
-            contentColor = darkGreen,
-            modifier = Modifier
+            onClick        = onPlusClick,
+            shape          = CircleShape,
+            containerColor = HabisinLime,
+            contentColor   = HabisinOlive,
+            modifier       = Modifier
                 .align(Alignment.TopCenter)
-                .size(60.dp)
-                .offset(y = (-10).dp)
+                .size(64.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(35.dp))
+            Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(36.dp))
         }
     }
 }
 
-// Preview untuk keseluruhan Bottom Navigation
+@Composable
+private fun NavIcon(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(if (isSelected) HabisinLime else androidx.compose.ui.graphics.Color.Transparent),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector        = icon,
+            contentDescription = label,
+            tint               = if (isSelected) HabisinOlive else HabisinWhite,
+            modifier           = Modifier.size(26.dp)
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun HabisinBottomNavPreview() {
     HabisinBottomNav(
-        currentRoute = "Home",
-        onNavigate = {},
-        onPlusClick = {}
+        currentRoute = "Profile",
+        onNavigate   = {},
+        onPlusClick  = {}
     )
 }

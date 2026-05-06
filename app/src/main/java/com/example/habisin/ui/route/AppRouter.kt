@@ -18,6 +18,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.habisin.ui.view.LoginScreen
 import com.example.habisin.ui.view.RegisterScreen
+import com.example.habisin.ui.view.profile.AboutScreen
+import com.example.habisin.ui.view.profile.AppLanguageScreen
+import com.example.habisin.ui.view.profile.AppThemeScreen
+import com.example.habisin.ui.view.profile.FaqScreen
+import com.example.habisin.ui.view.profile.NotificationScreen
+import com.example.habisin.ui.view.profile.ProfileScreen
 import com.example.habisin.ui.viewmodel.LoginViewModel
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -43,7 +49,7 @@ fun AppRouter() {
     // ── Screens that should NOT show the bottom navigation bar ────────────
     // TODO (teammates): add your detail/modal screens here so the bottom bar
     // stays hidden on them, e.g. "ItemDetail/{itemId}", "EditProfile"
-    val screensWithoutBottomBar = listOf("Login", "Register")
+    val screensWithoutBottomBar = listOf("Login", "Register", "Language", "Theme", "Notification", "Faq", "About")
 
     Surface(modifier = Modifier.fillMaxSize()) {
         var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
@@ -125,6 +131,60 @@ fun AppRouter() {
                 //     ItemDetailView(itemId = id, navController = navController)
                 // }
                 // ─────────────────────────────────────────────────────────────
+                composable("Profile") {
+                    ProfileScreen(
+                        onLoggedOut              = {
+                            navController.navigate("Login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        },
+                        onNavigateToLanguage     = { navController.navigate("Language") },
+                        onNavigateToTheme        = { navController.navigate("Theme") },
+                        onNavigateToNotification = { navController.navigate("Notification") },
+                        onNavigateToFaq          = { navController.navigate("Faq") },
+                        onNavigateToAbout        = { navController.navigate("About") }
+                    )
+                }
+
+                composable("Language") {
+                    AppLanguageScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable("Theme") {
+                    AppThemeScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable("Notification") {
+                    NotificationScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable("Faq") {
+                    FaqScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+                composable("About") {
+                    AboutScreen(
+                        onBack = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }
