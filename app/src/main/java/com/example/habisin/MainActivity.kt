@@ -4,14 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.habisin.ui.route.AppRouting
+import com.example.habisin.ui.router.AppRouter
 import com.example.habisin.ui.theme.HabisInTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,12 +17,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HabisInTheme {
-                AppRouting()
+                // AppRouter owns the NavHost for the whole app.
+                // TODO (teammates): if you need to pass app-level state down
+                // (e.g. a shared ViewModel), do it here before AppRouter.
+                AppRouter()
             }
         }
     }
 }
-
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
