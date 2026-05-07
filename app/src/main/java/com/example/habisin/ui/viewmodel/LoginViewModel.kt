@@ -6,8 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habisin.data.container.AuthContainer
-import com.example.habisin.ui.model.UserModel
+import com.example.habisin.data.remote.container.AuthContainer
 import com.example.habisin.ui.uistate.LoginUiState
 import kotlinx.coroutines.launch
 
