@@ -7,21 +7,10 @@ import com.example.habisin.util.SessionManager
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-/**
- * AuthContainer — manually wires up every dependency for the auth feature.
- * Mirrors the same Container pattern used in the rest of the project.
- *
- * TODO (teammates): if your own containers also build a Retrofit instance,
- * consider extracting it into a shared AppContainer/NetworkContainer so the
- * whole app reuses one Retrofit instance with the same base URL and config.
- */
 class AuthContainer(context: Context) {
 
     private val retrofit: Retrofit = Retrofit.Builder()
-        // TODO (backend team): replace with your actual Express server base URL.
-        // Local emulator  → "http://10.0.2.2:3000/"
-        // Real device (same Wi-Fi) → "http://YOUR_PC_LOCAL_IP:3000/"
-        .baseUrl("http://10.0.2.2:3000/")
+        .baseUrl("http://127.0.0.1:3000/api/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
