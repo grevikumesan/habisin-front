@@ -1,6 +1,7 @@
 package com.example.habisin.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.habisin.ui.theme.HabisinLime
 import com.example.habisin.ui.theme.HabisinOlive
+import com.example.habisin.ui.theme.HabisinPeach
 import com.example.habisin.ui.theme.HabisinWhite
 
 @Composable
@@ -28,29 +30,28 @@ fun HabisinBottomNav(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
+            .height(120.dp)
     ) {
-        // Bar olive
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(72.dp)
+                .height(90.dp)
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                .background(HabisinOlive),
+                .background(HabisinOlive)
+                .padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment     = Alignment.CenterVertically
         ) {
             NavIcon(Icons.Default.Home,     "Home",    currentRoute == "Home")    { onNavigate("Home") }
             NavIcon(Icons.Default.Kitchen,  "Fridge",  currentRoute == "Fridge")  { onNavigate("Fridge") }
 
-            Spacer(modifier = Modifier.width(64.dp)) // ruang utk FAB
+            Spacer(modifier = Modifier.width(64.dp))
 
             NavIcon(Icons.Default.MenuBook, "Recipe",  currentRoute == "Recipe")  { onNavigate("Recipe") }
             NavIcon(Icons.Default.Person,   "Profile", currentRoute == "Profile") { onNavigate("Profile") }
         }
 
-        // FAB plus
         FloatingActionButton(
             onClick        = onPlusClick,
             shape          = CircleShape,
@@ -72,27 +73,21 @@ private fun NavIcon(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .size(48.dp)
-            .clip(CircleShape)
-            .background(if (isSelected) HabisinLime else androidx.compose.ui.graphics.Color.Transparent),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector        = icon,
-            contentDescription = label,
-            tint               = if (isSelected) HabisinOlive else HabisinWhite,
-            modifier           = Modifier.size(26.dp)
-        )
-    }
+    Icon(
+        imageVector        = icon,
+        contentDescription = label,
+        tint               = if (isSelected) HabisinPeach else HabisinWhite,
+        modifier           = Modifier
+            .size(28.dp)
+            .clickable(onClick = onClick)
+    )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun HabisinBottomNavPreview() {
     HabisinBottomNav(
-        currentRoute = "Profile",
+        currentRoute = "Home",
         onNavigate   = {},
         onPlusClick  = {}
     )

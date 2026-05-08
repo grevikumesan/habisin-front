@@ -1,15 +1,31 @@
 package com.example.habisin.ui.model
 
+import com.google.gson.annotations.SerializedName
 import java.util.Date
 
-// Representasi data bahan makanan di kulkas
 data class ProductModel(
-    val id: String,
+    val id: Int,
+
+    @SerializedName("foodName")
     val name: String,
-    val category: String, // "Produce", "Dairy", "Meat", "Other"
+
+    @SerializedName("descriptionFood")
+    val description: String = "",
+
+    val category: String,
+
+    @SerializedName("bestBefore")
     val bestBeforeDate: Date,
-    val daysLeft: Int,
+
+    val daysLeft: Int = 0,                           // dihitung server, default 0 kalau ga ada
     val quantity: Int,
-    val unit: String,
-    val imageUrl: String // Nullable karena bisa pakai default icon kalau ga ada foto
+
+    val unit: String = "PCS",                        // BE ga punya, default
+    val imageUrl: String = ""                        // BE ga punya, default
+)
+
+data class DashboardModel(
+    val expiringFoods: List<ProductModel>,
+    val totalItems: Int,
+    val expiringTotal: Int
 )
