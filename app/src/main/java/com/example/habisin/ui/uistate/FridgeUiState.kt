@@ -7,5 +7,7 @@ data class FridgeUiState(
     val selectedCategory: String = "All",
     val products: List<ProductModel> = emptyList(),
     val filteredProducts: List<ProductModel> = emptyList(),
-    val expiringProducts: List<ProductModel> = emptyList()
+    val expiringProducts: List<ProductModel> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

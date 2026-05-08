@@ -18,6 +18,9 @@ class DashboardRepository(
                 response.body()?.data?.let { Result.success(it) }
                     ?: Result.failure(Exception("Empty response body"))
             } else {
+                // Tambahin info detail
+                val errorBody = response.errorBody()?.string()
+                android.util.Log.e("Dashboard", "HTTP ${response.code()}: $errorBody")
                 Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
             }
         } catch (e: Exception) {

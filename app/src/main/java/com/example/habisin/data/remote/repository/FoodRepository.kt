@@ -17,12 +17,25 @@ class FoodRepository(
 
             val response = service.create("Bearer $token", request)
             if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null) {
-                    Result.success(body.data)
-                } else {
-                    Result.failure(Exception("Empty response body"))
-                }
+                response.body()?.data?.let { Result.success(it) }
+                    ?: Result.failure(Exception("Empty response body"))
+            } else {
+                Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAll(): Result<List<ProductModel>> {
+        return try {
+            val token = sessionManager.getToken()
+                ?: return Result.failure(IllegalStateException("Not logged in"))
+
+            val response = service.getAll("Bearer $token")
+            if (response.isSuccessful) {
+                response.body()?.data?.let { Result.success(it) }
+                    ?: Result.failure(Exception("Empty response body"))
             } else {
                 Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
             }
