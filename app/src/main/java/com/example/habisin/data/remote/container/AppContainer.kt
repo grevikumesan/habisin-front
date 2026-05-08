@@ -1,0 +1,40 @@
+package com.example.habisin.data.remote.container
+
+import android.content.Context
+import com.example.habisin.data.remote.repository.AuthRepository
+import com.example.habisin.data.remote.repository.DashboardRepository
+import com.example.habisin.data.remote.repository.FoodRepository
+import com.example.habisin.data.remote.service.AuthService
+import com.example.habisin.data.remote.service.DashboardService
+import com.example.habisin.data.remote.service.FoodService
+import com.example.habisin.util.SessionManager
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+class AppContainer(context: Context) {
+
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl("http://10.0.2.2:3000/api/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val authService: AuthService =
+        retrofit.create(AuthService::class.java)
+
+    private val dashboardService: DashboardService =
+        retrofit.create(DashboardService::class.java)
+
+    private val foodService: FoodService =
+        retrofit.create(FoodService::class.java)
+
+    val sessionManager: SessionManager = SessionManager(context)
+
+    val authRepository: AuthRepository =
+        AuthRepository(authService, sessionManager)
+
+    val dashboardRepository: DashboardRepository =
+        DashboardRepository(dashboardService, sessionManager)
+
+    val foodRepository: FoodRepository =
+        FoodRepository(foodService, sessionManager)
+}
