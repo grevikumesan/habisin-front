@@ -33,7 +33,7 @@ class MyFridgeViewModel(app: Application) : AndroidViewModel(app) {
                         isLoading        = false,
                         products         = products,
                         filteredProducts = applyFilters(products, state.selectedCategory, state.searchQuery),
-                        expiringProducts = products.filter { it.daysLeft <= 3 }
+                        expiringProducts = products.filter { it.computedDaysLeft <= 3 }   // ← ini
                     )
                 }
                 .onFailure { error ->
@@ -70,7 +70,7 @@ class MyFridgeViewModel(app: Application) : AndroidViewModel(app) {
 
         result = when (category) {
             "All"      -> result
-            "Expiring" -> result.filter { it.daysLeft <= 3 }
+            "Expiring" -> result.filter { it.computedDaysLeft <= 3 }
             else       -> result.filter { it.category.equals(category, ignoreCase = true) }
         }
 

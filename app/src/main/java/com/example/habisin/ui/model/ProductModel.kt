@@ -1,5 +1,6 @@
 package com.example.habisin.ui.model
 
+import com.example.habisin.util.daysFromToday
 import com.google.gson.annotations.SerializedName
 import java.util.Date
 
@@ -17,11 +18,14 @@ data class ProductModel(
     @SerializedName("bestBefore")
     val bestBeforeDate: Date? = null,
 
-    val daysLeft: Int = 0,
+    val daysLeft: Int = 0,                  // dari BE, fallback kalau ada
     val quantity: Int = 0,
     val unit: String = "PCS",
     val imageUrl: String = ""
-)
+) {
+    val computedDaysLeft: Int
+        get() = bestBeforeDate?.daysFromToday() ?: daysLeft
+}
 
 data class DashboardModel(
     val expiringFoods: List<ProductModel> = emptyList(),

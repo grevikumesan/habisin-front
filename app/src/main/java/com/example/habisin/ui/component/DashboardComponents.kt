@@ -25,6 +25,7 @@ import com.example.habisin.ui.theme.HabisinLime
 import com.example.habisin.ui.theme.HabisinOlive
 import com.example.habisin.ui.theme.HabisinPeach
 import com.example.habisin.ui.theme.HabisinTextDark
+import com.example.habisin.util.getProductEmoji
 
 @Composable
 fun ExpiringSoonCard(
@@ -118,13 +119,19 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Image placeholder (ganti pake Coil/Image kalau udah ada)
+        // Emoji avatar
         Box(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.6f))
-        )
+                .background(Color.White.copy(alpha = 0.6f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = getProductEmoji(item.name),
+                fontSize = 22.sp
+            )
+        }
 
         Spacer(Modifier.width(12.dp))
 
@@ -136,7 +143,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
                 fontWeight = FontWeight.SemiBold
             )
             Text(
-                text       = "${item.daysLeft} DAY${if (item.daysLeft == 1) "" else "S"} LEFT",
+                text       = "${item.computedDaysLeft} DAY${if (item.computedDaysLeft == 1) "" else "S"} LEFT",
                 color      = HabisinTextDark.copy(alpha = 0.7f),
                 fontSize   = 10.sp,
                 fontWeight = FontWeight.Medium,

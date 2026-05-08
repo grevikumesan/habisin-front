@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
+import com.example.habisin.util.getProductEmoji
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,7 +169,7 @@ fun ProductCardItem(product: ProductModel) {
             }
         }
 
-        val (badgeColor, textColor) = getBadgeColor(product.daysLeft)
+        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft)
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
@@ -176,7 +177,7 @@ fun ProductCardItem(product: ProductModel) {
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             Text(
-                text       = "${product.daysLeft} DAY${if (product.daysLeft > 1) "S" else ""}",
+                text = "${product.computedDaysLeft} DAY${if (product.computedDaysLeft > 1) "S" else ""}",
                 color      = textColor,
                 fontSize   = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -186,21 +187,9 @@ fun ProductCardItem(product: ProductModel) {
 }
 
 fun getBadgeColor(days: Int): Pair<Color, Color> {
-    return when (days) {
-        1, 2, 3 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))
-        else    -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))
-    }
-}
-
-fun getProductEmoji(name: String): String {
     return when {
-        name.contains("Egg",     ignoreCase = true) -> "🥚"
-        name.contains("Bread",   ignoreCase = true) -> "🥖"
-        name.contains("Apple",   ignoreCase = true) -> "🍎"
-        name.contains("Milk",    ignoreCase = true) -> "🥛"
-        name.contains("Carrot",  ignoreCase = true) -> "🥕"
-        name.contains("Spinach", ignoreCase = true) -> "🥬"
-        else -> "📦"
+        days <= 2 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))   // peach + brown (urgent)
+        else      -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))   // green (safe)
     }
 }
 
