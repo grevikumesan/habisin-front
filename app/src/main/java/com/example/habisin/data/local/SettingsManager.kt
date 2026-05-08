@@ -15,8 +15,9 @@ enum class AppLanguage { EN, ID }
 class SettingsManager(private val context: Context) {
 
     private object Keys {
-        val THEME    = stringPreferencesKey("app_theme")
-        val LANGUAGE = stringPreferencesKey("app_language")
+        val THEME       = stringPreferencesKey("app_theme")
+        val LANGUAGE    = stringPreferencesKey("app_language")
+        val PROFILE_PIC = stringPreferencesKey("profile_picture_uri")
     }
 
     val themeFlow: Flow<AppTheme> = context.settingsDataStore.data.map { prefs ->
@@ -29,11 +30,23 @@ class SettingsManager(private val context: Context) {
             .getOrDefault(AppLanguage.EN)
     }
 
+    val profilePictureFlow: Flow<String?> = context.settingsDataStore.data.map { prefs ->
+        prefs[Keys.PROFILE_PIC]
+    }
+
     suspend fun setTheme(theme: AppTheme) {
         context.settingsDataStore.edit { it[Keys.THEME] = theme.name }
     }
 
     suspend fun setLanguage(language: AppLanguage) {
         context.settingsDataStore.edit { it[Keys.LANGUAGE] = language.name }
+    }
+
+    suspend fun setProfilePicture(uri: String) {
+        context.settingsDataStore.edit { it[Keys.PROFILE_PIC] = uri }
+    }
+
+    suspend fun clearProfilePicture() {
+        context.settingsDataStore.edit { it.remove(Keys.PROFILE_PIC) }
     }
 }

@@ -6,13 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habisin.data.remote.container.AuthContainer
+import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.ui.uistate.RegisterUiState
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val container = AuthContainer(application)
+    private val container = AppContainer(application)
     private val authRepo  = container.authRepository
 
     // ── Form state ─────────────────────────────────────────────────────────
