@@ -36,14 +36,16 @@ class DashboardViewModel(app: Application) : AndroidViewModel(app) {
 
             container.dashboardRepository.getDashboard()
                 .onSuccess { response ->
-                    Log.d("Dashboard", "expiringFoods: ${response.expiringFoods}")
                     Log.d("Dashboard", "totalItems: ${response.totalItems}")
                     Log.d("Dashboard", "expiringTotal: ${response.expiringTotal}")
+                    response.expiringFoods.forEach { product ->
+                        Log.d("Dashboard", "Product: id=${product.id}, name='${product.name}', daysLeft=${product.daysLeft}, category=${product.category}")
+                    }
 
                     dashboardUiState = DashboardUiState.Success(
                         username          = username,
                         profilePictureUri = profilePic,
-                        expiringItems     = response.expiringFoods ?: emptyList(),
+                        expiringItems     = response.expiringFoods,
                         totalItems        = response.totalItems,
                         expiringTotal     = response.expiringTotal
                     )

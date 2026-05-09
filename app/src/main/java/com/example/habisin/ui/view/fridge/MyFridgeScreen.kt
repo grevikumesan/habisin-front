@@ -1,6 +1,5 @@
 package com.example.habisin.ui.view.fridge
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -17,20 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
+import com.example.habisin.util.getProductEmoji
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyFridgeScreen(
     viewModel: MyFridgeViewModel = viewModel(),
-    onNavigateToAddProduct: () -> Unit // Ditambahkan agar sesuai dengan pemanggilan di Preview
+    onNavigateToAddProduct: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
     val horizontalScrollState = rememberScrollState()
 
     Scaffold(
@@ -38,7 +38,6 @@ fun MyFridgeScreen(
             Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)) {
                 Column {
                     Text("My Fridge", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    // Menggunakan data dinamis dari uiState
                     Text("${uiState.products.size} items available", fontSize = 14.sp, color = Color.Gray)
                 }
             }
@@ -53,20 +52,17 @@ fun MyFridgeScreen(
         ) {
             // 🔍 Search Bar
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    viewModel.onSearchQueryChange(it)
-                },
-                placeholder = { Text("Search Ingredients", fontSize = 14.sp, color = Color.Gray) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+                value         = uiState.searchQuery,
+                onValueChange = { viewModel.onSearchQueryChange(it) },
+                placeholder   = { Text("Search Ingredients", fontSize = 14.sp, color = Color.Gray) },
+                leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = Color(0xFFF5F5F5),
+                    focusedBorderColor      = Color.Transparent,
+                    unfocusedBorderColor    = Color.Transparent,
+                    focusedContainerColor   = Color(0xFFF5F5F5),
                     unfocusedContainerColor = Color(0xFFF5F5F5)
                 ),
                 shape = RoundedCornerShape(16.dp)
@@ -74,64 +70,66 @@ fun MyFridgeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔄 KATEGORI: HORIZONTAL SCROLL
+            // 🔄 KATEGORI
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(horizontalScrollState),
+                modifier              = Modifier.fillMaxWidth().horizontalScroll(horizontalScrollState),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterChip(
-                    selected = uiState.selectedCategory == "All",
-                    onClick = { viewModel.onCategorySelected("All") },
-                    label = { Text("All") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = Color(0xFFD7E9C5),
-                        selectedLabelColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50)
-                )
-                FilterChip(
-                    selected = uiState.selectedCategory == "Expiring",
-                    onClick = { viewModel.onCategorySelected("Expiring") },
-                    label = { Text("Expiring") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = Color(0xFFD7E9C5),
-                        selectedLabelColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50)
-                )
-                FilterChip(
-                    selected = uiState.selectedCategory == "Produce",
-                    onClick = { viewModel.onCategorySelected("Produce") },
-                    label = { Text("Produce") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = Color(0xFFD7E9C5),
-                        selectedLabelColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50)
-                )
-                FilterChip(
-                    selected = uiState.selectedCategory == "Dairy",
-                    onClick = { viewModel.onCategorySelected("Dairy") },
-                    label = { Text("Dairy") },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = Color(0xFFD7E9C5),
-                        selectedLabelColor = Color.Black
-                    ),
-                    shape = RoundedCornerShape(50)
-                )
+                listOf("All", "Expiring", "Produce", "Dairy", "Meat", "Other").forEach { cat ->
+                    FilterChip(
+                        selected = uiState.selectedCategory == cat,
+                        onClick  = { viewModel.onCategorySelected(cat) },
+                        label    = { Text(cat) },
+                        colors   = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Color(0xFFD7E9C5),
+                            selectedLabelColor     = Color.Black
+                        ),
+                        shape = RoundedCornerShape(50)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 📜 LIST MAKANAN: VERTICAL SCROLL
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(uiState.filteredProducts) { product ->
-                    ProductCardItem(product)
+            // 📜 CONTENT
+            when {
+                uiState.isLoading -> {
+                    Box(
+                        modifier         = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                uiState.errorMessage != null -> {
+                    Box(
+                        modifier         = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(uiState.errorMessage!!, color = Color.Red)
+                    }
+                }
+                uiState.filteredProducts.isEmpty() -> {
+                    Box(
+                        modifier         = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "No food yet, try adding some",
+                            color    = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        modifier              = Modifier.fillMaxWidth().weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(uiState.filteredProducts) { product ->
+                            ProductCardItem(product)
+                        }
+                    }
                 }
             }
         }
@@ -147,7 +145,7 @@ fun ProductCardItem(product: ProductModel) {
             .background(Color(0xFFF7F4EE))
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment     = Alignment.CenterVertically
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -163,11 +161,15 @@ fun ProductCardItem(product: ProductModel) {
 
             Column {
                 Text(product.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text("${product.quantity} ${product.unit}", fontSize = 12.sp, color = Color.Gray)
+                Text(
+                    text     = "${product.quantity} ${product.unit}",
+                    fontSize = 12.sp,
+                    color    = Color.Gray
+                )
             }
         }
 
-        val (badgeColor, textColor) = getBadgeColor(product.daysLeft)
+        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft)
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
@@ -175,9 +177,9 @@ fun ProductCardItem(product: ProductModel) {
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             Text(
-                text = "${product.daysLeft} DAY${if (product.daysLeft > 1) "S" else ""}",
-                color = textColor,
-                fontSize = 12.sp,
+                text = "${product.computedDaysLeft} DAY${if (product.computedDaysLeft > 1) "S" else ""}",
+                color      = textColor,
+                fontSize   = 12.sp,
                 fontWeight = FontWeight.Medium
             )
         }
@@ -185,21 +187,9 @@ fun ProductCardItem(product: ProductModel) {
 }
 
 fun getBadgeColor(days: Int): Pair<Color, Color> {
-    return when (days) {
-        1, 2, 3 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))
-        else -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))
-    }
-}
-
-fun getProductEmoji(name: String): String {
     return when {
-        name.contains("Egg", ignoreCase = true) -> "🥚"
-        name.contains("Bread", ignoreCase = true) -> "🥖"
-        name.contains("Apple", ignoreCase = true) -> "🍎"
-        name.contains("Milk", ignoreCase = true) -> "🥛"
-        name.contains("Carrot", ignoreCase = true) -> "🥕"
-        name.contains("Spinach", ignoreCase = true) -> "🥬"
-        else -> "📦"
+        days <= 2 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))   // peach + brown (urgent)
+        else      -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))   // green (safe)
     }
 }
 
