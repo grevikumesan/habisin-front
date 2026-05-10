@@ -177,7 +177,14 @@ fun AppRouter() {
 
                 // ── Detail / modal screens (tanpa bottom nav) ──
                 composable(Routes.ADD_PRODUCT) {
-                    AddProductScreen(onNavigateBack = { navController.popBackStack() })
+                    AddProductScreen(
+                        onNavigateBack = { navController.popBackStack() },
+                        onNavigateToFridge = {
+                            navController.navigate(Routes.FRIDGE) {
+                                popUpTo(Routes.ADD_PRODUCT) { inclusive = true }
+                            }
+                        }
+                    )
                 }
 
                 composable(Routes.RECIPE_DETAIL) {

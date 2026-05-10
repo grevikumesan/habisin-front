@@ -1,5 +1,6 @@
 package com.example.habisin.ui.view.scan
 
+import android.app.Application
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,11 +32,18 @@ import java.util.*
 @Composable
 fun AddProductScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToFridge: () -> Unit, // <-- 1. Tambahin jalur ini aja
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
 
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            viewModel.consumeSuccess() // Reset state
+            onNavigateToFridge()       // Pindah ke layar Kulkas
+        }
+    }
     Scaffold(
         topBar = {
             Row(
@@ -282,6 +292,9 @@ fun Date.formatDate(): String {
 @Composable
 fun AddProductScreenPreview() {
     MaterialTheme {
-        AddProductScreen(onNavigateBack = {})
+        AddProductScreen(
+            onNavigateBack = {},
+            onNavigateToFridge = {} // <-- Cukup tambahin kurung kurawal kosong
+        )
     }
 }
