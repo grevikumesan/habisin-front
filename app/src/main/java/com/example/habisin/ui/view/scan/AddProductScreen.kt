@@ -33,6 +33,7 @@ import java.util.*
 fun AddProductScreen(
     onNavigateBack: () -> Unit,
     onNavigateToFridge: () -> Unit, // <-- 1. Tambahin jalur ini aja
+    onNavigateToScanner: () -> Unit,
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -209,7 +210,7 @@ fun AddProductScreen(
                     Text("Add to Fridge", color = Color(0xFF8D5524), fontWeight = FontWeight.Bold)
                 }
                 Button(
-                    onClick = { },
+                    onClick = { onNavigateToScanner() },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
                     shape = RoundedCornerShape(50)
@@ -294,7 +295,8 @@ fun AddProductScreenPreview() {
     MaterialTheme {
         AddProductScreen(
             onNavigateBack = {},
-            onNavigateToFridge = {} // <-- Cukup tambahin kurung kurawal kosong
+            onNavigateToFridge = {}, // <-- Cukup tambahin kurung kurawal kosong
+            onNavigateToScanner = {},
         )
     }
 }

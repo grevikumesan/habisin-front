@@ -29,6 +29,8 @@ import com.example.habisin.ui.view.profile.AppLanguageScreen
 import com.example.habisin.ui.view.profile.AppThemeScreen
 import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
+import com.example.habisin.ui.view.scan.BarcodeScannerScreen
+import com.example.habisin.ui.viewmodel.AddProductViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 
@@ -47,6 +49,9 @@ object Routes {
     const val NOTIFICATION   = "Notification"
     const val FAQ            = "Faq"
     const val ABOUT          = "About"
+
+    const val BARCODE_SCANNER = "BarcodeScanner"
+
 
     fun recipeDetail(id: String) = "RecipeDetail/$id"
 }
@@ -69,7 +74,8 @@ fun AppRouter() {
         Routes.THEME,
         Routes.NOTIFICATION,
         Routes.FAQ,
-        Routes.ABOUT
+        Routes.ABOUT,
+        Routes.BARCODE_SCANNER
     )
 
     // Untuk RecipeDetail (route dengan argument), match by prefix
@@ -177,12 +183,45 @@ fun AppRouter() {
 
                 // ── Detail / modal screens (tanpa bottom nav) ──
                 composable(Routes.ADD_PRODUCT) {
+                    val addProductViewModel: AddProductViewModel = viewModel()
                     AddProductScreen(
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToFridge = {
                             navController.navigate(Routes.FRIDGE) {
                                 popUpTo(Routes.ADD_PRODUCT) { inclusive = true }
                             }
+                        },
+                        onNavigateToScanner = {
+                            navController.navigate(
+                                Routes.BARCODE_SCANNER
+                            )
+                        },
+
+
+                        viewModel = addProductViewModel
+                    )
+                }
+
+                composable(Routes.BARCODE_SCANNER) {
+
+                    val addProductViewModel: AddProductViewModel =
+                        viewModel(
+                            navController.previousBackStackEntry!!
+                        )
+
+                    BarcodeScannerScreen(
+
+                        onBarcodeScanned = { barcode ->
+
+                            addProductViewModel.fetchProductByBarcode(
+                                barcode
+                            )
+
+                            navController.popBackStack()
+                        },
+
+                        onBack = {
+                            navController.popBackStack()
                         }
                     )
                 }
