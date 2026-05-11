@@ -9,6 +9,8 @@ import com.example.habisin.data.remote.service.DashboardService
 import com.example.habisin.data.remote.service.FoodService
 import com.example.habisin.util.SessionManager
 import retrofit2.Retrofit
+import com.example.habisin.data.remote.repository.OpenFoodRepository
+import com.example.habisin.data.remote.service.OpenFoodService
 import retrofit2.converter.gson.GsonConverterFactory
 
 class AppContainer(context: Context) {
@@ -37,4 +39,14 @@ class AppContainer(context: Context) {
 
     val foodRepository: FoodRepository =
         FoodRepository(foodService, sessionManager)
+
+    //Barcode scan
+    private val openFoodRetrofit: Retrofit = Retrofit.Builder()
+        .baseUrl("https://world.openfoodfacts.org/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val openFoodService: OpenFoodService = openFoodRetrofit.create(OpenFoodService::class.java)
+
+    val openFoodRepository: OpenFoodRepository = OpenFoodRepository(openFoodService)
 }
