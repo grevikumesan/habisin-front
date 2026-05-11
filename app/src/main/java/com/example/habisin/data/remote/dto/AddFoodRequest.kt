@@ -7,6 +7,6 @@ data class AddFoodRequest(
     val descriptionFood: String = "",
     val bestBefore: Date,
     val quantity: Int,
-    val category: String,
+    val category: String, // "PRODUCE", "DIARY", "MEAT", "OTHER"
     val imageUrl: String? = null
 )
