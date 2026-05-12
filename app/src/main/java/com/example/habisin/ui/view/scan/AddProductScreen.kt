@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.habisin.ui.uistate.AddProductScanUiStates
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -37,12 +38,23 @@ fun AddProductScreen(
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val barcodeState by viewModel.uiStateBarcode.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             viewModel.consumeSuccess() // Reset state
             onNavigateToFridge()       // Pindah ke layar Kulkas
+        }
+    }
+
+    LaunchedEffect(barcodeState) {
+        when(barcodeState) {
+            is AddProductScanUiStates.Success -> {
+                val name = (barcodeState as AddProductScanUiStates.Success).itemName
+                viewModel.onItemNameChange(name)
+            }
+            else -> Unit
         }
     }
     Scaffold(
