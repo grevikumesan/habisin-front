@@ -1,7 +1,6 @@
 package com.example.habisin.ui.model
 
 import java.util.Date
-import java.util.concurrent.TimeUnit
 
 data class ProductModel(
     val id: String,
@@ -15,15 +14,4 @@ data class ProductModel(
     val barcode: String? = null,
     val dateAdded: Date = Date(),
     val notes: String = ""
-) {
-    val computedDaysLeft: Int
-        get() {
-            if (bestBeforeDate == null) return daysLeft
-            val diff = bestBeforeDate.time - System.currentTimeMillis()
-            return if (diff > 0) {
-                TimeUnit.MILLISECONDS.toDays(diff).toInt()
-            } else {
-                0
-            }
-        }
-}
+)

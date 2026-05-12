@@ -9,25 +9,22 @@ class DashboardRepository(
     private val sessionManager: SessionManager
 ) {
     suspend fun getDashboard(): Result<DashboardModel> {
-        try {
+        return try {
             val token = sessionManager.getToken()
                 ?: return Result.failure(IllegalStateException("Not logged in"))
 
             val response = service.getDashboard("Bearer $token")
-            return if (response.isSuccessful) {
-                val data = response.body()?.data
-                if (data != null) {
-                    Result.success(data)
-                } else {
-                    Result.failure(Exception("Empty response body"))
-                }
+            if (response.isSuccessful) {
+                response.body()?.data?.let { Result.success(it) }
+                    ?: Result.failure(Exception("Empty response body"))
             } else {
+                // Tambahin info detail
                 val errorBody = response.errorBody()?.string()
                 android.util.Log.e("Dashboard", "HTTP ${response.code()}: $errorBody")
                 Result.failure(Exception("Error ${response.code()}: ${response.message()}"))
             }
         } catch (e: Exception) {
-            return Result.failure(e)
+            Result.failure(e)
         }
     }
 }

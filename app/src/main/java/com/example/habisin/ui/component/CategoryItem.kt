@@ -1,7 +1,6 @@
 package com.example.habisin.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -18,16 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CategoryItem(
-    label: String, 
-    isSelected: Boolean = false,
-    onClick: () -> Unit = {}
-) {
+fun CategoryItem(label: String, isSelected: Boolean = false) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .clickable(onClick = onClick)
+        modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         Box(
             modifier = Modifier
@@ -36,6 +29,7 @@ fun CategoryItem(
                 .background(if (isSelected) Color(0xFFB7E4C7) else Color(0xFFF0F0F0)),
             contentAlignment = Alignment.Center
         ) {
+            // Icon Sendok Garpu sesuai permintaan
             Icon(
                 imageVector = Icons.Default.Restaurant,
                 contentDescription = label,
