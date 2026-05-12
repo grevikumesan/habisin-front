@@ -6,7 +6,7 @@ import java.util.Date
 data class AddProductUiState(
     val itemName: String = "",
     val category: String = "PRODUCE",
-    val bestBeforeDate: Date? = null,
+    val bestBeforeDate: Date? = Date(),
     val daysLeft: Int = 0,
     val quantity: Int = 1,
     val imageUri: Uri? = null,

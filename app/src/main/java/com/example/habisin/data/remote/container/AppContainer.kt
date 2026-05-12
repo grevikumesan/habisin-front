@@ -11,14 +11,17 @@ import com.example.habisin.util.SessionManager
 import retrofit2.Retrofit
 import com.example.habisin.data.remote.repository.OpenFoodRepository
 import com.example.habisin.data.remote.service.OpenFoodService
+import com.google.gson.GsonBuilder
 import retrofit2.converter.gson.GsonConverterFactory
 
 class AppContainer(context: Context) {
-
+    private val gson = GsonBuilder()
+        .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        .create()
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("http://10.0.2.2:3000/api/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+        .addConverterFactory(GsonConverterFactory.create(gson))
+    .build()
 
     private val authService: AuthService =
         retrofit.create(AuthService::class.java)

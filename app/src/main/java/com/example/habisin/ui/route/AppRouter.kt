@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import com.example.habisin.ui.view.scan.BarcodeScannerScreen
 import com.example.habisin.ui.view.scan.*
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
+import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 
 // ── Routes ──
@@ -152,7 +154,18 @@ fun AppRouter() {
                 }
 
                 composable(Routes.FRIDGE) {
+                    val viewModel: MyFridgeViewModel = viewModel()
+
+                    // ✅ Reload every time this destination is (re)entered
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    LaunchedEffect(navBackStackEntry) {
+                        if (navBackStackEntry?.destination?.route == Routes.FRIDGE) {
+                            viewModel.loadProducts()
+                        }
+                    }
+
                     MyFridgeScreen(
+                        viewModel = viewModel,
                         onNavigateToAddProduct = { navController.navigate(Routes.ADD_PRODUCT) }
                     )
                 }
