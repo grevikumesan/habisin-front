@@ -78,6 +78,6 @@ class MyFridgeViewModel(app: Application) : AndroidViewModel(app) {
             result = result.filter { it.name.contains(query, ignoreCase = true) }
         }
 
-        return result
+        return result.sortedBy { it.computedDaysLeft }
     }
 }
