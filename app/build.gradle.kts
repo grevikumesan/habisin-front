@@ -80,6 +80,8 @@ dependencies {
     // Language
     implementation("androidx.appcompat:appcompat:1.7.0")
 
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

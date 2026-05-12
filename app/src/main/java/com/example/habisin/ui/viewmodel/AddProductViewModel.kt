@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.data.remote.dto.AddFoodRequest
+import com.example.habisin.ui.uistate.AddProductScanUiStates
 import com.example.habisin.ui.uistate.AddProductUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +18,14 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
 
     private val container = AppContainer(app)
 
+    private val openFoodRepository = container.openFoodRepository
+
     private val _uiState = MutableStateFlow(AddProductUiState())
+
+    private val _uiStateBarcode = MutableStateFlow<AddProductScanUiStates>(AddProductScanUiStates.Idle)
     val uiState: StateFlow<AddProductUiState> = _uiState.asStateFlow()
+
+    val uiStateBarcode: StateFlow<AddProductScanUiStates> = _uiStateBarcode.asStateFlow()
 
     fun onItemNameChange(name: String) {
         _uiState.value = _uiState.value.copy(itemName = name, errorMessage = null)
@@ -72,6 +79,28 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
                     _uiState.value = state.copy(
                         isLoading    = false,
                         errorMessage = error.message ?: "Failed to add product"
+                    )
+                }
+        }
+    }
+
+    fun fetchProductByBarcode(barcode: String) {
+        viewModelScope.launch {
+            _uiStateBarcode.value = AddProductScanUiStates.Loading
+
+            openFoodRepository.getProduct(barcode)
+                .onSuccess { result ->
+                    val productName = result
+
+                    _uiStateBarcode.value =
+                        AddProductScanUiStates.Success(
+                            itemName = productName
+                        )
+                }
+
+                .onFailure { error ->
+                    _uiStateBarcode.value = AddProductScanUiStates.Error(
+                        error.message ?: "Failed to fetch product"
                     )
                 }
         }
