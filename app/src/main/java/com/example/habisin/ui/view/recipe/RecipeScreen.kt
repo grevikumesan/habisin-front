@@ -4,9 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -144,7 +141,6 @@ fun RecipeScreen(
                             )
                         }
                     }
-                    // Spacer jika jumlah item ganjil
                     if (rowItems.size == 1) {
                         Spacer(modifier = Modifier.weight(1f))
                     }
@@ -201,12 +197,47 @@ fun RecipeScreen(
 @Preview(showBackground = true)
 @Composable
 fun RecipeScreenPreview() {
-    // Data Dummy Hanya untuk Preview UI di Surabaya
     val dummy = listOf(
-        RecipeModel("1", "Nasi Goreng UC", "15m", "Easy", "", "Nasi goreng spesial ala mahasiswa Informatika yang praktis."),
-        RecipeModel("2", "Ayam Geprek", "20m", "Easy", "", "Ayam krispi dengan sambal bawang yang nendang bumbunya."),
-        RecipeModel("3", "Omelet Sayur", "10m", "Easy", "", "Menu sehat pagi hari untuk energi kuliah seharian."),
-        RecipeModel("4", "Es Teh Manis", "5m", "Easy", "", "Minuman segar pendamping makanan pedas.")
+        RecipeModel(
+            id = "1", 
+            title = "Nasi Goreng UC", 
+            cookTime = "15m", 
+            difficulty = "Easy", 
+            imageUrl = "", 
+            description = "Nasi goreng spesial ala mahasiswa Informatika yang praktis.",
+            ingredients = listOf("Nasi", "Telur"),
+            category = "Rice"
+        ),
+        RecipeModel(
+            id = "2", 
+            title = "Ayam Geprek", 
+            cookTime = "20m", 
+            difficulty = "Easy", 
+            imageUrl = "", 
+            description = "Ayam krispi dengan sambal bawang yang nendang bumbunya.",
+            ingredients = listOf("Ayam", "Cabai"),
+            category = "Chicken"
+        ),
+        RecipeModel(
+            id = "3", 
+            title = "Omelet Sayur", 
+            cookTime = "10m", 
+            difficulty = "Easy", 
+            imageUrl = "", 
+            description = "Menu sehat pagi hari untuk energi kuliah seharian.",
+            ingredients = listOf("Telur", "Bayam"),
+            category = "Egg"
+        ),
+        RecipeModel(
+            id = "4", 
+            title = "Es Teh Manis", 
+            cookTime = "5m", 
+            difficulty = "Easy", 
+            imageUrl = "", 
+            description = "Minuman segar pendamping makanan pedas.",
+            ingredients = listOf("Teh", "Gula"),
+            category = "Dessert"
+        )
     )
 
     RecipeScreen(

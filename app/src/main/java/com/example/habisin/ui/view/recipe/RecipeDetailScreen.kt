@@ -1,4 +1,4 @@
-package com.example.habisin.ui.recipe
+package com.example.habisin.ui.view.recipe
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,15 +26,11 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
     val detailState by viewModel.detailUiState.collectAsState()
     val recipe = detailState.recipe
 
-    // State internal untuk pindah-pindah tab
     var activeTab by remember { mutableStateOf("Ingredients") }
-
-    // Warna hijau yang sedikit lebih terang agar nyaman dibaca
     val mediumGreen = Color(0xFF2D6A4F)
 
     recipe?.let { data ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // 1. Photo Full Halaman (Background)
             AsyncImage(
                 model = data.imageUrl,
                 contentDescription = null,
@@ -42,11 +38,10 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
                 contentScale = ContentScale.Crop
             )
 
-            // 2. Card Hijau Pop-Up (Menutupi setengah layar lebih sedikit)
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.65f) // Mengatur tinggi pop-up
+                    .fillMaxHeight(0.65f)
                     .align(Alignment.BottomCenter),
                 color = mediumGreen,
                 shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
@@ -56,7 +51,6 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
                         .padding(24.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // Title (Position Left)
                     Text(
                         text = data.title,
                         fontSize = 26.sp,
@@ -66,12 +60,11 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Description (Position Left)
                     Text(
                         text = "Description",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFB7E4C7) // Hijau muda untuk sub-title
+                        color = Color(0xFFB7E4C7)
                     )
 
                     Text(
@@ -84,7 +77,6 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // 3. Container Oval untuk 2 Button
                     Surface(
                         color = Color.White,
                         shape = CircleShape,
@@ -115,7 +107,6 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // 4. Content Area (Berdasarkan tombol yang aktif)
                     if (activeTab == "Ingredients") {
                         data.ingredients.forEach { item ->
                             Text(
@@ -126,7 +117,7 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
                             )
                         }
                     } else {
-                        data.directions.forEachIndexed { index, step ->
+                        data.instructions.forEachIndexed { index, step ->
                             Row(modifier = Modifier.padding(vertical = 6.dp)) {
                                 Text(
                                     text = "${index + 1}.",
@@ -146,21 +137,20 @@ fun RecipeDetailScreen(viewModel: RecipeViewModel) {
     }
 }
 
-// Preview Preview ditampilkan data dummy
 @Preview(showBackground = true)
 @Composable
 fun RecipeDetailScreenPreview() {
     val dummyRecipe = RecipeModel(
         id = "1",
         title = "Gudeg Jogja",
-        timeToCook = "120 mins",
+        cookTime = "120 mins",
         difficulty = "Hard",
         imageUrl = "https://example.com/gudeg.jpg",
         description = "Gudeg adalah makanan khas Yogyakarta dan Jawa Tengah yang terbuat dari nangka muda yang dimasak dengan santan. Perlu waktu berjam-jam untuk membuat warna cokelat yang sempurna.",
         ingredients = listOf("Nangka Muda", "Santan Kelapa", "Gula Jawa", "Daun Jati"),
-        directions = listOf("Rebus nangka muda", "Masukkan santan dan bumbu", "Tunggu hingga meresap", "Sajikan dengan krecek")
+        instructions = listOf("Rebus nangka muda", "Masukkan santan dan bumbu", "Tunggu hingga meresap", "Sajikan dengan krecek"),
+        category = "Traditional"
     )
-
 
     Box(modifier = Modifier.fillMaxSize().background(Color.LightGray)) {
         Surface(
@@ -174,7 +164,6 @@ fun RecipeDetailScreenPreview() {
                 Text("Description", color = Color(0xFFB7E4C7), fontWeight = FontWeight.Bold)
                 Text(dummyRecipe.description, color = Color.White, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(20.dp))
-                // Row button oval simulasi
                 Row(modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.White, CircleShape)) {
                     Box(modifier = Modifier.weight(1f).fillMaxHeight().background(Color(0xFFFFF9C4), CircleShape), contentAlignment = Alignment.Center) {
                         Text("Ingredients", color = Color(0xFF1B4332), fontWeight = FontWeight.Bold)

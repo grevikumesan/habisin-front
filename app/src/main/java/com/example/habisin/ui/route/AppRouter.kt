@@ -24,7 +24,7 @@ import com.example.habisin.ui.view.fridge.MyFridgeScreen
 import com.example.habisin.ui.view.profile.ProfileScreen
 import com.example.habisin.ui.view.recipe.RecipeScreen
 import com.example.habisin.ui.view.scan.AddProductScreen
-import com.example.habisin.ui.recipe.RecipeDetailScreen
+import com.example.habisin.ui.view.recipe.RecipeDetailScreen
 import com.example.habisin.ui.view.profile.AboutScreen
 import com.example.habisin.ui.view.profile.AppLanguageScreen
 import com.example.habisin.ui.view.profile.AppThemeScreen
