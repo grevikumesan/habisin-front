@@ -2,9 +2,11 @@ package com.example.habisin.ui.uistate
 
 import com.example.habisin.ui.model.RecipeModel
 
-data class RecipeDetailUiState(
-    val recipe: RecipeModel? = null,
+data class RecipeUiState(
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val matchedIngredients: Pair<Int, Int> = Pair(0, 0)
+    val recipes: List<RecipeModel> = emptyList(),
+    val categories: List<String> = listOf("All", "Rice", "Meat", "Veggie", "Soup"),
+    val selectedCategory: String = "All",
+    val searchQuery: String = "",
+    val errorMessage: String? = null
 )

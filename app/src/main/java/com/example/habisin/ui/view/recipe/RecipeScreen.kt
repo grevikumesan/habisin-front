@@ -4,16 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -25,14 +21,13 @@ import com.example.habisin.ui.component.HabisinTextField
 import com.example.habisin.ui.component.RecommendedCard
 import com.example.habisin.ui.model.RecipeModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeScreen(
     recipes: List<RecipeModel>,
     onRecipeClick: (String) -> Unit
 ) {
+    // State internal untuk search bar
     var searchQuery by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("All") }
 
     LazyColumn(
         modifier = Modifier
@@ -40,18 +35,18 @@ fun RecipeScreen(
             .background(Color.White),
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
-        // 1. Title
+        // 1. Title Utama (Left Position)
         item {
             Text(
                 text = "Recipe",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.ExtraBold,
                 modifier = Modifier.padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 12.dp),
-                color = Color(0xFFFF1B43)
+                color = Color(0xFF1B4332) // Hijau Tua Habisin
             )
         }
 
-        // 2. Search Bar
+        // 2. Search Bar (Menggunakan HabisinTextField)
         item {
             HabisinTextField(
                 value = searchQuery,
@@ -68,49 +63,43 @@ fun RecipeScreen(
             )
         }
 
-        // 3. Category Scroll Bar (HORIZONTAL SCROLL)
+        // 3. Category Scroll Bar (Gojek Style - Lingkaran)
         item {
-            val categories = listOf("All", "Rice", "Chicken", "Egg", "Fish", "Dessert", "Meat")
+            val categories = listOf("All", "Rice", "Chicken", "Egg", "Dessert", "Meat")
             LazyRow(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(categories) { cat ->
-                    CategoryItem(
-                        label = cat,
-                        isSelected = cat == selectedCategory,
-                        onClick = { selectedCategory = cat }
-                    )
+                    CategoryItem(label = cat, isSelected = cat == "All")
                 }
             }
         }
 
         // 4. Sub-title: Recommended
-        if (recipes.isNotEmpty()) {
-            item {
-                Text(
-                    text = "Recommended",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-                )
-            }
+        item {
+            Text(
+                text = "Recommended",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            )
+        }
 
-            // 5. Recommended Horizontal Scroll
-            item {
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(recipes.take(2)) { recipe ->
-                        RecommendedCard(
-                            title = recipe.title,
-                            description = recipe.description,
-                            imageUrl = recipe.imageUrl,
-                            onClick = { onRecipeClick(recipe.id) }
-                        )
-                    }
+        // 5. Recommended Horizontal Scroll
+        item {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                modifier = Modifier.padding(bottom = 24.dp)
+            ) {
+                // Filter data rekomendasi (Misal 2 item teratas dari database)
+                items(recipes.take(2)) { recipe ->
+                    RecommendedCard(
+                        title = recipe.title,
+                        description = recipe.description,
+                        imageUrl = recipe.imageUrl,
+                        onClick = { onRecipeClick(recipe.id) }
+                    )
                 }
             }
         }
@@ -125,74 +114,26 @@ fun RecipeScreen(
             )
         }
 
-        // 7. Grid Layout untuk All Recipes
-        if (recipes.isNotEmpty()) {
-            items(recipes.chunked(2)) { rowItems ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    for (recipe in rowItems) {
-                        Box(modifier = Modifier.weight(1f)) {
-                            RecommendedCard(
-                                title = recipe.title,
-                                description = recipe.description,
-                                imageUrl = recipe.imageUrl,
-                                onClick = { onRecipeClick(recipe.id) }
-                            )
-                        }
-                    }
-                    // Spacer jika jumlah item ganjil
-                    if (rowItems.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
+        // 7. Grid Others (2 Columns x N Rows)
+        val rows = recipes.chunked(2)
+        items(rows) { rowItems ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                for (recipe in rowItems) {
+                    Box(modifier = Modifier.weight(1f)) {
+                        RecommendedCard(
+                            title = recipe.title,
+                            description = recipe.description,
+                            imageUrl = recipe.imageUrl,
+                            onClick = { onRecipeClick(recipe.id) }
+                        )
                     }
                 }
-            }
-        } else {
-            // Empty State
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(vertical = 64.dp)
-                    ) {
-                        Text(
-                            text = "😔",
-                            fontSize = 64.sp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Tidak ada resep yang cocok",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF333333)
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Tambahkan bahan ke kulkas untuk melihat resep",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            modifier = Modifier.padding(horizontal = 32.dp)
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Button(
-                            onClick = { /* Navigate to fridge */ },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFFF1B43)
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        ) {
-                            Text("Tambah Bahan", color = Color.White)
-                        }
-                    }
-                }
+                if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
