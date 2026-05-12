@@ -47,9 +47,6 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
     fun onCategorySelected(category: String) {
         _uiState.value = _uiState.value.copy(category = category)
     }
-    fun onImageSelected(uri: Uri?) {
-        _uiState.value = _uiState.value.copy(imageUri = uri)
-    }
 
     fun onBestBeforeDateChange(date: Date) {
         val daysLeft = calculateDaysLeft(date)
