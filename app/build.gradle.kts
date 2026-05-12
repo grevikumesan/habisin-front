@@ -44,6 +44,7 @@ android {
 dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation(libs.androidx.appcompat)
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -74,13 +75,20 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
-    // Coil (image loading)
-    implementation("io.coil-kt:coil-compose:2.4.0")
-
     // Language
     implementation("androidx.appcompat:appcompat:1.7.0")
 
+    //  Coil untuk image loading gambar dari galeri (Pakai versi 2.5.0 terbaru)
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // CameraX untuk buka Kamera
+    implementation("androidx.camera:camera-core:1.3.4")
+    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation("androidx.camera:camera-lifecycle:1.3.4")
+    implementation("androidx.camera:camera-view:1.3.4")
+
+    // MLKit untuk barcode scanner
+    implementation("com.google.mlkit:barcode-scanning:17.2.0")
 
     // Testing
     testImplementation(libs.junit)
