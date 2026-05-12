@@ -1,5 +1,6 @@
 package com.example.habisin.ui.uistate
 
+import android.net.Uri
 import java.util.Date
 
 data class AddProductUiState(
@@ -8,6 +9,7 @@ data class AddProductUiState(
     val bestBeforeDate: Date? = null,
     val daysLeft: Int = 0,
     val quantity: Int = 1,
+    val imageUri: Uri? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isSuccess: Boolean = false

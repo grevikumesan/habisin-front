@@ -1,5 +1,9 @@
 package com.example.habisin.ui.view.scan
 
+import android.app.Application
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,10 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -29,11 +37,24 @@ import java.util.*
 @Composable
 fun AddProductScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToFridge: () -> Unit, // <-- 1. Tambahin jalur ini aja
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDatePicker by remember { mutableStateOf(false) }
 
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            viewModel.onImageSelected(uri) // Simpan ke ViewModel
+        }
+    )
+    LaunchedEffect(uiState.isSuccess) {
+        if (uiState.isSuccess) {
+            viewModel.consumeSuccess() // Reset state
+            onNavigateToFridge()       // Pindah ke layar Kulkas
+        }
+    }
     Scaffold(
         topBar = {
             Row(
@@ -59,24 +80,56 @@ fun AddProductScreen(
         ) {
             // 📷 Camera Section
             Card(
-                modifier = Modifier.fillMaxWidth().height(200.dp).clickable { },
+                modifier = Modifier.fillMaxWidth().height(200.dp).clickable {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EDD3)),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.CameraAlt,
-                        contentDescription = null,
-                        tint = Color(0xFF4B5C28),
-                        modifier = Modifier.size(80.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text("Point at product", fontSize = 12.sp, color = Color.Gray)
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
+                    // Layer 1: Background Gambar (Muncul kalau imageUri tidak null)
+                    if (uiState.imageUri != null) {
+                        AsyncImage(
+                            model = uiState.imageUri,
+                            contentDescription = null, // <-- Sudah dibikin null sesuai permintaan
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                        // Overlay gelap sedikit supaya teks putih tetap terbaca walau fotonya terang
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.3f))
+                        )
+                    }
+
+                    // Layer 2: Teks dan Icon sesuai PDF
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.CameraAlt,
+                            contentDescription = null, // <-- Tetap null
+                            tint = if (uiState.imageUri != null) Color.White else Color(0xFF4B5C28),
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Photo Product",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = if (uiState.imageUri != null) Color.White else Color(0xFF4B5C28)
+                        )
+                        Text(
+                            text = "Point at product",
+                            fontSize = 12.sp,
+                            color = if (uiState.imageUri != null) Color.LightGray else Color.Gray
+                        )
+                    }
                 }
             }
 
@@ -282,6 +335,9 @@ fun Date.formatDate(): String {
 @Composable
 fun AddProductScreenPreview() {
     MaterialTheme {
-        AddProductScreen(onNavigateBack = {})
+        AddProductScreen(
+            onNavigateBack = {},
+            onNavigateToFridge = {} // <-- Cukup tambahin kurung kurawal kosong
+        )
     }
 }

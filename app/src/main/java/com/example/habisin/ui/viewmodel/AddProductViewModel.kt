@@ -1,6 +1,7 @@
 package com.example.habisin.ui.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.remote.container.AppContainer
@@ -26,6 +27,9 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onCategorySelected(category: String) {
         _uiState.value = _uiState.value.copy(category = category)
+    }
+    fun onImageSelected(uri: Uri?) {
+        _uiState.value = _uiState.value.copy(imageUri = uri)
     }
 
     fun onBestBeforeDateChange(date: Date) {
