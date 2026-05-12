@@ -30,6 +30,7 @@ import com.example.habisin.ui.view.profile.AppThemeScreen
 import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
 import com.example.habisin.ui.view.scan.BarcodeScannerScreen
+import com.example.habisin.ui.view.scan.*
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
@@ -205,25 +206,30 @@ fun AppRouter() {
                 composable(Routes.BARCODE_SCANNER) {
 
                     val addProductViewModel: AddProductViewModel =
-                        viewModel(
-                            navController.previousBackStackEntry!!
-                        )
+                        viewModel(navController.previousBackStackEntry!!)
 
-                    BarcodeScannerScreen(
-
-                        onBarcodeScanned = { barcode ->
-
-                            addProductViewModel.fetchProductByBarcode(
-                                barcode
-                            )
-
-                            navController.popBackStack()
-                        },
-
-                        onBack = {
-                            navController.popBackStack()
+                    CameraPermissionScreen(
+                        onPermissionDenied = {
+                            navController.popBackStack(Routes.ADD_PRODUCT, inclusive = false)
                         }
-                    )
+                    ) {
+
+                        BarcodeScannerScreen(
+
+                            onBarcodeScanned = { barcode ->
+
+                                addProductViewModel.fetchProductByBarcode(barcode)
+
+                                navController.navigate(Routes.ADD_PRODUCT) {
+                                    popUpTo(Routes.BARCODE_SCANNER) { inclusive = true }
+                                }
+                            },
+
+                            onBack = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
 
                 composable(Routes.RECIPE_DETAIL) {
