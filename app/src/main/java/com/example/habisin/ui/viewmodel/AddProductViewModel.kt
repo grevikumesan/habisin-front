@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.data.remote.dto.AddFoodRequest
+import com.example.habisin.ui.uistate.AddProductScanUiStates
 import com.example.habisin.ui.uistate.AddProductUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,9 +18,18 @@ import java.util.concurrent.TimeUnit
 class AddProductViewModel(app: Application) : AndroidViewModel(app) {
 
     private val container = AppContainer(app)
+    private val openFoodRepository = container.openFoodRepository
 
     private val _uiState = MutableStateFlow(AddProductUiState())
+    private val _uiStateBarcode = MutableStateFlow<AddProductScanUiStates>(AddProductScanUiStates.Idle)
+
     val uiState: StateFlow<AddProductUiState> = _uiState.asStateFlow()
+    val uiStateBarcode: StateFlow<AddProductScanUiStates> = _uiStateBarcode.asStateFlow()
+
+    // Kept for when image upload is implemented
+    fun onImageSelected(uri: Uri?) {
+        _uiState.value = _uiState.value.copy(imageUri = uri)
+    }
 
     fun onItemNameChange(name: String) {
         _uiState.value = _uiState.value.copy(itemName = name, errorMessage = null)
@@ -28,21 +38,17 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
     fun onCategorySelected(category: String) {
         _uiState.value = _uiState.value.copy(category = category)
     }
-    fun onImageSelected(uri: Uri?) {
-        _uiState.value = _uiState.value.copy(imageUri = uri)
-    }
 
     fun onBestBeforeDateChange(date: Date) {
-        val daysLeft = calculateDaysLeft(date)
         _uiState.value = _uiState.value.copy(
             bestBeforeDate = date,
-            daysLeft       = daysLeft
+            daysLeft       = calculateDaysLeft(date),
+            errorMessage   = null
         )
     }
 
-    fun onQuantityChange(quantity: Int) {
-        if (quantity < 1) return
-        _uiState.value = _uiState.value.copy(quantity = quantity)
+    fun onQuantityChange(qty: Int) {
+        if (qty >= 1) _uiState.value = _uiState.value.copy(quantity = qty)
     }
 
     fun addProduct() {
@@ -76,6 +82,22 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
                     _uiState.value = state.copy(
                         isLoading    = false,
                         errorMessage = error.message ?: "Failed to add product"
+                    )
+                }
+        }
+    }
+
+    fun fetchProductByBarcode(barcode: String) {
+        viewModelScope.launch {
+            _uiStateBarcode.value = AddProductScanUiStates.Loading
+
+            openFoodRepository.getProduct(barcode)
+                .onSuccess { productName ->
+                    _uiStateBarcode.value = AddProductScanUiStates.Success(itemName = productName)
+                }
+                .onFailure { error ->
+                    _uiStateBarcode.value = AddProductScanUiStates.Error(
+                        error.message ?: "Failed to fetch product"
                     )
                 }
         }

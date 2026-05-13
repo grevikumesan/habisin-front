@@ -30,7 +30,11 @@ import com.example.habisin.ui.view.profile.AppLanguageScreen
 import com.example.habisin.ui.view.profile.AppThemeScreen
 import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
+import com.example.habisin.ui.view.scan.BarcodeScannerScreen
+import com.example.habisin.ui.view.scan.*
+import com.example.habisin.ui.viewmodel.AddProductViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
+import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -54,6 +58,10 @@ object Routes {
     const val SUBSCRIPTION   = "Subscription"
 
     fun recipeDetail(id: Int) = "RecipeDetail/$id"
+    const val BARCODE_SCANNER = "BarcodeScanner"
+
+
+    fun recipeDetail(id: String) = "RecipeDetail/$id"
 }
 
 @Composable
@@ -75,7 +83,8 @@ fun AppRouter() {
         Routes.THEME,
         Routes.NOTIFICATION,
         Routes.FAQ,
-        Routes.ABOUT
+        Routes.ABOUT,
+        Routes.BARCODE_SCANNER
     )
 
     // Untuk RecipeDetail (route dengan argument), match by prefix
@@ -151,7 +160,18 @@ fun AppRouter() {
                 }
 
                 composable(Routes.FRIDGE) {
+                    val viewModel: MyFridgeViewModel = viewModel()
+
+                    // ✅ Reload every time this destination is (re)entered
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    LaunchedEffect(navBackStackEntry) {
+                        if (navBackStackEntry?.destination?.route == Routes.FRIDGE) {
+                            viewModel.loadProducts()
+                        }
+                    }
+
                     MyFridgeScreen(
+                        viewModel = viewModel,
                         onNavigateToAddProduct = { navController.navigate(Routes.ADD_PRODUCT) }
                     )
                 }
@@ -215,14 +235,46 @@ fun AppRouter() {
 
                 // ── Detail / modal screens (tanpa bottom nav) ──
                 composable(Routes.ADD_PRODUCT) {
+                    val addProductViewModel: AddProductViewModel = viewModel()
                     AddProductScreen(
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToFridge = {
-                            navController.navigate(Routes.FRIDGE) {
-                                popUpTo(Routes.ADD_PRODUCT) { inclusive = true }
-                            }
-                        }
+                            navController.popBackStack(Routes.FRIDGE, inclusive = false) // ← change this
+                        },
+                        onNavigateToScanner = {
+                            navController.navigate(Routes.BARCODE_SCANNER)
+                        },
+                        viewModel = addProductViewModel
                     )
+                }
+
+                composable(Routes.BARCODE_SCANNER) {
+
+                    val addProductViewModel: AddProductViewModel =
+                        viewModel(navController.previousBackStackEntry!!)
+
+                    CameraPermissionScreen(
+                        onPermissionDenied = {
+                            navController.popBackStack(Routes.ADD_PRODUCT, inclusive = false)
+                        }
+                    ) {
+
+                        BarcodeScannerScreen(
+
+                            onBarcodeScanned = { barcode ->
+
+                                addProductViewModel.fetchProductByBarcode(barcode)
+
+                                navController.navigate(Routes.ADD_PRODUCT) {
+                                    popUpTo(Routes.BARCODE_SCANNER) { inclusive = true }
+                                }
+                            },
+
+                            onBack = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
                 }
 
                 composable(

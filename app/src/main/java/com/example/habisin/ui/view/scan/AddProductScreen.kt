@@ -1,6 +1,7 @@
 package com.example.habisin.ui.view.scan
 
 import android.app.Application
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.habisin.ui.uistate.AddProductScanUiStates
 import coil.compose.AsyncImage
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
@@ -38,17 +40,18 @@ import java.util.*
 fun AddProductScreen(
     onNavigateBack: () -> Unit,
     onNavigateToFridge: () -> Unit, // <-- 1. Tambahin jalur ini aja
+    onNavigateToScanner: () -> Unit,
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        Log.d("Upload", "Picker returned uri=$uri")  // ← add this
+        viewModel.onImageSelected(uri)
+    }
     var showDatePicker by remember { mutableStateOf(false) }
 
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            viewModel.onImageSelected(uri) // Simpan ke ViewModel
-        }
-    )
     LaunchedEffect(uiState.isSuccess) {
         if (uiState.isSuccess) {
             viewModel.consumeSuccess() // Reset state
@@ -88,47 +91,28 @@ fun AddProductScreen(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EDD3)),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
-                    // Layer 1: Background Gambar (Muncul kalau imageUri tidak null)
-                    if (uiState.imageUri != null) {
-                        AsyncImage(
-                            model = uiState.imageUri,
-                            contentDescription = null, // <-- Sudah dibikin null sesuai permintaan
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
-                        )
-                        // Overlay gelap sedikit supaya teks putih tetap terbaca walau fotonya terang
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.3f))
-                        )
-                    }
-
-                    // Layer 2: Teks dan Icon sesuai PDF
+                if (uiState.imageUri != null) {
+                    AsyncImage(
+                        model = uiState.imageUri,
+                        contentDescription = "Selected product image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
                     Column(
+                        modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
                         Icon(
                             Icons.Default.CameraAlt,
-                            contentDescription = null, // <-- Tetap null
-                            tint = if (uiState.imageUri != null) Color.White else Color(0xFF4B5C28),
+                            contentDescription = null,
+                            tint = Color(0xFF4B5C28),
                             modifier = Modifier.size(80.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Photo Product",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = if (uiState.imageUri != null) Color.White else Color(0xFF4B5C28)
-                        )
-                        Text(
-                            text = "Point at product",
-                            fontSize = 12.sp,
-                            color = if (uiState.imageUri != null) Color.LightGray else Color.Gray
-                        )
+                        Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Upload Photo from Gallery", fontSize = 12.sp, color = Color.Gray)
                     }
                 }
             }
@@ -238,13 +222,21 @@ fun AddProductScreen(
                 }
             }
 
+            uiState.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
             //  Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { viewModel.addProduct(); onNavigateBack() },
+                    onClick = { viewModel.addProduct() },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
                     shape = RoundedCornerShape(50)
@@ -252,7 +244,7 @@ fun AddProductScreen(
                     Text("Add to Fridge", color = Color(0xFF8D5524), fontWeight = FontWeight.Bold)
                 }
                 Button(
-                    onClick = { },
+                    onClick = { onNavigateToScanner() },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
                     shape = RoundedCornerShape(50)
@@ -337,7 +329,8 @@ fun AddProductScreenPreview() {
     MaterialTheme {
         AddProductScreen(
             onNavigateBack = {},
-            onNavigateToFridge = {} // <-- Cukup tambahin kurung kurawal kosong
+            onNavigateToFridge = {}, // <-- Cukup tambahin kurung kurawal kosong
+            onNavigateToScanner = {},
         )
     }
 }
