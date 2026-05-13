@@ -201,17 +201,11 @@ fun AppRouter() {
                     AddProductScreen(
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToFridge = {
-                            navController.navigate(Routes.FRIDGE) {
-                                popUpTo(Routes.ADD_PRODUCT) { inclusive = true }
-                            }
+                            navController.popBackStack(Routes.FRIDGE, inclusive = false) // ← change this
                         },
                         onNavigateToScanner = {
-                            navController.navigate(
-                                Routes.BARCODE_SCANNER
-                            )
+                            navController.navigate(Routes.BARCODE_SCANNER)
                         },
-
-
                         viewModel = addProductViewModel
                     )
                 }
