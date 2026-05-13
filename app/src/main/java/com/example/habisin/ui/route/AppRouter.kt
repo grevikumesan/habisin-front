@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,15 +16,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.habisin.ui.component.HabisinBottomNav
-import com.example.habisin.ui.view.DashboardScreen
-import com.example.habisin.ui.view.LoginScreen
-import com.example.habisin.ui.view.RegisterScreen
+import com.example.habisin.ui.view.component.HabisinBottomNav
+import com.example.habisin.ui.view.dashboard.DashboardScreen
+import com.example.habisin.ui.view.auth.LoginScreen
+import com.example.habisin.ui.view.auth.RegisterScreen
 import com.example.habisin.ui.view.fridge.MyFridgeScreen
 import com.example.habisin.ui.view.profile.ProfileScreen
 import com.example.habisin.ui.view.recipe.RecipeScreen
 import com.example.habisin.ui.view.scan.AddProductScreen
-import com.example.habisin.ui.recipe.RecipeDetailScreen
+import com.example.habisin.ui.view.recipe.RecipeDetailScreen
 import com.example.habisin.ui.view.profile.AboutScreen
 import com.example.habisin.ui.view.profile.AppLanguageScreen
 import com.example.habisin.ui.view.profile.AppThemeScreen
@@ -31,6 +32,9 @@ import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
 import com.example.habisin.ui.viewmodel.LoginViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.habisin.ui.view.subscription.SubscriptionView
 
 // ── Routes ──
 object Routes {
@@ -47,8 +51,9 @@ object Routes {
     const val NOTIFICATION   = "Notification"
     const val FAQ            = "Faq"
     const val ABOUT          = "About"
+    const val SUBSCRIPTION   = "Subscription"
 
-    fun recipeDetail(id: String) = "RecipeDetail/$id"
+    fun recipeDetail(id: Int) = "RecipeDetail/$id"
 }
 
 @Composable
@@ -65,6 +70,7 @@ fun AppRouter() {
         Routes.LOGIN,
         Routes.REGISTER,
         Routes.ADD_PRODUCT,
+        Routes.SUBSCRIPTION,
         Routes.LANGUAGE,
         Routes.THEME,
         Routes.NOTIFICATION,
@@ -151,11 +157,43 @@ fun AppRouter() {
                 }
 
                 composable(Routes.RECIPE) {
-                    // TODO (teammate): inject RecipeViewModel & ambil list dari sana
+                    val recipeViewModel: RecipeViewModel = viewModel()
+                    val backStackEntry = navController.currentBackStackEntry
+
+                    // ⬇️ Subscribe ke Flow, otomatis re-fire setiap kali nilai berubah
+                    LaunchedEffect(backStackEntry) {
+                        backStackEntry?.savedStateHandle
+                            ?.getStateFlow("subscription_updated", false)
+                            ?.collect { updated ->
+                                android.util.Log.d("RECIPE_ROUTE", "Flag value: $updated")
+                                if (updated) {
+                                    android.util.Log.d("RECIPE_ROUTE", "Refetching recipes...")
+                                    recipeViewModel.loadRecipes()
+                                    // Reset flag biar nggak loop
+                                    backStackEntry.savedStateHandle["subscription_updated"] = false
+                                }
+                            }
+                    }
+
                     RecipeScreen(
-                        recipes       = emptyList(),
+                        viewModel = recipeViewModel,
                         onRecipeClick = { recipeId ->
                             navController.navigate(Routes.recipeDetail(recipeId))
+                        },
+                        onNavigateToSubscription = {
+                            navController.navigate(Routes.SUBSCRIPTION)
+                        }
+                    )
+                }
+
+                composable(Routes.SUBSCRIPTION) {
+                    SubscriptionView(
+                        onBack = {
+                            android.util.Log.d("SUB_BACK", "Setting flag & popping back stack")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("subscription_updated", true)
+                            navController.popBackStack()
                         }
                     )
                 }
@@ -187,11 +225,17 @@ fun AppRouter() {
                     )
                 }
 
-                composable(Routes.RECIPE_DETAIL) {
-                    val recipeViewModel: RecipeViewModel = viewModel()
-                    // TODO (teammate): panggil recipeViewModel.loadDetail(recipeId) di sini
-                    // val recipeId = it.arguments?.getString("recipeId")
-                    RecipeDetailScreen(viewModel = recipeViewModel)
+                composable(
+                    route = Routes.RECIPE_DETAIL,
+                    arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: return@composable
+                    val recipeViewModel: RecipeViewModel = viewModel()  // ← polos
+                    RecipeDetailScreen(
+                        recipeId = recipeId,
+                        viewModel = recipeViewModel,
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
                 // ── Profile sub-pages ──

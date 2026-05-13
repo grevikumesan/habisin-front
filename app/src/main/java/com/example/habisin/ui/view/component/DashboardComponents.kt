@@ -1,4 +1,4 @@
-package com.example.habisin.ui.component
+package com.example.habisin.ui.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -128,7 +128,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = getProductEmoji(item.name),
+                text = getProductEmoji(item.name ?: ""),
                 fontSize = 22.sp
             )
         }
@@ -137,7 +137,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text       = item.name,
+                text       = item.name ?: "Unknown",
                 color      = HabisinTextDark,
                 fontSize   = 15.sp,
                 fontWeight = FontWeight.SemiBold

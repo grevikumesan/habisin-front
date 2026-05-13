@@ -1,4 +1,4 @@
-package com.example.habisin.ui.component
+package com.example.habisin.ui.view.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -50,7 +51,7 @@ fun HabisinTextField(
 @Composable
 fun HabisinTextFieldPreview() {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Preview Search Bar (Kosong):", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+        Text("Preview Search Bar (Kosong):", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
         // Contoh 1: Menampilkan Placeholder dan Icon Search
@@ -69,7 +70,7 @@ fun HabisinTextFieldPreview() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Preview Input Biasa (Terisi):", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+        Text("Preview Input Biasa (Terisi):", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
         // Contoh 2: Saat user mengetik sesuatu (misal di halaman Login/Add)

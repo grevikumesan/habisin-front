@@ -1,4 +1,4 @@
-package com.example.habisin.ui.view
+package com.example.habisin.ui.view.dashboard
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.habisin.ui.component.ExpiringSoonCard
-import com.example.habisin.ui.component.SectionHeader
-import com.example.habisin.ui.component.StatCard
+import com.example.habisin.ui.view.component.ExpiringSoonCard
+import com.example.habisin.ui.view.component.SectionHeader
+import com.example.habisin.ui.view.component.StatCard
 import com.example.habisin.ui.theme.HabisinCoral
 import com.example.habisin.ui.theme.HabisinOlive
 import com.example.habisin.ui.theme.HabisinTeal

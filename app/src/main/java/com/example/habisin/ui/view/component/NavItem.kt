@@ -1,4 +1,4 @@
-package com.example.habisin.ui.component
+package com.example.habisin.ui.view.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

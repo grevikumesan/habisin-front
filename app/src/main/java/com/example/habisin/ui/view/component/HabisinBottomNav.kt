@@ -1,4 +1,4 @@
-package com.example.habisin.ui.component
+package com.example.habisin.ui.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

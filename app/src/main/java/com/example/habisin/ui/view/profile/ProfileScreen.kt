@@ -16,9 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.habisin.ui.component.GroupCard
-import com.example.habisin.ui.component.SectionTitle
-import com.example.habisin.ui.component.SettingRow
+import com.example.habisin.ui.view.component.GroupCard
+import com.example.habisin.ui.view.component.SectionTitle
+import com.example.habisin.ui.view.component.SettingRow
 import com.example.habisin.ui.theme.HabisinCoral
 import com.example.habisin.ui.theme.HabisinLime
 import com.example.habisin.ui.theme.HabisinPeach
