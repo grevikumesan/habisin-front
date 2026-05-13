@@ -36,14 +36,14 @@ interface FoodService {
 
     @Multipart
     @POST("foods/create")
-    suspend fun create(
+    suspend fun createWithImage(  // ← renamed
         @Header("Authorization") token: String,
         @Part("foodName") foodName: RequestBody,
         @Part("descriptionFood") descriptionFood: RequestBody,
         @Part("category") category: RequestBody,
         @Part("bestBefore") bestBefore: RequestBody,
         @Part("quantity") quantity: RequestBody,
-        @Part image: MultipartBody.Part? // Gambar masuk ke sini
+        @Part image: MultipartBody.Part?
     ): Response<FoodResponse>
 
     @DELETE("foods/remove/{id}")
