@@ -1,5 +1,6 @@
 package com.example.habisin.ui.router
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -225,6 +226,7 @@ fun AppRouter() {
 
                                 if(!hasHandledScan) {
                                     hasHandledScan = true
+                                    Log.e("Barcode Scan", "Captured barcode: $barcode")
                                     addProductViewModel.fetchProductByBarcode(barcode)
                                     navController.popBackStack()
                                 }
