@@ -44,6 +44,7 @@ fun AddProductScreen(
     viewModel: AddProductViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val barcodeState by viewModel.uiStateBarcode.collectAsState()
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -56,6 +57,16 @@ fun AddProductScreen(
         if (uiState.isSuccess) {
             viewModel.consumeSuccess() // Reset state
             onNavigateToFridge()       // Pindah ke layar Kulkas
+        }
+    }
+
+    LaunchedEffect(barcodeState) {
+        when(barcodeState) {
+            is AddProductScanUiStates.Success -> {
+                val name = (barcodeState as AddProductScanUiStates.Success).itemName
+                viewModel.onItemNameChange(name)
+            }
+            else -> Unit
         }
     }
     Scaffold(

@@ -56,6 +56,7 @@ class AppContainer(context: Context) {
         .addInterceptor(loggingInterceptor)
         .build()
 
+    // ── Main API (auth, dashboard, food, recipe, payment) ──
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("http://127.0.0.1:3000/api/")
         .client(okHttpClient)
@@ -74,6 +75,7 @@ class AppContainer(context: Context) {
     val recipeRepository: RecipeRepository = RecipeRepository(recipeService)
     val paymentRepository: PaymentRepository = PaymentRepository(paymentService)
 
+    // ── Barcode scan (OpenFoodFacts, no auth needed) ──
     private val openFoodRetrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://world.openfoodfacts.org/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -81,4 +83,5 @@ class AppContainer(context: Context) {
 
     private val openFoodService: OpenFoodService = openFoodRetrofit.create(OpenFoodService::class.java)
     val openFoodRepository: OpenFoodRepository = OpenFoodRepository(openFoodService)
+
 }

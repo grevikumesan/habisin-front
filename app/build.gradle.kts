@@ -36,20 +36,18 @@ android {
     }
     buildFeatures {
         compose = true
-//        buildConfig = true
     }
 }
 
 dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation(libs.androidx.appcompat)
-
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
-    // Compose BOM
+    // Compose BOM — controls all compose library versions together
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -61,7 +59,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.4")
 
     // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
     // Retrofit + OkHttp + Gson
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

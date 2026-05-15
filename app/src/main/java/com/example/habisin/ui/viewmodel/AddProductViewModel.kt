@@ -2,6 +2,7 @@ package com.example.habisin.ui.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.remote.container.AppContainer
@@ -93,9 +94,11 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
 
             openFoodRepository.getProduct(barcode)
                 .onSuccess { productName ->
+                    Log.d("BarcodeScan", "SUCCESS: Found product '$productName' for barcode: $barcode")
                     _uiStateBarcode.value = AddProductScanUiStates.Success(itemName = productName)
                 }
                 .onFailure { error ->
+                    Log.e("BarcodeScan", "FAILURE: Failed to fetch barcode: $barcode. Error: ${error.message}", error)
                     _uiStateBarcode.value = AddProductScanUiStates.Error(
                         error.message ?: "Failed to fetch product"
                     )
