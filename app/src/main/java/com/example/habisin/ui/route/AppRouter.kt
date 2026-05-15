@@ -7,6 +7,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -208,6 +212,8 @@ fun AppRouter() {
                     val addProductViewModel: AddProductViewModel =
                         viewModel(navController.previousBackStackEntry!!)
 
+                    var hasHandledScan by remember { mutableStateOf(false) }
+
                     CameraPermissionScreen(
                         onPermissionDenied = {
                             navController.popBackStack(Routes.ADD_PRODUCT, inclusive = false)
@@ -215,18 +221,20 @@ fun AppRouter() {
                     ) {
 
                         BarcodeScannerScreen(
-
                             onBarcodeScanned = { barcode ->
 
-                                addProductViewModel.fetchProductByBarcode(barcode)
-
-                                navController.navigate(Routes.ADD_PRODUCT) {
-                                    popUpTo(Routes.BARCODE_SCANNER) { inclusive = true }
+                                if(!hasHandledScan) {
+                                    hasHandledScan = true
+                                    addProductViewModel.fetchProductByBarcode(barcode)
+                                    navController.popBackStack()
                                 }
                             },
 
                             onBack = {
-                                navController.popBackStack()
+                                if (!hasHandledScan) {
+                                    hasHandledScan = true
+                                    navController.popBackStack()
+                                }
                             }
                         )
                     }
