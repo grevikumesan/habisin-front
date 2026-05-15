@@ -1,6 +1,10 @@
 package com.example.habisin.ui.view.scan
 
 import android.app.Application
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.habisin.ui.uistate.AddProductScanUiStates
+import coil.compose.AsyncImage
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,6 +45,12 @@ fun AddProductScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val barcodeState by viewModel.uiStateBarcode.collectAsState()
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        Log.d("Upload", "Picker returned uri=$uri")  // ← add this
+        viewModel.onImageSelected(uri)
+    }
     var showDatePicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState.isSuccess) {
@@ -82,24 +94,37 @@ fun AddProductScreen(
         ) {
             // 📷 Camera Section
             Card(
-                modifier = Modifier.fillMaxWidth().height(200.dp).clickable { },
+                modifier = Modifier.fillMaxWidth().height(200.dp).clickable {
+                    photoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EDD3)),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        Icons.Default.CameraAlt,
-                        contentDescription = null,
-                        tint = Color(0xFF4B5C28),
-                        modifier = Modifier.size(80.dp)
+                if (uiState.imageUri != null) {
+                    AsyncImage(
+                        model = uiState.imageUri,
+                        contentDescription = "Selected product image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text("Point at product", fontSize = 12.sp, color = Color.Gray)
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.CameraAlt,
+                            contentDescription = null,
+                            tint = Color(0xFF4B5C28),
+                            modifier = Modifier.size(80.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("Upload Photo from Gallery", fontSize = 12.sp, color = Color.Gray)
+                    }
                 }
             }
 
@@ -208,13 +233,21 @@ fun AddProductScreen(
                 }
             }
 
+            uiState.errorMessage?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
             //  Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { viewModel.addProduct(); onNavigateBack() },
+                    onClick = { viewModel.addProduct() },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
                     shape = RoundedCornerShape(50)

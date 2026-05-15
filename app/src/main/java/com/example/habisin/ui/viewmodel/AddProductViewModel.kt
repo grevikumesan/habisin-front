@@ -1,6 +1,7 @@
 package com.example.habisin.ui.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,15 +19,18 @@ import java.util.concurrent.TimeUnit
 class AddProductViewModel(app: Application) : AndroidViewModel(app) {
 
     private val container = AppContainer(app)
-
     private val openFoodRepository = container.openFoodRepository
 
     private val _uiState = MutableStateFlow(AddProductUiState())
-
     private val _uiStateBarcode = MutableStateFlow<AddProductScanUiStates>(AddProductScanUiStates.Idle)
-    val uiState: StateFlow<AddProductUiState> = _uiState.asStateFlow()
 
+    val uiState: StateFlow<AddProductUiState> = _uiState.asStateFlow()
     val uiStateBarcode: StateFlow<AddProductScanUiStates> = _uiStateBarcode.asStateFlow()
+
+    // Kept for when image upload is implemented
+    fun onImageSelected(uri: Uri?) {
+        _uiState.value = _uiState.value.copy(imageUri = uri)
+    }
 
     fun onItemNameChange(name: String) {
         _uiState.value = _uiState.value.copy(itemName = name, errorMessage = null)
@@ -37,16 +41,15 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun onBestBeforeDateChange(date: Date) {
-        val daysLeft = calculateDaysLeft(date)
         _uiState.value = _uiState.value.copy(
             bestBeforeDate = date,
-            daysLeft       = daysLeft
+            daysLeft       = calculateDaysLeft(date),
+            errorMessage   = null
         )
     }
 
-    fun onQuantityChange(quantity: Int) {
-        if (quantity < 1) return
-        _uiState.value = _uiState.value.copy(quantity = quantity)
+    fun onQuantityChange(qty: Int) {
+        if (qty >= 1) _uiState.value = _uiState.value.copy(quantity = qty)
     }
 
     fun addProduct() {
@@ -90,18 +93,12 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
             _uiStateBarcode.value = AddProductScanUiStates.Loading
 
             openFoodRepository.getProduct(barcode)
-                .onSuccess { result ->
-                    val productName = result
-                    Log.d("Test Scan", "SUCCESS: Found product '$productName' for barcode: $barcode")
-
-                    _uiStateBarcode.value =
-                        AddProductScanUiStates.Success(
-                            itemName = productName
-                        )
+                .onSuccess { productName ->
+                    Log.d("BarcodeScan", "SUCCESS: Found product '$productName' for barcode: $barcode")
+                    _uiStateBarcode.value = AddProductScanUiStates.Success(itemName = productName)
                 }
-
                 .onFailure { error ->
-                    Log.e("Failed to Scan", "FAILURE: Failed to fetch barcode: $barcode. Error: ${error.message}", error)
+                    Log.e("BarcodeScan", "FAILURE: Failed to fetch barcode: $barcode. Error: ${error.message}", error)
                     _uiStateBarcode.value = AddProductScanUiStates.Error(
                         error.message ?: "Failed to fetch product"
                     )

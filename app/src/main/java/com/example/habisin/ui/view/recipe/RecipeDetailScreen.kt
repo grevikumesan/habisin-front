@@ -1,189 +1,277 @@
-package com.example.habisin.ui.recipe
+package com.example.habisin.ui.view.recipe
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.example.habisin.ui.component.RecipeTabButton
-import com.example.habisin.ui.model.RecipeModel
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 
+private val HabisinDarkGreen = Color(0xFF1B4332)
+private val HabisinMidGreen = Color(0xFF2D6A4F)
+private val HabisinAccentGreen = Color(0xFFB7E4C7)
+private val HabisinLightCream = Color(0xFFFFF3D6)
+
+// Enum biar type-safe (lebih baik daripada String)
+private enum class DetailTab { Ingredients, Directions }
+
 @Composable
-fun RecipeDetailScreen(viewModel: RecipeViewModel) {
+fun RecipeDetailScreen(
+    recipeId: Int,
+    viewModel: RecipeViewModel,
+    onBack: () -> Unit
+) {
     val detailState by viewModel.detailUiState.collectAsState()
-    val recipe = detailState.recipe
 
-    // State internal untuk pindah-pindah tab
-    var activeTab by remember { mutableStateOf("Ingredients") }
+    // Fetch detail saat masuk screen (atau saat id berubah)
+    LaunchedEffect(recipeId) { viewModel.getResepById(recipeId) }
 
-    // Warna hijau yang sedikit lebih terang agar nyaman dibaca
-    val mediumGreen = Color(0xFF2D6A4F)
+    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-    recipe?.let { data ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            // 1. Photo Full Halaman (Background)
-            AsyncImage(
-                model = data.imageUrl,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+        // ── Background image placeholder (karena belum ada imageUrl) ──
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f)
+                .background(HabisinMidGreen),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("🍜", fontSize = 100.sp)
+        }
+
+        // ── Back button (top-left) ──
+        IconButton(
+            onClick = onBack,
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(8.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.4f))
+        ) {
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
             )
+        }
 
-            // 2. Card Hijau Pop-Up (Menutupi setengah layar lebih sedikit)
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.65f) // Mengatur tinggi pop-up
-                    .align(Alignment.BottomCenter),
-                color = mediumGreen,
-                shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-            ) {
-                Column(
+        when {
+            detailState.isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.White
+                )
+            }
+            detailState.errorMessage != null -> {
+                Text(
+                    detailState.errorMessage ?: "",
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            detailState.recipe != null -> {
+                val recipe = detailState.recipe!!
+
+                Surface(
                     modifier = Modifier
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.65f)
+                        .align(Alignment.BottomCenter),
+                    color = HabisinMidGreen,
+                    shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
                 ) {
-                    // Title (Position Left)
-                    Text(
-                        text = data.title,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Description (Position Left)
-                    Text(
-                        text = "Description",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFB7E4C7) // Hijau muda untuk sub-title
-                    )
-
-                    Text(
-                        text = data.description,
-                        fontSize = 14.sp,
-                        color = Color.White,
-                        modifier = Modifier.padding(top = 4.dp),
-                        lineHeight = 20.sp
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    // 3. Container Oval untuk 2 Button
-                    Surface(
-                        color = Color.White,
-                        shape = CircleShape,
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(55.dp)
+                            .padding(24.dp)
+                            .verticalScroll(rememberScrollState())
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(modifier = Modifier.weight(1f)) {
-                                RecipeTabButton(
-                                    label = "Ingredients",
-                                    isSelected = activeTab == "Ingredients",
-                                    onClick = { activeTab = "Ingredients" }
-                                )
-                            }
-                            Box(modifier = Modifier.weight(1f)) {
-                                RecipeTabButton(
-                                    label = "Directions",
-                                    isSelected = activeTab == "Directions",
-                                    onClick = { activeTab = "Directions" }
-                                )
+                        Text(
+                            text = recipe.resepName,
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.White
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+
+                        Text(
+                            text = "Description",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = HabisinAccentGreen
+                        )
+                        Text(
+                            text = recipe.resepDescription,
+                            fontSize = 14.sp,
+                            color = Color.White,
+                            lineHeight = 20.sp,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+
+                        Spacer(Modifier.height(20.dp))
+
+                        // ── Tab Switcher dengan pill indicator ──
+                        var activeTab by remember { mutableStateOf(DetailTab.Ingredients) }
+                        AnimatedTabSwitcher(
+                            activeTab = activeTab,
+                            onTabChange = { activeTab = it }
+                        )
+
+                        Spacer(Modifier.height(20.dp))
+
+                        // ── Content dengan animasi slide + fade ──
+                        AnimatedContent(
+                            targetState = activeTab,
+                            transitionSpec = {
+                                // Arah slide tergantung pindah ke kiri atau kanan
+                                val direction =
+                                    if (targetState.ordinal > initialState.ordinal) 1 else -1
+                                (slideInHorizontally(
+                                    animationSpec = tween(300)
+                                ) { it * direction } + fadeIn(tween(300)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            animationSpec = tween(300)
+                                        ) { -it * direction } + fadeOut(tween(300))
+                                    )
+                            },
+                            label = "tab-content",
+                            modifier = Modifier.animateContentSize()
+                        ) { tab ->
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                when (tab) {
+                                    DetailTab.Ingredients -> {
+                                        recipe.resepIngredients.forEachIndexed { idx, item ->
+                                            IngredientRow(index = idx + 1, text = item)
+                                        }
+                                    }
+                                    DetailTab.Directions -> {
+                                        recipe.resepDirections.forEachIndexed { idx, step ->
+                                            DirectionRow(index = idx + 1, text = step)
+                                        }
+                                    }
+                                }
                             }
                         }
+
+                        Spacer(Modifier.height(30.dp))
                     }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    // 4. Content Area (Berdasarkan tombol yang aktif)
-                    if (activeTab == "Ingredients") {
-                        data.ingredients.forEach { item ->
-                            Text(
-                                text = "• $item",
-                                color = Color.White,
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                fontSize = 15.sp
-                            )
-                        }
-                    } else {
-                        data.directions.forEachIndexed { index, step ->
-                            Row(modifier = Modifier.padding(vertical = 6.dp)) {
-                                Text(
-                                    text = "${index + 1}.",
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFFFF9C4)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = step, color = Color.White, fontSize = 15.sp)
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(30.dp))
                 }
             }
         }
     }
 }
 
-// Preview Preview ditampilkan data dummy
-@Preview(showBackground = true)
+// ── Pill-style tab switcher dengan animasi background ──
 @Composable
-fun RecipeDetailScreenPreview() {
-    val dummyRecipe = RecipeModel(
-        id = "1",
-        title = "Gudeg Jogja",
-        timeToCook = "120 mins",
-        difficulty = "Hard",
-        imageUrl = "https://example.com/gudeg.jpg",
-        description = "Gudeg adalah makanan khas Yogyakarta dan Jawa Tengah yang terbuat dari nangka muda yang dimasak dengan santan. Perlu waktu berjam-jam untuk membuat warna cokelat yang sempurna.",
-        ingredients = listOf("Nangka Muda", "Santan Kelapa", "Gula Jawa", "Daun Jati"),
-        directions = listOf("Rebus nangka muda", "Masukkan santan dan bumbu", "Tunggu hingga meresap", "Sajikan dengan krecek")
-    )
-
-
-    Box(modifier = Modifier.fillMaxSize().background(Color.LightGray)) {
-        Surface(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.7f).align(Alignment.BottomCenter),
-            color = Color(0xFF2D6A4F),
-            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-        ) {
-            Column(modifier = Modifier.padding(24.dp)) {
-                Text(dummyRecipe.title, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(10.dp))
-                Text("Description", color = Color(0xFFB7E4C7), fontWeight = FontWeight.Bold)
-                Text(dummyRecipe.description, color = Color.White, fontSize = 14.sp)
-                Spacer(modifier = Modifier.height(20.dp))
-                // Row button oval simulasi
-                Row(modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.White, CircleShape)) {
-                    Box(modifier = Modifier.weight(1f).fillMaxHeight().background(Color(0xFFFFF9C4), CircleShape), contentAlignment = Alignment.Center) {
-                        Text("Ingredients", color = Color(0xFF1B4332), fontWeight = FontWeight.Bold)
-                    }
-                    Box(modifier = Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        Text("Directions", color = Color.Black)
-                    }
+private fun AnimatedTabSwitcher(
+    activeTab: DetailTab,
+    onTabChange: (DetailTab) -> Unit
+) {
+    Surface(
+        color = Color.White,
+        shape = CircleShape,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            DetailTab.values().forEach { tab ->
+                val isSelected = activeTab == tab
+                // Animasi warna background pill saat berpindah
+                val animatedBg by animateColorAsState(
+                    targetValue = if (isSelected) HabisinAccentGreen else Color.Transparent,
+                    animationSpec = tween(300),
+                    label = "tab-bg"
+                )
+                val animatedTextColor by animateColorAsState(
+                    targetValue = if (isSelected) HabisinDarkGreen else Color.Gray,
+                    animationSpec = tween(300),
+                    label = "tab-text"
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(4.dp)
+                        .clip(CircleShape)
+                        .background(animatedBg)
+                        .clickable { onTabChange(tab) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = tab.name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = animatedTextColor
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun IngredientRow(index: Int, text: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 6.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(HabisinLightCream),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "$index",
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = HabisinDarkGreen
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+        Text(text = text, color = Color.White, fontSize = 14.sp)
+    }
+}
+
+@Composable
+private fun DirectionRow(index: Int, text: String) {
+    Row(modifier = Modifier.padding(vertical = 6.dp)) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(HabisinLightCream),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "$index",
+                fontWeight = FontWeight.Bold,
+                fontSize = 13.sp,
+                color = HabisinDarkGreen
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+        Text(text = text, color = Color.White, fontSize = 14.sp, lineHeight = 20.sp)
     }
 }

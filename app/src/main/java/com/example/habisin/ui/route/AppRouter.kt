@@ -6,60 +6,63 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.habisin.ui.component.HabisinBottomNav
-import com.example.habisin.ui.view.DashboardScreen
-import com.example.habisin.ui.view.LoginScreen
-import com.example.habisin.ui.view.RegisterScreen
+import androidx.navigation.navArgument
+import com.example.habisin.ui.view.component.HabisinBottomNav
+import com.example.habisin.ui.view.dashboard.DashboardScreen
+import com.example.habisin.ui.view.auth.LoginScreen
+import com.example.habisin.ui.view.auth.RegisterScreen
 import com.example.habisin.ui.view.fridge.MyFridgeScreen
 import com.example.habisin.ui.view.profile.ProfileScreen
 import com.example.habisin.ui.view.recipe.RecipeScreen
+import com.example.habisin.ui.view.recipe.RecipeDetailScreen
 import com.example.habisin.ui.view.scan.AddProductScreen
-import com.example.habisin.ui.recipe.RecipeDetailScreen
+import com.example.habisin.ui.view.scan.BarcodeScannerScreen
+import com.example.habisin.ui.view.scan.CameraPermissionScreen
 import com.example.habisin.ui.view.profile.AboutScreen
 import com.example.habisin.ui.view.profile.AppLanguageScreen
 import com.example.habisin.ui.view.profile.AppThemeScreen
 import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
-import com.example.habisin.ui.view.scan.BarcodeScannerScreen
-import com.example.habisin.ui.view.scan.*
+import com.example.habisin.ui.view.subscription.SubscriptionView
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
+import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 
 // ── Routes ──
 object Routes {
-    const val LOGIN          = "Login"
-    const val REGISTER       = "Register"
-    const val HOME           = "Home"
-    const val FRIDGE         = "Fridge"
-    const val RECIPE         = "Recipe"
-    const val PROFILE        = "Profile"
-    const val ADD_PRODUCT    = "AddProduct"
-    const val RECIPE_DETAIL  = "RecipeDetail/{recipeId}"
-    const val LANGUAGE       = "Language"
-    const val THEME          = "Theme"
-    const val NOTIFICATION   = "Notification"
-    const val FAQ            = "Faq"
-    const val ABOUT          = "About"
-
+    const val LOGIN           = "Login"
+    const val REGISTER        = "Register"
+    const val HOME            = "Home"
+    const val FRIDGE          = "Fridge"
+    const val RECIPE          = "Recipe"
+    const val PROFILE         = "Profile"
+    const val ADD_PRODUCT     = "AddProduct"
+    const val RECIPE_DETAIL   = "RecipeDetail/{recipeId}"
+    const val LANGUAGE        = "Language"
+    const val THEME           = "Theme"
+    const val NOTIFICATION    = "Notification"
+    const val FAQ             = "Faq"
+    const val ABOUT           = "About"
+    const val SUBSCRIPTION    = "Subscription"
     const val BARCODE_SCANNER = "BarcodeScanner"
 
-
-    fun recipeDetail(id: String) = "RecipeDetail/$id"
+    fun recipeDetail(id: Int) = "RecipeDetail/$id"
 }
 
 @Composable
@@ -76,6 +79,7 @@ fun AppRouter() {
         Routes.LOGIN,
         Routes.REGISTER,
         Routes.ADD_PRODUCT,
+        Routes.SUBSCRIPTION,
         Routes.LANGUAGE,
         Routes.THEME,
         Routes.NOTIFICATION,
@@ -84,7 +88,6 @@ fun AppRouter() {
         Routes.BARCODE_SCANNER
     )
 
-    // Untuk RecipeDetail (route dengan argument), match by prefix
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
@@ -157,17 +160,59 @@ fun AppRouter() {
                 }
 
                 composable(Routes.FRIDGE) {
+                    val fridgeViewModel: MyFridgeViewModel = viewModel()
+
+                    // Reload setiap kali destinasi ini di-enter ulang
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    LaunchedEffect(navBackStackEntry) {
+                        if (navBackStackEntry?.destination?.route == Routes.FRIDGE) {
+                            fridgeViewModel.loadProducts()
+                        }
+                    }
+
                     MyFridgeScreen(
+                        viewModel = fridgeViewModel,
                         onNavigateToAddProduct = { navController.navigate(Routes.ADD_PRODUCT) }
                     )
                 }
 
                 composable(Routes.RECIPE) {
-                    // TODO (teammate): inject RecipeViewModel & ambil list dari sana
+                    val recipeViewModel: RecipeViewModel = viewModel()
+                    val backStackEntry = navController.currentBackStackEntry
+
+                    // Subscribe ke Flow, otomatis re-fire setiap kali nilai berubah
+                    LaunchedEffect(backStackEntry) {
+                        backStackEntry?.savedStateHandle
+                            ?.getStateFlow("subscription_updated", false)
+                            ?.collect { updated ->
+                                Log.d("RECIPE_ROUTE", "Flag value: $updated")
+                                if (updated) {
+                                    Log.d("RECIPE_ROUTE", "Refetching recipes...")
+                                    recipeViewModel.loadRecipes()
+                                    backStackEntry.savedStateHandle["subscription_updated"] = false
+                                }
+                            }
+                    }
+
                     RecipeScreen(
-                        recipes       = emptyList(),
+                        viewModel = recipeViewModel,
                         onRecipeClick = { recipeId ->
                             navController.navigate(Routes.recipeDetail(recipeId))
+                        },
+                        onNavigateToSubscription = {
+                            navController.navigate(Routes.SUBSCRIPTION)
+                        }
+                    )
+                }
+
+                composable(Routes.SUBSCRIPTION) {
+                    SubscriptionView(
+                        onBack = {
+                            Log.d("SUB_BACK", "Setting flag & popping back stack")
+                            navController.previousBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("subscription_updated", true)
+                            navController.popBackStack()
                         }
                     )
                 }
@@ -193,26 +238,21 @@ fun AppRouter() {
                     AddProductScreen(
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToFridge = {
-                            navController.navigate(Routes.FRIDGE) {
-                                popUpTo(Routes.ADD_PRODUCT) { inclusive = true }
-                            }
+                            navController.popBackStack(Routes.FRIDGE, inclusive = false)
                         },
                         onNavigateToScanner = {
-                            navController.navigate(
-                                Routes.BARCODE_SCANNER
-                            )
+                            navController.navigate(Routes.BARCODE_SCANNER)
                         },
-
-
                         viewModel = addProductViewModel
                     )
                 }
 
                 composable(Routes.BARCODE_SCANNER) {
-
+                    // Share VM dengan AddProduct (previous entry)
                     val addProductViewModel: AddProductViewModel =
                         viewModel(navController.previousBackStackEntry!!)
 
+                    // Guard biar callback gak double-fire (scan + back race)
                     var hasHandledScan by remember { mutableStateOf(false) }
 
                     CameraPermissionScreen(
@@ -220,18 +260,17 @@ fun AppRouter() {
                             navController.popBackStack(Routes.ADD_PRODUCT, inclusive = false)
                         }
                     ) {
-
                         BarcodeScannerScreen(
                             onBarcodeScanned = { barcode ->
-
-                                if(!hasHandledScan) {
+                                if (!hasHandledScan) {
                                     hasHandledScan = true
-                                    Log.e("Barcode Scan", "Captured barcode: $barcode")
+                                    Log.d("Barcode Scan", "Captured barcode: $barcode")
                                     addProductViewModel.fetchProductByBarcode(barcode)
-                                    navController.popBackStack()
+                                    navController.navigate(Routes.ADD_PRODUCT) {
+                                        popUpTo(Routes.BARCODE_SCANNER) { inclusive = true }
+                                    }
                                 }
                             },
-
                             onBack = {
                                 if (!hasHandledScan) {
                                     hasHandledScan = true
@@ -242,11 +281,17 @@ fun AppRouter() {
                     }
                 }
 
-                composable(Routes.RECIPE_DETAIL) {
+                composable(
+                    route = Routes.RECIPE_DETAIL,
+                    arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: return@composable
                     val recipeViewModel: RecipeViewModel = viewModel()
-                    // TODO (teammate): panggil recipeViewModel.loadDetail(recipeId) di sini
-                    // val recipeId = it.arguments?.getString("recipeId")
-                    RecipeDetailScreen(viewModel = recipeViewModel)
+                    RecipeDetailScreen(
+                        recipeId = recipeId,
+                        viewModel = recipeViewModel,
+                        onBack = { navController.popBackStack() }
+                    )
                 }
 
                 // ── Profile sub-pages ──

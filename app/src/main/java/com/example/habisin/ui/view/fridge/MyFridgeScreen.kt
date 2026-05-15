@@ -15,11 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.util.getProductEmoji
@@ -154,7 +156,17 @@ fun ProductCardItem(product: ProductModel) {
                     .clip(RoundedCornerShape(10.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = getProductEmoji(product.name), fontSize = 24.sp)
+                if (!product.imageUrl.isNullOrEmpty()) {
+                    // Tampilkan gambar dari Backend menggunakan AsyncImage (Coil library)
+                    AsyncImage(
+                        model = product.imageUrl,
+                        contentDescription = "${product.name}",
+                        contentScale = ContentScale.Crop, // Agar gambar pas di dalam lingkaran
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(text = getProductEmoji(product.name), fontSize = 24.sp)
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -188,6 +200,7 @@ fun ProductCardItem(product: ProductModel) {
 
 fun getBadgeColor(days: Int): Pair<Color, Color> {
     return when {
+        days < 0 -> Pair(Color(0xFF8B0000), Color.White)
         days <= 2 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))   // peach + brown (urgent)
         else      -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))   // green (safe)
     }
