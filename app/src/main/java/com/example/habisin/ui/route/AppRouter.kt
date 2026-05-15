@@ -264,11 +264,9 @@ fun AppRouter() {
                             onBarcodeScanned = { barcode ->
                                 if (!hasHandledScan) {
                                     hasHandledScan = true
-                                    Log.d("Barcode Scan", "Captured barcode: $barcode")
+                                    Log.d("BarcodeScan", "Captured barcode: $barcode")
                                     addProductViewModel.fetchProductByBarcode(barcode)
-                                    navController.navigate(Routes.ADD_PRODUCT) {
-                                        popUpTo(Routes.BARCODE_SCANNER) { inclusive = true }
-                                    }
+                                    navController.popBackStack()
                                 }
                             },
                             onBack = {
