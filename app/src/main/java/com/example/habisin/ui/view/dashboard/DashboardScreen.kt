@@ -117,13 +117,6 @@ private fun DashboardContent(
                     fontSize = 13.sp
                 )
             }
-
-            Spacer(Modifier.width(16.dp))
-
-            ProfileAvatar(
-                imageUri = state.profilePictureUri,
-                onClick  = onProfileClick
-            )
         }
 
         Spacer(Modifier.height(20.dp))
@@ -168,27 +161,6 @@ private fun DashboardContent(
         }
 
         Spacer(Modifier.height(28.dp))
-
-        // ── Recipe of the Day (placeholder) ──
-        Text(
-            text       = "Recipe of the Day",
-            color      = HabisinTextDark,
-            fontSize   = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(12.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(140.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFFF2F2F2)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Coming soon", color = HabisinTextMuted, fontSize = 13.sp)
-        }
-
-        Spacer(Modifier.height(16.dp))
     }
 }
 

@@ -40,6 +40,7 @@ import com.example.habisin.ui.view.profile.FaqScreen
 import com.example.habisin.ui.view.profile.NotificationScreen
 import com.example.habisin.ui.view.subscription.SubscriptionView
 import com.example.habisin.ui.viewmodel.AddProductViewModel
+import com.example.habisin.ui.viewmodel.DashboardViewModel
 import com.example.habisin.ui.viewmodel.LoginViewModel
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
@@ -151,9 +152,18 @@ fun AppRouter() {
 
                 // ── Bottom nav screens ──
                 composable(Routes.HOME) {
+                    val dashboardViewModel: DashboardViewModel = viewModel()
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+                    LaunchedEffect(navBackStackEntry) {
+                        if (navBackStackEntry?.destination?.route == Routes.HOME) {
+                            dashboardViewModel.loadDashboard()
+                        }
+                    }
+
                     DashboardScreen(
                         onPlusClick    = { navController.navigate(Routes.ADD_PRODUCT) },
-                        onItemClick    = { /* TODO: navigate ke detail item */ },
+                        onItemClick    = { navController.navigate(Routes.FRIDGE) },
                         onViewAllClick = { navController.navigate(Routes.FRIDGE) },
                         onProfileClick = { navController.navigate(Routes.PROFILE) }
                     )
@@ -238,7 +248,12 @@ fun AppRouter() {
                     AddProductScreen(
                         onNavigateBack = { navController.popBackStack() },
                         onNavigateToFridge = {
-                            navController.popBackStack(Routes.FRIDGE, inclusive = false)
+                            navController.navigate(Routes.FRIDGE) {
+                                popUpTo(Routes.HOME) {
+                                    inclusive = false
+                                }
+                                launchSingleTop = true
+                            }
                         },
                         onNavigateToScanner = {
                             navController.navigate(Routes.BARCODE_SCANNER)
