@@ -149,7 +149,7 @@ fun ProductCardItem(product: ProductModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment     = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -171,12 +171,21 @@ fun ProductCardItem(product: ProductModel) {
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
-                Text(product.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            // 👉 KUNCI 1: Beri padding end dan potong teks kepanjangan dengan Ellipsis
+            Column(modifier = Modifier.padding(end = 8.dp)) {
+                Text(
+                    text = product.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    maxLines = 1, // Mencegah teks turun baris
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                )
                 Text(
                     text     = "${product.quantity} ${product.unit}",
                     fontSize = 12.sp,
-                    color    = Color.Gray
+                    color    = Color.Gray,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }
         }
@@ -184,6 +193,7 @@ fun ProductCardItem(product: ProductModel) {
         val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft)
         Box(
             modifier = Modifier
+                .wrapContentWidth()
                 .clip(RoundedCornerShape(50))
                 .background(badgeColor)
                 .padding(horizontal = 12.dp, vertical = 6.dp)
@@ -192,7 +202,9 @@ fun ProductCardItem(product: ProductModel) {
                 text = "${product.computedDaysLeft} DAY${if (product.computedDaysLeft > 1) "S" else ""}",
                 color      = textColor,
                 fontSize   = 12.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines   = 1,
+                softWrap   = false
             )
         }
     }
