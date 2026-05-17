@@ -189,15 +189,21 @@ fun AppRouter() {
                 composable(Routes.RECIPE) {
                     val recipeViewModel: RecipeViewModel = viewModel()
                     val backStackEntry = navController.currentBackStackEntry
+                    val generatedRecipeId by recipeViewModel.generatedRecipeId.collectAsState()  // ← add
 
-                    // Subscribe ke Flow, otomatis re-fire setiap kali nilai berubah
+                    // Navigate to detail when generate succeeds
+                    LaunchedEffect(generatedRecipeId) {                                           // ← add
+                        generatedRecipeId?.let { id ->
+                            navController.navigate(Routes.recipeDetail(id))
+                            recipeViewModel.clearGeneratedRecipeId()
+                        }
+                    }
+
                     LaunchedEffect(backStackEntry) {
                         backStackEntry?.savedStateHandle
                             ?.getStateFlow("subscription_updated", false)
                             ?.collect { updated ->
-                                Log.d("RECIPE_ROUTE", "Flag value: $updated")
                                 if (updated) {
-                                    Log.d("RECIPE_ROUTE", "Refetching recipes...")
                                     recipeViewModel.loadRecipes()
                                     backStackEntry.savedStateHandle["subscription_updated"] = false
                                 }
@@ -211,6 +217,9 @@ fun AppRouter() {
                         },
                         onNavigateToSubscription = {
                             navController.navigate(Routes.SUBSCRIPTION)
+                        },
+                        onGenerateClick = {
+                            recipeViewModel.generateResep(saveToHistory = true)
                         }
                     )
                 }

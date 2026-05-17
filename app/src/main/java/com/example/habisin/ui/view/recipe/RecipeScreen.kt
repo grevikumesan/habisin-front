@@ -43,11 +43,20 @@ fun RecipeScreen(
     viewModel: RecipeViewModel,
     onRecipeClick: (Int) -> Unit,
     onNavigateToSubscription: () -> Unit,
+    onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val categories = listOf("All", "Rice", "Chicken", "Egg", "Beef", "Vegetables", "Dessert")
+    val categories = listOf(
+        "All",
+        "Makanan Utama",
+        "Sayur & Nabati",
+        "Camilan & Jajanan Pasar",
+        "Minuman",
+        "Sambal & Bumbu Dasar",
+        "Lainnya"
+    )
     var selectedCategory by remember { mutableStateOf("All") }
 
     val scrollState = rememberScrollState()
@@ -64,10 +73,7 @@ fun RecipeScreen(
     val filteredRecipes = remember(uiState.recipes, uiState.searchQuery, selectedCategory) {
         uiState.recipes.filter { recipe ->
             val matchSearch = recipe.resepName.contains(uiState.searchQuery, ignoreCase = true)
-            val matchCategory = if (selectedCategory == "All") true else {
-                recipe.resepName.contains(selectedCategory, ignoreCase = true) ||
-                        recipe.resepIngredients.any { it.contains(selectedCategory, ignoreCase = true) }
-            }
+            val matchCategory = selectedCategory == "All" || recipe.resepCategory == selectedCategory
             matchSearch && matchCategory
         }
     }
@@ -75,70 +81,123 @@ fun RecipeScreen(
     val recommendedRecipes = filteredRecipes.take(3)
     val otherRecipes = filteredRecipes.drop(3).take(20)
 
-    Box(modifier = modifier.fillMaxSize().background(Color.White)) {
-        if (uiState.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = HabisinDarkGreen)
-        } else if (uiState.errorMessage != null) {
-            Text(uiState.errorMessage ?: "", modifier = Modifier.align(Alignment.Center), color = Color.Red)
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 100.dp)
-            ) {
-                Text("Recipe", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = HabisinDarkGreen)
-                Spacer(modifier = Modifier.height(16.dp))
+    val detailUiState by viewModel.detailUiState.collectAsState()  // ← add this
 
-                HabisinTextField(
-                    value = uiState.searchQuery,
-                    onValueChange = viewModel::onSearchQueryChange,
-                    placeholder = "Search Recipes",
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
-                    modifier = Modifier.fillMaxWidth()
+    ExtendedFloatingActionButton(
+        onClick = { if (!detailUiState.isGenerating) onGenerateClick() },  // ← guard
+        containerColor = if (detailUiState.isGenerating) Color.Gray else HabisinDarkGreen,
+        contentColor = Color.White,
+        icon = {
+            if (detailUiState.isGenerating) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+            } else {
+                Icon(Icons.Default.Restaurant, contentDescription = null)
+            }
+        },
+        text = {
+            Text(
+                if (detailUiState.isGenerating) "Generating..." else "Generate Resep",
+                fontWeight = FontWeight.Bold
+            )
+        }
+    )
 
-                // MENGGUNAKAN CategoryItem DARI FOLDER COMPONENT
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth()
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onGenerateClick,
+                containerColor = HabisinDarkGreen,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(categories) { category ->
-                        CategoryItem(
-                            label = category,
-                            isSelected = category == selectedCategory,
-                            modifier = Modifier.clickable { selectedCategory = category } // Ini yang bikin tombolnya bisa diklik!
-                        )
-                    }
+                    Icon(
+                        Icons.Default.Restaurant,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Text(
+                        "Generate Resep",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
+            }
+        },
+        containerColor = Color.White
+    ) { innerPadding ->
+        Box(modifier = modifier.fillMaxSize().background(Color.White).padding(innerPadding)) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = HabisinDarkGreen)
+            } else if (uiState.errorMessage != null) {
+                Text(uiState.errorMessage ?: "", modifier = Modifier.align(Alignment.Center), color = Color.Red)
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 100.dp)
+                ) {
+                    Text("Recipe", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = HabisinDarkGreen)
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                if (recommendedRecipes.isNotEmpty()) {
-                    Text("Recommended", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
-                    Spacer(modifier = Modifier.height(12.dp))
+                    HabisinTextField(
+                        value = uiState.searchQuery,
+                        onValueChange = viewModel::onSearchQueryChange,
+                        placeholder = "Search Recipes",
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // MENGGUNAKAN CategoryItem DARI FOLDER COMPONENT
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        items(recommendedRecipes) { recipe ->
-                            RecommendedRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                        items(categories) { category ->
+                            CategoryItem(
+                                label = category,
+                                isSelected = category == selectedCategory,
+                                modifier = Modifier.clickable { selectedCategory = category } // Ini yang bikin tombolnya bisa diklik!
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(24.dp))
-                }
 
-                if (otherRecipes.isNotEmpty()) {
-                    Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Box(modifier = Modifier.height(260.dp)) {
-                        LazyHorizontalGrid(
-                            rows = GridCells.Fixed(2),
+                    if (recommendedRecipes.isNotEmpty()) {
+                        Text("Recommended", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            items(otherRecipes) { recipe ->
-                                OtherRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                            items(recommendedRecipes) { recipe ->
+                                RecommendedRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+
+                    if (otherRecipes.isNotEmpty()) {
+                        Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Box(modifier = Modifier.height(260.dp)) {
+                            LazyHorizontalGrid(
+                                rows = GridCells.Fixed(2),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                items(otherRecipes) { recipe ->
+                                    OtherRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                                }
                             }
                         }
                     }

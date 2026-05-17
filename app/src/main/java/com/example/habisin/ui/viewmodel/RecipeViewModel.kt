@@ -23,7 +23,13 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
     private val _detailUiState = MutableStateFlow(RecipeDetailUiState())
     val detailUiState: StateFlow<RecipeDetailUiState> = _detailUiState.asStateFlow()
 
-    // ─── GET ALL ───────────────────────────────────────────
+    private val _generatedRecipeId = MutableStateFlow<Int?>(null)
+    val generatedRecipeId: StateFlow<Int?> = _generatedRecipeId.asStateFlow()
+
+    fun clearGeneratedRecipeId() {
+        _generatedRecipeId.value = null
+    }
+
 // ─── GET ALL ───────────────────────────────────────────
     fun loadRecipes() {
         viewModelScope.launch {
@@ -36,6 +42,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             id = it.id,
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
+                            resepCategory = it.resepCategory,
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -84,6 +91,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             id = it.id,
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
+                            resepCategory = it.resepCategory,
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -111,16 +119,20 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 val response = repository.generateResep(saveToHistory)
                 if (response.isSuccessful) {
-                    val data = response.body()?.aiResponse
+                    val body = response.body()
+                    val data = body?.saved ?: body?.aiResponse  // ← prefer saved (has real DB id)
+
                     val recipe = data?.let {
                         RecipeModel(
                             id = it.id,
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
+                            resepCategory = it.resepCategory,
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
                     }
+                    _generatedRecipeId.value = recipe?.id
                     _detailUiState.value = _detailUiState.value.copy(isGenerating = false, recipe = recipe)
                 } else {
                     _detailUiState.value = _detailUiState.value.copy(
