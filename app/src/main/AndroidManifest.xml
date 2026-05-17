@@ -39,6 +39,5 @@
                 android:name="autoStoreLocales"
                 android:value="false" />
         </service>
-    </application
-       >
+    </application>
 </manifest>
