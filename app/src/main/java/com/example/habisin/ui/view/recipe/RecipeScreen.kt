@@ -5,12 +5,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,154 +24,121 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+// IMPORT KOMPONEN BUATANMU:
 import com.example.habisin.ui.view.component.HabisinTextField
+import com.example.habisin.ui.view.component.CategoryItem
 import com.example.habisin.ui.model.RecipeModel
 import com.example.habisin.ui.viewmodel.RecipeViewModel
 
 private val HabisinDarkGreen = Color(0xFF1B4332)
 private val HabisinMidGreen = Color(0xFF2D6A4F)
-private val HabisinLightGreen = Color(0xFFD8F3DC)
+private val HabisinLightCream = Color(0xFFFFFDF6)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecipeScreen(
     viewModel: RecipeViewModel,
     onRecipeClick: (Int) -> Unit,
-    onNavigateToSubscription: () -> Unit
+    onNavigateToSubscription: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Load saat pertama dibuka
-    LaunchedEffect(Unit) { viewModel.loadRecipes() }
+    val categories = listOf("All", "Rice", "Chicken", "Egg", "Beef", "Vegetables", "Dessert")
+    var selectedCategory by remember { mutableStateOf("All") }
+
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadRecipes()
+    }
 
     if (uiState.needsSubscription) {
         SubscriptionRequiredCard(onSubscribe = onNavigateToSubscription)
         return
     }
 
-    // Filter berdasarkan search query (client-side filtering)
-    val filteredRecipes = remember(uiState.recipes, uiState.searchQuery) {
-        if (uiState.searchQuery.isBlank()) uiState.recipes
-        else uiState.recipes.filter {
-            it.resepName.contains(uiState.searchQuery, ignoreCase = true)
+    val filteredRecipes = remember(uiState.recipes, uiState.searchQuery, selectedCategory) {
+        uiState.recipes.filter { recipe ->
+            val matchSearch = recipe.resepName.contains(uiState.searchQuery, ignoreCase = true)
+            val matchCategory = if (selectedCategory == "All") true else {
+                recipe.resepName.contains(selectedCategory, ignoreCase = true) ||
+                        recipe.resepIngredients.any { it.contains(selectedCategory, ignoreCase = true) }
+            }
+            matchSearch && matchCategory
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        when {
-            uiState.isLoading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = HabisinDarkGreen
+    val recommendedRecipes = filteredRecipes.take(3)
+    val otherRecipes = filteredRecipes.drop(3).take(20)
+
+    Box(modifier = modifier.fillMaxSize().background(Color.White)) {
+        if (uiState.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = HabisinDarkGreen)
+        } else if (uiState.errorMessage != null) {
+            Text(uiState.errorMessage ?: "", modifier = Modifier.align(Alignment.Center), color = Color.Red)
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 100.dp)
+            ) {
+                Text("Recipe", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = HabisinDarkGreen)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                HabisinTextField(
+                    value = uiState.searchQuery,
+                    onValueChange = viewModel::onSearchQueryChange,
+                    placeholder = "Search Recipes",
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+                    modifier = Modifier.fillMaxWidth()
                 )
-            }
-            uiState.errorMessage != null -> {
-                Text(
-                    text = uiState.errorMessage ?: "",
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.Red
-                )
-            }
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        start = 16.dp, end = 16.dp, top = 24.dp, bottom = 100.dp
-                    ),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // MENGGUNAKAN CategoryItem DARI FOLDER COMPONENT
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    // ── Title "Recipe" (full width) ──
-                    item(span = { GridItemSpan(2) }) {
-                        Text(
-                            text = "Recipe",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = HabisinDarkGreen
+                    items(categories) { category ->
+                        CategoryItem(
+                            label = category,
+                            isSelected = category == selectedCategory,
+                            modifier = Modifier.clickable { selectedCategory = category } // Ini yang bikin tombolnya bisa diklik!
                         )
                     }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
 
-                    // ── Search Bar (full width) ──
-                    item(span = { GridItemSpan(2) }) {
-                        HabisinTextField(
-                            value = uiState.searchQuery,
-                            onValueChange = viewModel::onSearchQueryChange,
-                            placeholder = "Search Recipes",
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Default.Search,
-                                    contentDescription = null,
-                                    tint = Color.Gray
-                                )
-                            }
-                        )
-                    }
-
-                    // ── Section: Recommended (full width) ──
-                    if (filteredRecipes.isNotEmpty()) {
-                        item(span = { GridItemSpan(2) }) {
-                            Column {
-                                Text(
-                                    text = "Recommended",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = HabisinDarkGreen,
-                                    modifier = Modifier.padding(top = 8.dp, bottom = 12.dp)
-                                )
-                                LazyRow(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
-                                    items(filteredRecipes.take(5).size) { idx ->
-                                        val recipe = filteredRecipes[idx]
-                                        RecommendedCard(
-                                            recipe = recipe,
-                                            onClick = { onRecipeClick(recipe.id) }
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        // ── Section: All Recipes header (full width) ──
-                        item(span = { GridItemSpan(2) }) {
-                            Text(
-                                text = "All Recipes",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = HabisinDarkGreen,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp)
-                            )
+                if (recommendedRecipes.isNotEmpty()) {
+                    Text("Recommended", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(recommendedRecipes) { recipe ->
+                            RecommendedRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
                         }
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
 
-                    // ── Grid items (2 columns) ──
-                    items(filteredRecipes.size) { idx ->
-                        val recipe = filteredRecipes[idx]
-                        GridRecipeCard(
-                            recipe = recipe,
-                            onClick = { onRecipeClick(recipe.id) }
-                        )
-                    }
-
-                    if (filteredRecipes.isEmpty() && !uiState.isLoading) {
-                        item(span = { GridItemSpan(2) }) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    "Belum ada resep",
-                                    color = Color.Gray,
-                                    fontSize = 14.sp
-                                )
+                if (otherRecipes.isNotEmpty()) {
+                    Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Box(modifier = Modifier.height(260.dp)) {
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(otherRecipes) { recipe ->
+                                OtherRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
                             }
                         }
                     }
@@ -176,125 +148,69 @@ fun RecipeScreen(
     }
 }
 
-// ── Card horizontal (Recommended) ──
+// ─── PRIVATE COMPOSABLE UNTUK CARD (Langsung taruh di sini saja) ───────────
+
 @Composable
-private fun RecommendedCard(
-    recipe: RecipeModel,
-    onClick: () -> Unit
-) {
+private fun RecommendedRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
-            .width(220.dp)
-            .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = HabisinLightGreen),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        colors = CardDefaults.cardColors(containerColor = HabisinLightCream),
+        modifier = Modifier.width(260.dp).height(140.dp).clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            // Placeholder image area (karena backend belum kasih imageUrl)
+        Row(modifier = Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(110.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(HabisinMidGreen.copy(alpha = 0.2f)),
+                modifier = Modifier.size(70.dp).clip(CircleShape).background(HabisinDarkGreen),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🍽️", fontSize = 40.sp)
+                Icon(Icons.Default.Restaurant, contentDescription = null, tint = Color.White)
             }
-            Spacer(Modifier.height(10.dp))
-            Text(
-                recipe.resepName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = HabisinDarkGreen,
-                maxLines = 1
-            )
-            Text(
-                recipe.resepDescription,
-                fontSize = 12.sp,
-                color = Color.Gray,
-                maxLines = 2,
-                modifier = Modifier.padding(top = 2.dp)
-            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = HabisinDarkGreen, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(recipe.resepDescription, fontSize = 12.sp, color = Color.Gray, maxLines = 3, overflow = TextOverflow.Ellipsis)
+            }
         }
     }
 }
 
-// ── Card grid (All Recipes) ──
 @Composable
-private fun GridRecipeCard(
-    recipe: RecipeModel,
-    onClick: () -> Unit
-) {
+private fun OtherRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
+        modifier = Modifier.width(220.dp).height(110.dp).clickable { onClick() }
     ) {
-        Column(modifier = Modifier.padding(10.dp)) {
+        Row(modifier = Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(HabisinLightGreen),
+                modifier = Modifier.size(50.dp).clip(RoundedCornerShape(8.dp)).background(HabisinMidGreen),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🍲", fontSize = 36.sp)
+                Icon(Icons.Default.Restaurant, contentDescription = null, tint = Color.White)
             }
-            Spacer(Modifier.height(8.dp))
-            Text(
-                recipe.resepName,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = HabisinDarkGreen,
-                maxLines = 1
-            )
-            Text(
-                recipe.resepDescription,
-                fontSize = 11.sp,
-                color = Color.Gray,
-                maxLines = 2,
-                modifier = Modifier.padding(top = 2.dp)
-            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = HabisinDarkGreen, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(recipe.resepDescription, fontSize = 11.sp, color = Color.DarkGray, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            }
         }
     }
 }
 
 @Composable
 private fun SubscriptionRequiredCard(onSubscribe: () -> Unit) {
+    // (Isi SubscriptionRequiredCard disamakan dengan sebelumnya)
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(32.dp),
+        modifier = Modifier.fillMaxSize().background(Color.White).padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                Icons.Default.Lock,
-                contentDescription = null,
-                tint = Color(0xFF1B4332),
-                modifier = Modifier.size(64.dp)
-            )
+            Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF1B4332), modifier = Modifier.size(64.dp))
             Spacer(Modifier.height(16.dp))
-            Text(
-                "Fitur Premium",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF1B4332)
-            )
+            Text("Fitur Premium", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = Color(0xFF1B4332))
             Spacer(Modifier.height(8.dp))
-            Text(
-                "Berlangganan untuk mengakses ribuan resep AI",
-                fontSize = 14.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Center
-            )
+            Text("Berlangganan untuk mengakses ribuan resep AI", fontSize = 14.sp, color = Color.Gray, textAlign = TextAlign.Center)
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = onSubscribe,
@@ -302,7 +218,7 @@ private fun SubscriptionRequiredCard(onSubscribe: () -> Unit) {
                 shape = RoundedCornerShape(28.dp),
                 modifier = Modifier.fillMaxWidth().height(52.dp)
             ) {
-                Text("Subscribe Sekarang", fontWeight = FontWeight.Bold)
+                Text("Langganan Sekarang", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
     }

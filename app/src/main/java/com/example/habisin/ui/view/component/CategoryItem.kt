@@ -17,10 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CategoryItem(label: String, isSelected: Boolean = false) {
+fun CategoryItem(
+    label: String,
+    isSelected: Boolean = false,
+    modifier: Modifier = Modifier // Tambahkan modifier ini
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = modifier.padding(horizontal = 8.dp) // Pasang modifier di sini
     ) {
         Box(
             modifier = Modifier
@@ -29,7 +33,6 @@ fun CategoryItem(label: String, isSelected: Boolean = false) {
                 .background(if (isSelected) Color(0xFFB7E4C7) else Color(0xFFF0F0F0)),
             contentAlignment = Alignment.Center
         ) {
-            // Icon Sendok Garpu sesuai permintaan
             Icon(
                 imageVector = Icons.Default.Restaurant,
                 contentDescription = label,
@@ -41,8 +44,8 @@ fun CategoryItem(label: String, isSelected: Boolean = false) {
         Text(
             text = label,
             fontSize = 12.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) Color(0xFF1B4332) else Color.Black
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            color = if (isSelected) Color(0xFF1B4332) else Color.Gray
         )
     }
 }

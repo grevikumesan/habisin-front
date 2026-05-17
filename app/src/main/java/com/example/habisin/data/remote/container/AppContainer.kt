@@ -58,7 +58,7 @@ class AppContainer(context: Context) {
 
     // ── Main API (auth, dashboard, food, recipe, payment) ──
     private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:3000/api/")
+        .baseUrl("http://192.168.1.92:3000/api/")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
