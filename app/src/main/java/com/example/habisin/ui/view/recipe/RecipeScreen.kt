@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-// IMPORT KOMPONEN BUATANMU:
 import com.example.habisin.ui.view.component.HabisinTextField
 import com.example.habisin.ui.view.component.CategoryItem
 import com.example.habisin.ui.model.RecipeModel
@@ -46,10 +45,7 @@ fun RecipeScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    val categories = listOf("All", "Rice", "Chicken", "Egg", "Beef", "Vegetables", "Dessert")
     var selectedCategory by remember { mutableStateOf("All") }
-
     val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
@@ -61,12 +57,25 @@ fun RecipeScreen(
         return
     }
 
+    // ─── LOGIKA DINAMIS KATEGORI ───
+    // Kita ekstrak kata pertama dari setiap nama resep yang dikirim API.
+    // Contoh API kirim "Ayam Goreng", kita ambil "Ayam" jadi kategori.
+    val dynamicCategories = remember(uiState.recipes) {
+        val extractedCategories = uiState.recipes.map { recipe ->
+            recipe.resepName.split(" ").firstOrNull() ?: "Lainnya"
+        }.distinct().take(10) // Ambil maksimal 10 kategori unik
+
+        listOf("All") + extractedCategories
+    }
+
+    // ─── LOGIKA FILTER DINAMIS ───
     val filteredRecipes = remember(uiState.recipes, uiState.searchQuery, selectedCategory) {
         uiState.recipes.filter { recipe ->
             val matchSearch = recipe.resepName.contains(uiState.searchQuery, ignoreCase = true)
-            val matchCategory = if (selectedCategory == "All") true else {
-                recipe.resepName.contains(selectedCategory, ignoreCase = true) ||
-                        recipe.resepIngredients.any { it.contains(selectedCategory, ignoreCase = true) }
+            val matchCategory = if (selectedCategory == "All") {
+                true
+            } else {
+                recipe.resepName.startsWith(selectedCategory, ignoreCase = true)
             }
             matchSearch && matchCategory
         }
@@ -99,20 +108,21 @@ fun RecipeScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // MENGGUNAKAN CategoryItem DARI FOLDER COMPONENT
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    items(categories) { category ->
-                        CategoryItem(
-                            label = category,
-                            isSelected = category == selectedCategory,
-                            modifier = Modifier.clickable { selectedCategory = category } // Ini yang bikin tombolnya bisa diklik!
-                        )
+                // SCROLL BAR KATEGORI DINAMIS
+                if (dynamicCategories.size > 1) {
+                    LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        items(dynamicCategories) { category ->
+                            CategoryItem(
+                                label = category,
+                                isSelected = category == selectedCategory,
+                                modifier = Modifier.clickable { selectedCategory = category }
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
-                Spacer(modifier = Modifier.height(24.dp))
 
+                // RECOMMENDED
                 if (recommendedRecipes.isNotEmpty()) {
                     Text("Recommended", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
                     Spacer(modifier = Modifier.height(12.dp))
@@ -127,6 +137,7 @@ fun RecipeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
+                // OTHERS
                 if (otherRecipes.isNotEmpty()) {
                     Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = HabisinDarkGreen)
                     Spacer(modifier = Modifier.height(12.dp))
@@ -148,7 +159,7 @@ fun RecipeScreen(
     }
 }
 
-// ─── PRIVATE COMPOSABLE UNTUK CARD (Langsung taruh di sini saja) ───────────
+// ─── CARD COMPONENTS (Tanpa Gambar Asli, Memakai Ikon Default) ───
 
 @Composable
 private fun RecommendedRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
@@ -158,14 +169,18 @@ private fun RecommendedRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
         modifier = Modifier.width(260.dp).height(140.dp).clickable { onClick() }
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            // PLACEHOLDER GAMBAR KARENA BACKEND TIDAK PUNYA IMAGE URL
             Box(
-                modifier = Modifier.size(70.dp).clip(CircleShape).background(HabisinDarkGreen),
+                modifier = Modifier
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(HabisinMidGreen), // Warna hijau gelap sebagai pengganti gambar
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Restaurant, contentDescription = null, tint = Color.White)
+                Icon(Icons.Default.Restaurant, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = HabisinDarkGreen, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(recipe.resepDescription, fontSize = 12.sp, color = Color.Gray, maxLines = 3, overflow = TextOverflow.Ellipsis)
@@ -179,17 +194,21 @@ private fun OtherRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5)),
-        modifier = Modifier.width(220.dp).height(110.dp).clickable { onClick() }
+        modifier = Modifier.width(240.dp).height(110.dp).clickable { onClick() }
     ) {
         Row(modifier = Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            // PLACEHOLDER GAMBAR
             Box(
-                modifier = Modifier.size(50.dp).clip(RoundedCornerShape(8.dp)).background(HabisinMidGreen),
+                modifier = Modifier
+                    .size(65.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.LightGray),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Default.Restaurant, contentDescription = null, tint = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = HabisinDarkGreen, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(recipe.resepDescription, fontSize = 11.sp, color = Color.DarkGray, maxLines = 2, overflow = TextOverflow.Ellipsis)
