@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.habisin.R
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -105,14 +107,14 @@ private fun DashboardContent(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text       = "Welcome, ${state.username}",
+                    text       = stringResource(R.string.dashboard_welcome, state.username),
                     color      = MaterialTheme.colorScheme.onBackground,
                     fontSize   = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text     = "It's time to empty your fridge!",
+                    text     = stringResource(R.string.dashboard_subtitle),
                     color    = HabisinTheme.colors.textMuted,
                     fontSize = 13.sp
                 )
@@ -130,8 +132,8 @@ private fun DashboardContent(
 
         // ── At a Glance ──
         SectionHeader(
-            title         = "At a Glance",
-            actionLabel   = "View All",
+            title         = stringResource(R.string.dashboard_at_a_glance),
+            actionLabel   = stringResource(R.string.dashboard_view_all),
             onActionClick = onViewAllClick
         )
 
@@ -147,7 +149,7 @@ private fun DashboardContent(
                 iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.totalItems.toString().padStart(2, '0').take(2)
                     .let { if (state.totalItems < 10) state.totalItems.toString() else it },
-                label          = "TOTAL ITEMS",
+                label          = stringResource(R.string.dashboard_total_items),
                 modifier       = Modifier.weight(1f)
             )
             StatCard(
@@ -155,7 +157,7 @@ private fun DashboardContent(
                 iconTint       = MaterialTheme.colorScheme.onSurfaceVariant,
                 iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.expiringTotal.toString().padStart(2, '0'),    // ← ganti
-                label          = "EXPIRING",
+                label          = stringResource(R.string.dashboard_expiring),
                 modifier       = Modifier.weight(1f)
             )
         }

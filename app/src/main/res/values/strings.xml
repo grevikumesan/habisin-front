@@ -58,4 +58,34 @@
     <string name="enter_password">Enter password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="re_enter_password">Re-enter password</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Welcome, %1$s</string>
+    <string name="dashboard_subtitle">It\'s time to empty your fridge!</string>
+    <string name="dashboard_attention">ATTENTION REQUIRED</string>
+    <string name="dashboard_expiring_count">%1$d items expiring soon</string>
+    <string name="dashboard_nothing_expiring">Nothing expiring soon</string>
+    <string name="dashboard_no_food">No food yet, try adding some</string>
+    <string name="dashboard_at_a_glance">At a Glance</string>
+    <string name="dashboard_view_all">View All</string>
+    <string name="dashboard_total_items">TOTAL ITEMS</string>
+    <string name="dashboard_expiring">EXPIRING</string>
+
+    <!-- Fridge -->
+    <string name="fridge_title">My Fridge</string>
+    <string name="fridge_items_available">%1$d items available</string>
+    <string name="fridge_search">Search Ingredients</string>
+    <string name="fridge_no_food">No food yet, try adding some</string>
+    <string name="filter_all">All</string>
+    <string name="filter_expiring">Expiring</string>
+    <string name="filter_produce">Produce</string>
+    <string name="filter_dairy">Dairy</string>
+    <string name="filter_meat">Meat</string>
+    <string name="filter_other">Other</string>
+
+    <!-- Pro -->
+    <string name="profile_upgrade_pro">Upgrade To Pro</string>
+    <string name="profile_upgrade_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
+    <string name="profile_pro_active">Habisin PRO</string>
+    <string name="profile_pro_active_subtitle">Langganan aktif — semua fitur terbuka</string>
 </resources>

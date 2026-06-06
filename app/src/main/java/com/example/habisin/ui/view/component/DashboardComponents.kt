@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
+import com.example.habisin.R
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.theme.HabisinCoral
 import com.example.habisin.ui.theme.HabisinPeach
@@ -41,7 +43,7 @@ fun ExpiringSoonCard(
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text       = "ATTENTION REQUIRED",
+                text       = stringResource(R.string.dashboard_attention),
                 color      = HabisinTheme.colors.onAttentionCard.copy(alpha = 0.6f),
                 fontSize   = 11.sp,
                 fontWeight = FontWeight.Bold,
@@ -49,8 +51,8 @@ fun ExpiringSoonCard(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text       = if (items.isEmpty()) "Nothing expiring soon"
-                else "${items.size} items expiring soon",
+                text       = if (items.isEmpty()) stringResource(R.string.dashboard_nothing_expiring)
+                else stringResource(R.string.dashboard_expiring_count, items.size),
                 color      = if (items.isEmpty()) HabisinTheme.colors.onAttentionCard
                              else HabisinTheme.colors.action,   // coral count = the urgency accent
                 fontSize   = 22.sp,
@@ -72,7 +74,7 @@ fun ExpiringSoonCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text       = "No food yet, try adding some",
+                    text       = stringResource(R.string.dashboard_no_food),
                     color      = HabisinTheme.colors.onAttentionCard,
                     fontSize   = 14.sp,
                     fontWeight = FontWeight.Medium

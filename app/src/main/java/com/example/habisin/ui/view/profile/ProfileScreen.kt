@@ -15,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.habisin.R
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,7 +50,7 @@ fun ProfileScreen(
             .padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
         // ── Account ──
-        SectionTitle("Account")
+        SectionTitle(stringResource(R.string.profile_account))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,24 +82,24 @@ fun ProfileScreen(
         Spacer(Modifier.height(28.dp))
 
         // ── Preferences ──
-        SectionTitle("Preferences")
+        SectionTitle(stringResource(R.string.profile_preferences))
         GroupCard(background = HabisinTheme.colors.limeCard) {
             SettingRow(
                 icon     = Icons.Default.Language,
-                title    = "App Language",
-                subtitle = "Select the language of the app",
+                title    = stringResource(R.string.profile_app_language),
+                subtitle = stringResource(R.string.profile_app_language_subtitle),
                 onClick  = onNavigateToLanguage
             )
             SettingRow(
                 icon     = Icons.Default.Palette,
-                title    = "App Theme",
-                subtitle = "Adjust the app theme",
+                title    = stringResource(R.string.profile_app_theme),
+                subtitle = stringResource(R.string.profile_app_theme_subtitle),
                 onClick  = onNavigateToTheme
             )
             SettingRow(
                 icon     = Icons.Default.Notifications,
-                title    = "Notification",
-                subtitle = "Change notification system",
+                title    = stringResource(R.string.profile_notification),
+                subtitle = stringResource(R.string.profile_notification_subtitle),
                 onClick  = onNavigateToNotification
             )
         }
@@ -105,16 +107,16 @@ fun ProfileScreen(
         Spacer(Modifier.height(28.dp))
 
         // ── Help ──
-        SectionTitle("Help")
+        SectionTitle(stringResource(R.string.profile_help))
         GroupCard(background = HabisinTheme.colors.limeCard) {
             SettingRow(
                 icon    = Icons.AutoMirrored.Filled.HelpOutline,
-                title   = "FAQ",
+                title   = stringResource(R.string.profile_faq),
                 onClick = onNavigateToFaq
             )
             SettingRow(
                 icon    = Icons.Default.Info,
-                title   = "About Habisin!",
+                title   = stringResource(R.string.profile_about),
                 onClick = onNavigateToAbout
             )
         }
@@ -133,7 +135,7 @@ fun ProfileScreen(
                 contentColor   = HabisinTheme.colors.onAction
             )
         ) {
-            Text("LOGOUT", fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp)
+            Text(stringResource(R.string.profile_logout), fontWeight = FontWeight.Bold, fontSize = 16.sp, letterSpacing = 1.sp)
         }
 
         Spacer(Modifier.height(24.dp))
@@ -168,14 +170,13 @@ private fun UpgradeToProCard(isPro: Boolean, onClick: () -> Unit) {
         Spacer(Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                if (isPro) "Habisin PRO" else "Upgrade To Pro",
+                stringResource(if (isPro) R.string.profile_pro_active else R.string.profile_upgrade_pro),
                 color = HabisinTheme.colors.onLimeCard,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
             Text(
-                if (isPro) "Langganan aktif — semua fitur terbuka"
-                else "Buka semua resep eksklusif & masak tanpa batas",
+                stringResource(if (isPro) R.string.profile_pro_active_subtitle else R.string.profile_upgrade_subtitle),
                 color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.75f),
                 fontSize = 12.sp
             )

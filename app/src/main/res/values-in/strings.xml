@@ -40,4 +40,54 @@
     <!-- Language -->
     <string name="lang_english">English</string>
     <string name="lang_indonesian">Bahasa Indonesia</string>
+
+    <!-- Auth (lowercase keys the Login/Register screens actually use) -->
+    <string name="forgot_password">Lupa kata sandi?</string>
+    <string name="password">Kata Sandi</string>
+    <string name="login">Masuk</string>
+    <string name="hide_password">Sembunyikan kata sandi</string>
+    <string name="show_password">Tampilkan kata sandi</string>
+    <string name="dont_have_an_account">Belum punya akun?</string>
+    <string name="sign_up_now">Daftar sekarang</string>
+    <string name="sign_in">Masuk</string>
+    <string name="sign_up">Daftar</string>
+    <string name="already_have_an_account">Sudah punya akun?</string>
+    <string name="log_in">Masuk</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="enter_username">Masukkan nama pengguna</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Masukkan Email</string>
+    <string name="enter_password">Masukkan kata sandi</string>
+    <string name="confirm_password">Konfirmasi kata sandi</string>
+    <string name="re_enter_password">Masukkan ulang kata sandi</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Halo, %1$s</string>
+    <string name="dashboard_subtitle">Saatnya habiskan isi kulkasmu!</string>
+    <string name="dashboard_attention">PERLU PERHATIAN</string>
+    <string name="dashboard_expiring_count">%1$d bahan segera kedaluwarsa</string>
+    <string name="dashboard_nothing_expiring">Tidak ada yang akan kedaluwarsa</string>
+    <string name="dashboard_no_food">Belum ada bahan, tambah dulu yuk</string>
+    <string name="dashboard_at_a_glance">Ringkasan</string>
+    <string name="dashboard_view_all">Lihat Semua</string>
+    <string name="dashboard_total_items">TOTAL BAHAN</string>
+    <string name="dashboard_expiring">SEGERA HABIS</string>
+
+    <!-- Fridge -->
+    <string name="fridge_title">Kulkasku</string>
+    <string name="fridge_items_available">%1$d bahan tersedia</string>
+    <string name="fridge_search">Cari bahan</string>
+    <string name="fridge_no_food">Belum ada bahan, tambah dulu yuk</string>
+    <string name="filter_all">Semua</string>
+    <string name="filter_expiring">Segera Habis</string>
+    <string name="filter_produce">Sayur/Buah</string>
+    <string name="filter_dairy">Susu</string>
+    <string name="filter_meat">Daging</string>
+    <string name="filter_other">Lainnya</string>
+
+    <!-- Pro -->
+    <string name="profile_upgrade_pro">Upgrade ke Pro</string>
+    <string name="profile_upgrade_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
+    <string name="profile_pro_active">Habisin PRO</string>
+    <string name="profile_pro_active_subtitle">Langganan aktif — semua fitur terbuka</string>
 </resources>
