@@ -45,8 +45,8 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
-                            resepIngredients = it.ingredients,
-                            resepDirections = it.directions
+                            resepIngredients = it.ingredients ?: emptyList(),
+                            resepDirections = it.directions ?: emptyList()
                         )
                     } ?: emptyList()
 
@@ -88,8 +88,8 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
-                            resepIngredients = it.ingredients,
-                            resepDirections = it.directions
+                            resepIngredients = it.ingredients ?: emptyList(),
+                            resepDirections = it.directions ?: emptyList()
                         )
                     }
                     _detailUiState.value = _detailUiState.value.copy(isLoading = false, recipe = recipe)

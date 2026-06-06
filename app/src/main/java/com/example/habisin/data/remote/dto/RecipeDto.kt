@@ -43,8 +43,10 @@ data class CatalogItem(
     val imageUrl: String? = null,
     val isPremium: Boolean = false,
     val locked: Boolean = false,
-    val ingredients: List<String> = emptyList(),  // populated on detail
-    val directions: List<String> = emptyList()
+    // Nullable: the list endpoint omits these (Gson would otherwise inject null
+    // into a non-null field and crash). Only the detail endpoint populates them.
+    val ingredients: List<String>? = null,
+    val directions: List<String>? = null
 )
 
 data class CatalogPagination(
