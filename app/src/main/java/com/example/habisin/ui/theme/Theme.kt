@@ -64,12 +64,12 @@ private val LightHabisinColors = HabisinColors(
 )
 
 private val DarkHabisinColors = HabisinColors(
-    action              = HabisinCoral,
+    action              = HabisinCoralDarkMode,   // softened coral for dark
     onAction            = HabisinWhite,
     textMuted           = HabisinDarkMuted,
     navBar              = HabisinDarkNav,         // the only green in dark
     onNavBar            = HabisinDarkText,
-    navSelected         = HabisinCoral,           // selected nav = coral accent
+    navSelected         = HabisinCoralDarkMode,    // selected nav = coral accent (softened)
     fab                 = HabisinDarkFab,
     onFab               = HabisinDarkFabIcon,
     limeCard            = HabisinDarkSurface2,     // neutral, not olive
@@ -109,9 +109,9 @@ private val HabisinLightColors = lightColorScheme(
     outline          = DividerGray,
 )
 
-//Dark scheme — "Verdant Dark". Opaque surfaces, coral stays the interactive color.
+//Dark scheme — "Verdant Dark". Opaque surfaces, coral stays the interactive color (softened).
 private val HabisinDarkColors = darkColorScheme(
-    primary          = HabisinCoral,
+    primary          = HabisinCoralDarkMode,
     onPrimary        = HabisinWhite,
     secondary        = HabisinLime,
     onSecondary      = HabisinOlive,

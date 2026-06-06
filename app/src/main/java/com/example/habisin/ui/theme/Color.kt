@@ -47,6 +47,8 @@ val HabisinDarkNav       = Color(0xFF18230F)  // bottom nav (deep olive)
 val HabisinDarkFab       = Color(0xFF3A4A12)  // FAB surface
 val HabisinDarkFabIcon   = Color(0xFFD7E59A)  // FAB icon
 
-// Selected / active state in dark = coral family (the one accent), opaque.
-val HabisinDarkSelected   = Color(0xFF3A2922)  // coral-tinted dark surface
-val HabisinDarkOnSelected = Color(0xFFFF8666)  // coral text/icon on selected
+// Coral accent, softened for dark mode so it doesn't vibrate against near-black
+// (pure #FF8666 reads as harsh/over-saturated on dark surfaces).
+val HabisinCoralDarkMode  = Color(0xFFE57E61)  // muted terracotta-coral for dark
+val HabisinDarkSelected    = Color(0xFF3A2922)  // coral-tinted dark surface
+val HabisinDarkOnSelected  = HabisinCoralDarkMode
