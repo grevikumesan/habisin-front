@@ -12,11 +12,13 @@ import androidx.compose.runtime.remember
 import androidx.core.os.LocaleListCompat
 import com.example.habisin.data.local.AppLanguage
 import com.example.habisin.data.local.AppTheme
+import androidx.lifecycle.lifecycleScope
 import com.example.habisin.data.local.SettingsManager
 import com.example.habisin.notif.NotificationScheduler
 import com.example.habisin.ui.router.AppRouter
 import com.example.habisin.ui.theme.HabisInTheme
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
@@ -35,9 +37,12 @@ class MainActivity : ComponentActivity() {
         )
 
         // Expiry notifications: create channel + (re)schedule the background poll if enabled.
+        // Done off the main thread so DataStore/WorkManager never block startup (avoids ANR).
         NotificationScheduler.ensureChannel(applicationContext)
-        if (runBlocking { settings.isNotifEnabled() }) {
-            NotificationScheduler.schedulePeriodic(applicationContext)
+        lifecycleScope.launch {
+            if (settings.isNotifEnabled()) {
+                NotificationScheduler.schedulePeriodic(applicationContext)
+            }
         }
 
         setContent {
