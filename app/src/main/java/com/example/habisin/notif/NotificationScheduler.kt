@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 /** Owns the notification channel + (un)scheduling of the periodic expiry check. */
 object NotificationScheduler {
 
-    const val CHANNEL_ID = "habisin_expiry"
+    const val CHANNEL_ID = "habisin_expiry_v2"   // v2: HIGH importance (heads-up). New id so it applies.
     const val NOTIFICATION_ID = 1001
     const val KEY_TEST = "is_test"
     private const val PERIODIC_WORK = "habisin_expiry_periodic"
@@ -27,9 +27,10 @@ object NotificationScheduler {
                 val channel = NotificationChannel(
                     CHANNEL_ID,
                     "Pengingat Kedaluwarsa",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH   // heads-up banner + sound + vibration
                 ).apply {
                     description = "Pemberitahuan bahan yang akan/sudah kedaluwarsa"
+                    enableVibration(true)
                 }
                 manager.createNotificationChannel(channel)
             }

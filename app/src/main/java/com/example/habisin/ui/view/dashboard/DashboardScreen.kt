@@ -152,7 +152,7 @@ private fun DashboardContent(
             )
             StatCard(
                 icon           = Icons.Default.AccessTime,
-                iconTint       = HabisinCoral,
+                iconTint       = HabisinTheme.colors.action,
                 iconBackground = Color.White,
                 value          = state.expiringTotal.toString().padStart(2, '0'),    // ← ganti
                 label          = "EXPIRING",

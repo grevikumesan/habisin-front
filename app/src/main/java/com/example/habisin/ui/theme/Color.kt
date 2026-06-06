@@ -52,3 +52,7 @@ val HabisinDarkFabIcon   = Color(0xFFD7E59A)  // FAB icon
 val HabisinCoralDarkMode  = Color(0xFFE57E61)  // muted terracotta-coral for dark
 val HabisinDarkSelected    = Color(0xFF3A2922)  // coral-tinted dark surface
 val HabisinDarkOnSelected  = HabisinCoralDarkMode
+
+// Home "attention required" block in dark = muted warm surfaces (not bright coral).
+val HabisinDarkAttention    = Color(0xFF402A22)  // the block
+val HabisinDarkAttentionRow = Color(0xFF4E372D)  // item rows inside it

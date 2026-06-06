@@ -97,7 +97,8 @@ class ExpiryNotificationWorker(
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)   // heads-up on Android < 8 too
+            .setDefaults(NotificationCompat.DEFAULT_ALL)     // sound + vibration
             .setAutoCancel(true)
             .build()
 

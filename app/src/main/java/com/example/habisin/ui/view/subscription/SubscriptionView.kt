@@ -95,7 +95,7 @@ fun SubscriptionView (
             // ── Title ──
             if (state.isActive) {
                 Text(
-                    "Kamu Sudah PRO 🎉",
+                    "Kamu Sudah PRO",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onBackground

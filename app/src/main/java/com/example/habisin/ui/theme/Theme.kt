@@ -38,6 +38,9 @@ data class HabisinColors(
     val onPeachCard: Color,
     val selectedContainer: Color,  // selected/active state (chips, theme pick, category)
     val onSelectedContainer: Color,
+    val attentionCard: Color,      // home "attention required" block (alert)
+    val onAttentionCard: Color,
+    val attentionRow: Color,       // the item rows inside that block
     val fieldBg: Color,
     val fieldHint: Color,
     val divider: Color,
@@ -58,6 +61,9 @@ private val LightHabisinColors = HabisinColors(
     onPeachCard         = HabisinTextDark,
     selectedContainer   = HabisinLime,    // light keeps the brand lime highlight
     onSelectedContainer = HabisinOlive,
+    attentionCard       = HabisinCoral,
+    onAttentionCard     = HabisinTextDark,
+    attentionRow        = HabisinPeach,
     fieldBg             = HabisinLightGray,
     fieldHint           = HabisinTextMuted,
     divider             = DividerGray,
@@ -78,6 +84,9 @@ private val DarkHabisinColors = HabisinColors(
     onPeachCard         = HabisinDarkText,
     selectedContainer   = HabisinDarkSelected,     // coral-tinted = visible selection
     onSelectedContainer = HabisinDarkOnSelected,
+    attentionCard       = HabisinDarkAttention,    // muted warm-dark, not bright coral
+    onAttentionCard     = HabisinDarkText,
+    attentionRow        = HabisinDarkAttentionRow,
     fieldBg             = HabisinDarkSurface2,
     fieldHint           = HabisinDarkMuted,
     divider             = HabisinDarkDivider,

@@ -62,9 +62,8 @@ fun RecipeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadRecipes()
-        viewModel.loadSavedRecipes()
     }
-    // Refresh saved list each time the user opens the "Tersimpan" tab (catches new generates).
+    // Load saved recipes lazily — only when the user opens "Tersimpan" (keeps tab entry fast).
     LaunchedEffect(showSaved) {
         if (showSaved) viewModel.loadSavedRecipes()
     }
@@ -116,7 +115,9 @@ fun RecipeScreen(
                 }
             }
         },
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        // Outer AppRouter Scaffold already applies system-bar insets; don't double them.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         Box(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(innerPadding)) {
             if (uiState.isLoading) {

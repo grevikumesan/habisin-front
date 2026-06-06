@@ -12,7 +12,11 @@ import android.os.Build
  * The phone needs no adb/USB — just the same WiFi as the laptop running the backend.
  */
 object ApiConfig {
-    private const val LAN_HOST = "10.0.89.96"   // ← laptop's Wi-Fi IP for real phones
+    // On campus WiFi (client isolation) the phone can't reach the laptop's LAN IP, so we
+    // tunnel over USB instead: run `adb reverse tcp:3000 tcp:3000`, and the phone reaches
+    // the laptop's backend via 127.0.0.1. (For a normal home WiFi / hotspot with no isolation,
+    // set this back to the laptop's Wi-Fi IPv4, e.g. "10.0.89.96".)
+    private const val LAN_HOST = "127.0.0.1"
 
     private val isEmulator: Boolean
         get() = Build.FINGERPRINT.startsWith("generic") ||

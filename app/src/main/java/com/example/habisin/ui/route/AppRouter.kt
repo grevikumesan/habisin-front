@@ -112,6 +112,17 @@ fun AppRouter() {
         wasLoggedIn = isLoggedIn
     }
 
+    // Single tab-switch behaviour for BOTH the bottom nav and in-screen tab jumps
+    // (e.g. dashboard → Fridge). Mixing a plain navigate() with this pattern corrupts
+    // saveState/restoreState and traps the user on one tab.
+    val navigateToTab: (String) -> Unit = { route ->
+        navController.navigate(route) {
+            launchSingleTop = true
+            popUpTo(Routes.HOME) { saveState = true }
+            restoreState = true
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color    = MaterialTheme.colorScheme.background
@@ -124,13 +135,7 @@ fun AppRouter() {
                 if (showBottomBar) {
                     HabisinBottomNav(
                         currentRoute = currentRoute ?: Routes.HOME,
-                        onNavigate   = { route ->
-                            navController.navigate(route) {
-                                launchSingleTop = true
-                                popUpTo(Routes.HOME) { saveState = true }
-                                restoreState = true
-                            }
-                        },
+                        onNavigate   = navigateToTab,
                         onPlusClick  = { navController.navigate(Routes.ADD_PRODUCT) }
                     )
                 }
@@ -181,9 +186,9 @@ fun AppRouter() {
 
                     DashboardScreen(
                         onPlusClick    = { navController.navigate(Routes.ADD_PRODUCT) },
-                        onItemClick    = { navController.navigate(Routes.FRIDGE) },
-                        onViewAllClick = { navController.navigate(Routes.FRIDGE) },
-                        onProfileClick = { navController.navigate(Routes.PROFILE) }
+                        onItemClick    = { navigateToTab(Routes.FRIDGE) },
+                        onViewAllClick = { navigateToTab(Routes.FRIDGE) },
+                        onProfileClick = { navigateToTab(Routes.PROFILE) }
                     )
                 }
 

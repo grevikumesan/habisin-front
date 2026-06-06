@@ -30,54 +30,32 @@ import com.example.habisin.util.getProductEmoji
 @Composable
 fun ExpiringSoonCard(
     items: List<ProductModel>,
-    onItemClick: (ProductModel) -> Unit,
-    onBellClick: () -> Unit = {}
+    onItemClick: (ProductModel) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .background(HabisinCoral)
+            .background(HabisinTheme.colors.attentionCard)
             .padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text       = "ATTENTION REQUIRED",
-                    color      = HabisinTextDark,
-                    fontSize   = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.sp
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text       = if (items.isEmpty()) "Nothing expiring soon"
-                    else "${items.size} items expiring soon",
-                    color      = HabisinTextDark,
-                    fontSize   = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 28.sp
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(HabisinPeach)
-                    .clickable(onClick = onBellClick),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector        = Icons.Default.NotificationsActive,
-                    contentDescription = "Notifications",
-                    tint               = HabisinCoral,
-                    modifier           = Modifier.size(20.dp)
-                )
-            }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text       = "ATTENTION REQUIRED",
+                color      = HabisinTheme.colors.onAttentionCard,
+                fontSize   = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text       = if (items.isEmpty()) "Nothing expiring soon"
+                else "${items.size} items expiring soon",
+                color      = HabisinTheme.colors.onAttentionCard,
+                fontSize   = 22.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 28.sp
+            )
         }
 
         Spacer(Modifier.height(16.dp))
@@ -88,13 +66,13 @@ fun ExpiringSoonCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(14.dp))
-                    .background(HabisinPeach)
+                    .background(HabisinTheme.colors.attentionRow)
                     .padding(vertical = 24.dp, horizontal = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text       = "No food yet, try adding some",
-                    color      = HabisinTextDark,
+                    color      = HabisinTheme.colors.onAttentionCard,
                     fontSize   = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -114,7 +92,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(HabisinPeach)
+            .background(HabisinTheme.colors.attentionRow)
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -124,7 +102,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.6f)),
+                .background(Color.White.copy(alpha = 0.25f)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -138,13 +116,13 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text       = item.name ?: "Unknown",
-                color      = HabisinTextDark,
+                color      = HabisinTheme.colors.onAttentionCard,
                 fontSize   = 15.sp,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 text       = "${item.computedDaysLeft} DAY${if (item.computedDaysLeft == 1) "" else "S"} LEFT",
-                color      = HabisinTextDark.copy(alpha = 0.7f),
+                color      = HabisinTheme.colors.onAttentionCard.copy(alpha = 0.7f),
                 fontSize   = 10.sp,
                 fontWeight = FontWeight.Medium,
                 letterSpacing = 0.5.sp
@@ -154,7 +132,7 @@ private fun ExpiringItemRow(item: ProductModel, onClick: () -> Unit) {
         Icon(
             imageVector        = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint               = HabisinTextDark
+            tint               = HabisinTheme.colors.onAttentionCard
         )
     }
 }
