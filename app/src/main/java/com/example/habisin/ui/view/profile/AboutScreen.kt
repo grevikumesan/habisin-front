@@ -9,9 +9,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habisin.R
 import com.example.habisin.ui.components.LogoPlaceholder
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,26 +51,25 @@ fun AboutScreen(onBack: () -> Unit) {
 
             Text("Habisin!", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(4.dp))
-            Text("Segera Dihabiskan", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
+            Text(stringResource(R.string.about_tagline), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
 
             Spacer(Modifier.height(20.dp))
 
             Text(
-                "Habisin is a kitchen companion app that helps you keep track of what's in your fridge, " +
-                        "discover recipes that use what you already have, and reduce food waste at home.",
+                stringResource(R.string.about_body),
                 color     = MaterialTheme.colorScheme.onBackground,
                 fontSize  = 14.sp
             )
 
             Spacer(Modifier.height(20.dp))
 
-            InfoLine("Version", "1.0.0")
-            InfoLine("Build",   "May 2026")
-            InfoLine("Made by", "The Habisin Team")
+            InfoLine(stringResource(R.string.about_version), "1.0.0")
+            InfoLine(stringResource(R.string.about_build),   "May 2026")
+            InfoLine(stringResource(R.string.about_made_by), "The Habisin Team")
 
             Spacer(Modifier.height(24.dp))
 
-            Text("© 2026 Habisin. All rights reserved.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
+            Text(stringResource(R.string.about_copyright), color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
     }
 }

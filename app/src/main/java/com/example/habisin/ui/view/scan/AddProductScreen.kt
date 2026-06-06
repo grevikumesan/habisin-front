@@ -25,11 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.habisin.R
 import com.example.habisin.ui.uistate.AddProductScanUiStates
 import coil.compose.AsyncImage
 import com.example.habisin.ui.theme.HabisinTheme
@@ -81,7 +83,7 @@ fun AddProductScreen(
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Input Products", fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(R.string.add_input_products), fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onBackground)
             }
         },
         containerColor = MaterialTheme.colorScheme.background
@@ -125,19 +127,19 @@ fun AddProductScreen(
                             modifier = Modifier.size(80.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp, color = HabisinTheme.colors.onLimeCard)
-                        Text("Upload Photo from Gallery", fontSize = 12.sp, color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.7f))
+                        Text(stringResource(R.string.add_photo_product), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = HabisinTheme.colors.onLimeCard)
+                        Text(stringResource(R.string.add_upload_photo), fontSize = 12.sp, color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.7f))
                     }
                 }
             }
 
             // 📝 Manual Input
-            Text("Manual Input", fontWeight = FontWeight.Medium, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.add_manual_input), fontWeight = FontWeight.Medium, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
 
             TextField(
                 value = uiState.itemName,
                 onValueChange = { viewModel.onItemNameChange(it) },
-                placeholder = { Text("e.g. Organic Avocados", color = HabisinTheme.colors.fieldHint) },
+                placeholder = { Text(stringResource(R.string.add_item_hint), color = HabisinTheme.colors.fieldHint) },
                 modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = HabisinTheme.colors.fieldBg,
@@ -151,34 +153,34 @@ fun AddProductScreen(
             )
 
             // 🏷️ CATEGORY WITH ICONS
-            Text("CATEGORY", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
+            Text(stringResource(R.string.add_category), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 CategoryIconChip(
-                    title = "PRODUCE",
+                    title = stringResource(R.string.cat_produce),
                     icon = Icons.Default.Yard,
                     isSelected = uiState.category == "PRODUCE",
                     onClick = { viewModel.onCategorySelected("PRODUCE") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "DAIRY",
+                    title = stringResource(R.string.cat_dairy),
                     icon = Icons.Default.LocalDrink,
                     isSelected = uiState.category == "DAIRY",
                     onClick = { viewModel.onCategorySelected("DAIRY") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "MEAT",
+                    title = stringResource(R.string.cat_meat),
                     icon = Icons.Default.KebabDining,
                     isSelected = uiState.category == "MEAT",
                     onClick = { viewModel.onCategorySelected("MEAT") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "OTHER",
+                    title = stringResource(R.string.cat_other),
                     icon = Icons.Default.Inventory,
                     isSelected = uiState.category == "OTHER",
                     onClick = { viewModel.onCategorySelected("OTHER") },
@@ -192,7 +194,7 @@ fun AddProductScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("BEST BEFORE", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
+                    Text(stringResource(R.string.add_best_before), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
                     Spacer(modifier = Modifier.height(4.dp))
                     Box(
                         modifier = Modifier
@@ -218,7 +220,7 @@ fun AddProductScreen(
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("QUANTITY", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
+                    Text(stringResource(R.string.add_quantity), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier
@@ -262,7 +264,7 @@ fun AddProductScreen(
                     ),
                     shape = RoundedCornerShape(50)
                 ) {
-                    Text("Add to Fridge", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.add_to_fridge), fontWeight = FontWeight.Bold)
                 }
                 OutlinedButton(
                     onClick = { onNavigateToScanner() },
@@ -271,7 +273,7 @@ fun AddProductScreen(
                     border = BorderStroke(1.5.dp, HabisinTheme.colors.action),
                     shape = RoundedCornerShape(50)
                 ) {
-                    Text("Scan Barcode", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.add_scan_barcode), fontWeight = FontWeight.Bold)
                 }
             }
         }

@@ -88,4 +88,67 @@
     <string name="profile_upgrade_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
     <string name="profile_pro_active">Habisin PRO</string>
     <string name="profile_pro_active_subtitle">Langganan aktif — semua fitur terbuka</string>
+
+    <!-- Recipe -->
+    <string name="recipe_title">Recipe</string>
+    <string name="recipe_search">Search Recipes</string>
+    <string name="recipe_catalog">Catalog</string>
+    <string name="recipe_saved">Saved</string>
+    <string name="recipe_recommended">Recommended</string>
+    <string name="recipe_other">Other Recipes</string>
+    <string name="recipe_generate">Generate Recipe</string>
+    <string name="recipe_generating">Generating…</string>
+    <string name="recipe_no_saved">No saved recipes yet. Generate one from your fridge first.</string>
+    <string name="recipe_premium_title">Premium Feature</string>
+    <string name="recipe_premium_subtitle">Subscribe to access thousands of AI recipes</string>
+    <string name="recipe_description">Description</string>
+    <string name="recipe_ingredients">Ingredients</string>
+    <string name="recipe_directions">Directions</string>
+
+    <!-- Add product -->
+    <string name="add_input_products">Input Products</string>
+    <string name="add_photo_product">Photo Product</string>
+    <string name="add_upload_photo">Upload Photo from Gallery</string>
+    <string name="add_manual_input">Manual Input</string>
+    <string name="add_item_hint">e.g. Organic Avocados</string>
+    <string name="add_category">CATEGORY</string>
+    <string name="add_best_before">BEST BEFORE</string>
+    <string name="add_quantity">QUANTITY</string>
+    <string name="add_to_fridge">Add to Fridge</string>
+    <string name="add_scan_barcode">Scan Barcode</string>
+    <string name="cat_produce">PRODUCE</string>
+    <string name="cat_dairy">DAIRY</string>
+    <string name="cat_meat">MEAT</string>
+    <string name="cat_other">OTHER</string>
+
+    <!-- Subscription -->
+    <string name="sub_pro_title">Habisin PRO</string>
+    <string name="sub_pro_subtitle">Unlock all exclusive recipes &amp; cook without limits</string>
+    <string name="sub_benefit_1">Unlock all exclusive Indonesian recipes</string>
+    <string name="sub_benefit_2">Generate AI recipes with no daily limit</string>
+    <string name="sub_benefit_3">No ads — just cooking</string>
+    <string name="sub_benefit_4">Support Habisin\'s development</string>
+    <string name="sub_per_period">per 30 days · cancel anytime</string>
+    <string name="sub_subscribe">Subscribe Now</string>
+    <string name="sub_renew">Renew Subscription</string>
+    <string name="sub_active_title">You\'re PRO</string>
+    <string name="sub_days_remaining">%1$d days left</string>
+    <string name="sub_expires_on">Ends on %1$s</string>
+    <string name="sub_free_note">Notifications &amp; fridge tracking are always free.</string>
+
+    <!-- About -->
+    <string name="about_tagline">Segera Dihabiskan</string>
+    <string name="about_body">Habisin is a kitchen companion app that helps you keep track of what\'s in your fridge, discover recipes that use what you already have, and reduce food waste at home.</string>
+    <string name="about_version">Version</string>
+    <string name="about_build">Build</string>
+    <string name="about_made_by">Made by</string>
+    <string name="about_copyright">© 2026 Habisin. All rights reserved.</string>
+
+    <!-- Notification settings -->
+    <string name="notif_desc">Get reminded before food in your fridge expires.</string>
+    <string name="notif_reminder_title">Expiry reminders</string>
+    <string name="notif_reminder_subtitle">Automatic notifications from your fridge</string>
+    <string name="notif_threshold_q">How many days before to remind you?</string>
+    <string name="notif_threshold_value">%1$d days before expiry</string>
+    <string name="notif_test">Send a test notification</string>
 </resources>

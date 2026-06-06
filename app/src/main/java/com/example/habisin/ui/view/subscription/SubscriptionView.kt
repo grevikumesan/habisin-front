@@ -17,9 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habisin.R
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habisin.ui.theme.HabisinTheme
@@ -95,21 +97,21 @@ fun SubscriptionView (
             // ── Title ──
             if (state.isActive) {
                 Text(
-                    "Kamu Sudah PRO",
+                    stringResource(R.string.sub_active_title),
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Sisa ${state.daysRemaining} hari langganan",
+                    stringResource(R.string.sub_days_remaining, state.daysRemaining),
                     fontSize = 16.sp,
                     color = HabisinTheme.colors.action,
                     fontWeight = FontWeight.SemiBold
                 )
                 if (state.expiresAt != null) {
                     Text(
-                        "Berakhir pada ${state.expiresAt!!.substring(0, 10)}",
+                        stringResource(R.string.sub_expires_on, state.expiresAt!!.substring(0, 10)),
                         fontSize = 13.sp,
                         color = HabisinTheme.colors.textMuted,
                         modifier = Modifier.padding(top = 4.dp)
@@ -117,14 +119,14 @@ fun SubscriptionView (
                 }
             } else {
                 Text(
-                    "Habisin PRO",
+                    stringResource(R.string.sub_pro_title),
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Buka semua resep eksklusif & masak tanpa batas",
+                    stringResource(R.string.sub_pro_subtitle),
                     fontSize = 14.sp,
                     color = HabisinTheme.colors.textMuted
                 )
@@ -133,11 +135,10 @@ fun SubscriptionView (
             Spacer(Modifier.height(32.dp))
 
             // ── Benefits list ──
-            // Notifikasi & pencatatan kulkas tetap GRATIS — PRO cuma buka konten resep.
-            BenefitItem("Buka semua resep eksklusif khas Indonesia")
-            BenefitItem("Generate resep AI tanpa batas kuota harian")
-            BenefitItem("Tanpa iklan, fokus masak")
-            BenefitItem("Dukung pengembangan Habisin")
+            BenefitItem(stringResource(R.string.sub_benefit_1))
+            BenefitItem(stringResource(R.string.sub_benefit_2))
+            BenefitItem(stringResource(R.string.sub_benefit_3))
+            BenefitItem(stringResource(R.string.sub_benefit_4))
 
             Spacer(Modifier.weight(1f))
 
@@ -159,7 +160,7 @@ fun SubscriptionView (
                             color = HabisinTheme.colors.onLimeCard
                         )
                         Text(
-                            "per 30 hari · batal kapan saja",
+                            stringResource(R.string.sub_per_period),
                             fontSize = 14.sp,
                             color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.8f)
                         )
@@ -190,8 +191,7 @@ fun SubscriptionView (
                     )
                 } else {
                     Text(
-                        if (state.isActive) "Perpanjang Langganan"
-                        else "Langganan Sekarang",
+                        stringResource(if (state.isActive) R.string.sub_renew else R.string.sub_subscribe),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -201,7 +201,7 @@ fun SubscriptionView (
             // Catatan: di mode demo (PAYMENTS_ENABLED=false) semua fitur PRO sudah terbuka.
             Spacer(Modifier.height(10.dp))
             Text(
-                "Notifikasi & pencatatan kulkas selalu gratis.",
+                stringResource(R.string.sub_free_note),
                 fontSize = 12.sp,
                 color = HabisinTheme.colors.textMuted
             )

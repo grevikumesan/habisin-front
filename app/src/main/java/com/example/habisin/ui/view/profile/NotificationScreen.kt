@@ -20,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.example.habisin.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -89,7 +91,7 @@ fun NotificationScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                "Dapat pengingat sebelum bahan di kulkasmu kedaluwarsa.",
+                stringResource(R.string.notif_desc),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 14.sp
             )
@@ -105,13 +107,13 @@ fun NotificationScreen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        "Pengingat kedaluwarsa",
+                        stringResource(R.string.notif_reminder_title),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
-                        "Notifikasi otomatis dari isi kulkas",
+                        stringResource(R.string.notif_reminder_subtitle),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 12.sp
                     )
@@ -139,7 +141,7 @@ fun NotificationScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        "Ingatkan berapa hari sebelumnya?",
+                        stringResource(R.string.notif_threshold_q),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Medium
@@ -150,7 +152,7 @@ fun NotificationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            "$threshold hari sebelum kedaluwarsa",
+                            stringResource(R.string.notif_threshold_value, threshold),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 13.sp
                         )
@@ -190,7 +192,7 @@ fun NotificationScreen(
                     border = androidx.compose.foundation.BorderStroke(1.5.dp, HabisinTheme.colors.action),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Kirim notifikasi percobaan", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.notif_test), fontWeight = FontWeight.SemiBold)
                 }
             }
         }

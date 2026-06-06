@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import com.example.habisin.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -112,7 +114,7 @@ fun RecipeScreen(
                         Icon(Icons.Default.Restaurant, contentDescription = null)
                     }
                     Text(
-                        if (detailUiState.isGenerating) "Generating..." else "Generate Resep",
+                        stringResource(if (detailUiState.isGenerating) R.string.recipe_generating else R.string.recipe_generate),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -134,13 +136,13 @@ fun RecipeScreen(
                         .verticalScroll(scrollState)
                         .padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 100.dp)
                 ) {
-                    Text("Recipe", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onBackground)
+                    Text(stringResource(R.string.recipe_title), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(modifier = Modifier.height(16.dp))
 
                     HabisinTextField(
                         value = uiState.searchQuery,
                         onValueChange = viewModel::onSearchQueryChange,
-                        placeholder = "Search Recipes",
+                        placeholder = stringResource(R.string.recipe_search),
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = HabisinTheme.colors.fieldHint) },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -166,7 +168,7 @@ fun RecipeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     if (recommendedRecipes.isNotEmpty()) {
-                        Text("Recommended", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                        Text(stringResource(R.string.recipe_recommended), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         Spacer(modifier = Modifier.height(12.dp))
                         LazyRow(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -180,7 +182,7 @@ fun RecipeScreen(
                     }
 
                     if (otherRecipes.isNotEmpty()) {
-                        Text("Other Recipes", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                        Text(stringResource(R.string.recipe_other), fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         Spacer(modifier = Modifier.height(12.dp))
                         Box(modifier = Modifier.height(400.dp)) {
                             LazyHorizontalGrid(
@@ -202,7 +204,7 @@ fun RecipeScreen(
                     }
                     if (saved.isEmpty()) {
                         Text(
-                            "Belum ada resep tersimpan. Generate resep dari kulkasmu dulu.",
+                            stringResource(R.string.recipe_no_saved),
                             color = HabisinTheme.colors.textMuted,
                             fontSize = 14.sp
                         )
@@ -253,8 +255,8 @@ private fun RecipeModeToggle(showSaved: Boolean, onChange: (Boolean) -> Unit) {
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        ToggleChip("Katalog", selected = !showSaved, modifier = Modifier.weight(1f)) { onChange(false) }
-        ToggleChip("Tersimpan", selected = showSaved, modifier = Modifier.weight(1f)) { onChange(true) }
+        ToggleChip(stringResource(R.string.recipe_catalog), selected = !showSaved, modifier = Modifier.weight(1f)) { onChange(false) }
+        ToggleChip(stringResource(R.string.recipe_saved), selected = showSaved, modifier = Modifier.weight(1f)) { onChange(true) }
     }
 }
 
@@ -346,9 +348,9 @@ private fun SubscriptionRequiredCard(onSubscribe: () -> Unit) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Default.Lock, contentDescription = null, tint = HabisinTheme.colors.action, modifier = Modifier.size(64.dp))
             Spacer(Modifier.height(16.dp))
-            Text("Fitur Premium", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onBackground)
+            Text(stringResource(R.string.recipe_premium_title), fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(8.dp))
-            Text("Berlangganan untuk mengakses ribuan resep AI", fontSize = 14.sp, color = HabisinTheme.colors.textMuted, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.recipe_premium_subtitle), fontSize = 14.sp, color = HabisinTheme.colors.textMuted, textAlign = TextAlign.Center)
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = onSubscribe,
@@ -359,7 +361,7 @@ private fun SubscriptionRequiredCard(onSubscribe: () -> Unit) {
                 shape = RoundedCornerShape(28.dp),
                 modifier = Modifier.fillMaxWidth().height(52.dp)
             ) {
-                Text("Langganan Sekarang", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.sub_subscribe), fontWeight = FontWeight.Bold)
             }
         }
     }

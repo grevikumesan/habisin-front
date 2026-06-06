@@ -18,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
+import com.example.habisin.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.animateContentSize
@@ -134,7 +136,7 @@ fun RecipeDetailScreen(
                         Spacer(Modifier.height(16.dp))
 
                         Text(
-                            text = "Description",
+                            text = stringResource(R.string.recipe_description),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = HabisinAccentGreen
@@ -239,7 +241,10 @@ private fun AnimatedTabSwitcher(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = tab.name,
+                        text = stringResource(
+                            if (tab == DetailTab.Ingredients) R.string.recipe_ingredients
+                            else R.string.recipe_directions
+                        ),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         color = animatedTextColor
