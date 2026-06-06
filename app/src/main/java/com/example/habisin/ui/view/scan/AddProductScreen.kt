@@ -309,9 +309,9 @@ fun CategoryIconChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (isSelected) HabisinTheme.colors.limeCard else MaterialTheme.colorScheme.surface
-    val borderColor = if (isSelected) HabisinTheme.colors.limeCard else MaterialTheme.colorScheme.outline
-    val contentColor = if (isSelected) HabisinTheme.colors.onLimeCard else MaterialTheme.colorScheme.onSurfaceVariant
+    val backgroundColor = if (isSelected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surface
+    val borderColor = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.outline
+    val contentColor = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurfaceVariant
 
     Box(
         modifier = modifier

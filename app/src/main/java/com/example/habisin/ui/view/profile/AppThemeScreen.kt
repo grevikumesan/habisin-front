@@ -75,20 +75,20 @@ private fun ThemeOption(label: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(if (selected) HabisinTheme.colors.limeCard else MaterialTheme.colorScheme.surfaceVariant)
+            .background(if (selected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             label,
-            color      = if (selected) HabisinTheme.colors.onLimeCard else MaterialTheme.colorScheme.onSurface,
+            color      = if (selected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurface,
             fontSize   = 15.sp,
             fontWeight = FontWeight.Medium,
             modifier   = Modifier.weight(1f)
         )
         if (selected) {
-            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinTheme.colors.onLimeCard)
+            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinTheme.colors.onSelectedContainer)
         }
     }
 }

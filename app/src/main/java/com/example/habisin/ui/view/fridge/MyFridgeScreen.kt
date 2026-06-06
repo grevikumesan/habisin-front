@@ -89,8 +89,8 @@ fun MyFridgeScreen(
                         colors   = FilterChipDefaults.filterChipColors(
                             containerColor         = HabisinTheme.colors.fieldBg,
                             labelColor             = MaterialTheme.colorScheme.onSurface,
-                            selectedContainerColor = HabisinTheme.colors.limeCard,
-                            selectedLabelColor     = HabisinTheme.colors.onLimeCard
+                            selectedContainerColor = HabisinTheme.colors.selectedContainer,
+                            selectedLabelColor     = HabisinTheme.colors.onSelectedContainer
                         ),
                         shape = RoundedCornerShape(50)
                     )

@@ -24,57 +24,63 @@ import androidx.compose.ui.graphics.Color
  */
 @Immutable
 data class HabisinColors(
-    val action: Color,        // the ONE interactive color (coral)
+    val action: Color,             // the ONE interactive color (coral)
     val onAction: Color,
     val textMuted: Color,
     val navBar: Color,
-    val onNavBar: Color,      // unselected nav icon
-    val navSelected: Color,   // selected nav icon
+    val onNavBar: Color,           // unselected nav icon
+    val navSelected: Color,        // selected nav icon
     val fab: Color,
     val onFab: Color,
-    val limeCard: Color,      // "At a Glance" stat cards, theme-pick highlight, etc.
+    val limeCard: Color,           // brand card surface (light: lime / dark: neutral elevated)
     val onLimeCard: Color,
-    val peachCard: Color,     // home "attention required" / expiry cards
+    val peachCard: Color,          // account card (light: peach / dark: neutral elevated)
     val onPeachCard: Color,
+    val selectedContainer: Color,  // selected/active state (chips, theme pick, category)
+    val onSelectedContainer: Color,
     val fieldBg: Color,
     val fieldHint: Color,
     val divider: Color,
 )
 
 private val LightHabisinColors = HabisinColors(
-    action      = HabisinCoral,
-    onAction    = HabisinWhite,
-    textMuted   = HabisinTextMuted,
-    navBar      = HabisinOlive,
-    onNavBar    = HabisinWhite,
-    navSelected = HabisinPeach,
-    fab         = HabisinLime,
-    onFab       = HabisinOlive,
-    limeCard    = HabisinLime,
-    onLimeCard  = HabisinOlive,
-    peachCard   = HabisinPeach,
-    onPeachCard = HabisinTextDark,
-    fieldBg     = HabisinLightGray,
-    fieldHint   = HabisinTextMuted,
-    divider     = DividerGray,
+    action              = HabisinCoral,
+    onAction            = HabisinWhite,
+    textMuted           = HabisinTextMuted,
+    navBar              = HabisinOlive,
+    onNavBar            = HabisinWhite,
+    navSelected         = HabisinPeach,
+    fab                 = HabisinLime,
+    onFab               = HabisinOlive,
+    limeCard            = HabisinLime,
+    onLimeCard          = HabisinOlive,
+    peachCard           = HabisinPeach,
+    onPeachCard         = HabisinTextDark,
+    selectedContainer   = HabisinLime,    // light keeps the brand lime highlight
+    onSelectedContainer = HabisinOlive,
+    fieldBg             = HabisinLightGray,
+    fieldHint           = HabisinTextMuted,
+    divider             = DividerGray,
 )
 
 private val DarkHabisinColors = HabisinColors(
-    action      = HabisinCoral,
-    onAction    = HabisinWhite,
-    textMuted   = HabisinDarkMuted,
-    navBar      = HabisinDarkNav,
-    onNavBar    = HabisinDarkText,
-    navSelected = HabisinCoral,
-    fab         = HabisinDarkFab,
-    onFab       = HabisinDarkLimeText,
-    limeCard    = HabisinDarkLimeCard,
-    onLimeCard  = HabisinDarkLimeText,
-    peachCard   = HabisinDarkPeachCard,
-    onPeachCard = HabisinDarkPeachText,
-    fieldBg     = HabisinDarkSurface2,
-    fieldHint   = HabisinDarkMuted,
-    divider     = HabisinDarkDivider,
+    action              = HabisinCoral,
+    onAction            = HabisinWhite,
+    textMuted           = HabisinDarkMuted,
+    navBar              = HabisinDarkNav,         // the only green in dark
+    onNavBar            = HabisinDarkText,
+    navSelected         = HabisinCoral,           // selected nav = coral accent
+    fab                 = HabisinDarkFab,
+    onFab               = HabisinDarkFabIcon,
+    limeCard            = HabisinDarkSurface2,     // neutral, not olive
+    onLimeCard          = HabisinDarkText,
+    peachCard           = HabisinDarkSurface2,     // neutral, not brown
+    onPeachCard         = HabisinDarkText,
+    selectedContainer   = HabisinDarkSelected,     // coral-tinted = visible selection
+    onSelectedContainer = HabisinDarkOnSelected,
+    fieldBg             = HabisinDarkSurface2,
+    fieldHint           = HabisinDarkMuted,
+    divider             = HabisinDarkDivider,
 )
 
 private val LocalHabisinColors = staticCompositionLocalOf { LightHabisinColors }

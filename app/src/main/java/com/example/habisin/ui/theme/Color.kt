@@ -32,18 +32,21 @@ val HabisinOlive     = Color(0xFF4C610D)
 val HabisinTeal      = Color(0xFF0F7180)
 val HabisinOrange    = Color(0xFFFF9E0D)
 
-//Habisin — "Verdant Dark" palette (clean, opaque surfaces — no transparency)
-val HabisinDarkBg        = Color(0xFF14171A)  // app background (near-black, slightly cool)
-val HabisinDarkSurface   = Color(0xFF1E2327)  // cards / sheets
-val HabisinDarkSurface2  = Color(0xFF272D31)  // raised surface / fields / chips
+//Habisin — "Verdant Dark" palette.
+// Color-theory discipline (60-30-10): one NEUTRAL surface family for all cards, brand GREEN
+// only as the nav anchor, CORAL as the single accent (incl. selected states). Opaque, no alpha.
+val HabisinDarkBg        = Color(0xFF121417)  // app background (near-black neutral)
+val HabisinDarkSurface   = Color(0xFF1C1F23)  // cards / sheets
+val HabisinDarkSurface2  = Color(0xFF24282D)  // raised surface / fields / chips / neutral cards
 val HabisinDarkText      = Color(0xFFECEEF0)
-val HabisinDarkMuted     = Color(0xFF9BA1A6)
-val HabisinDarkDivider   = Color(0xFF333A3F)
+val HabisinDarkMuted     = Color(0xFF9AA0A6)
+val HabisinDarkDivider   = Color(0xFF2E3338)
 
-// Dark accent surfaces (opaque tints, not alpha overlays)
-val HabisinDarkNav       = Color(0xFF1B2410)  // bottom nav (deep olive)
-val HabisinDarkLimeCard  = Color(0xFF2E3A18)  // lime accent cards → deep olive in dark
-val HabisinDarkLimeText  = Color(0xFFD7E59A)  // text/icon on the deep-olive cards
-val HabisinDarkPeachCard = Color(0xFF3A2A22)  // peach/attention cards → warm dark in dark
-val HabisinDarkPeachText = Color(0xFFFFC2A6)  // text/icon on the warm-dark cards
-val HabisinDarkFab       = Color(0xFF3A4A12)  // FAB surface in dark
+// Brand green anchor — used ONLY for the bottom nav + FAB, nowhere else in dark.
+val HabisinDarkNav       = Color(0xFF18230F)  // bottom nav (deep olive)
+val HabisinDarkFab       = Color(0xFF3A4A12)  // FAB surface
+val HabisinDarkFabIcon   = Color(0xFFD7E59A)  // FAB icon
+
+// Selected / active state in dark = coral family (the one accent), opaque.
+val HabisinDarkSelected   = Color(0xFF3A2922)  // coral-tinted dark surface
+val HabisinDarkOnSelected = Color(0xFFFF8666)  // coral text/icon on selected

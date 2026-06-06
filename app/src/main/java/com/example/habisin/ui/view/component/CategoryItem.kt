@@ -31,13 +31,13 @@ fun CategoryItem(
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape)
-                .background(if (isSelected) HabisinTheme.colors.limeCard else MaterialTheme.colorScheme.surfaceVariant),
+                .background(if (isSelected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Restaurant,
                 contentDescription = label,
-                tint = if (isSelected) HabisinTheme.colors.onLimeCard else MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(28.dp)
             )
         }
