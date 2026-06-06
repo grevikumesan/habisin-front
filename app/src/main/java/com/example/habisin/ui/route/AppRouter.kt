@@ -233,6 +233,9 @@ fun AppRouter() {
                         onRecipeClick = { recipeId ->
                             navController.navigate(Routes.recipeDetail(recipeId))
                         },
+                        onSavedRecipeClick = { recipeId ->
+                            navController.navigate(Routes.recipeDetail(recipeId, catalog = false))
+                        },
                         onNavigateToSubscription = {
                             navController.navigate(Routes.SUBSCRIPTION)
                         },

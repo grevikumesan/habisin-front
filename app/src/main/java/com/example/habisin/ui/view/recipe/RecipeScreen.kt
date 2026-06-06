@@ -39,10 +39,12 @@ import com.example.habisin.ui.viewmodel.RecipeViewModel
 fun RecipeScreen(
     viewModel: RecipeViewModel,
     onRecipeClick: (Int) -> Unit,
+    onSavedRecipeClick: (Int) -> Unit = {},
     onNavigateToSubscription: () -> Unit,
     onGenerateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showSaved by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
 
     val categories = listOf(
@@ -60,6 +62,11 @@ fun RecipeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.loadRecipes()
+        viewModel.loadSavedRecipes()
+    }
+    // Refresh saved list each time the user opens the "Tersimpan" tab (catches new generates).
+    LaunchedEffect(showSaved) {
+        if (showSaved) viewModel.loadSavedRecipes()
     }
 
     if (uiState.needsSubscription) {
@@ -135,6 +142,11 @@ fun RecipeScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // Katalog / Tersimpan toggle
+                    RecipeModeToggle(showSaved = showSaved, onChange = { showSaved = it })
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                  if (!showSaved) {
                     // MENGGUNAKAN CategoryItem DARI FOLDER COMPONENT
                     LazyRow(
                         modifier = Modifier.fillMaxWidth()
@@ -179,9 +191,85 @@ fun RecipeScreen(
                             }
                         }
                     }
+                  } else {
+                    // ── Saved recipes (generated / manually saved) ──
+                    val saved = uiState.savedRecipes.filter {
+                        it.resepName.contains(uiState.searchQuery, ignoreCase = true)
+                    }
+                    if (saved.isEmpty()) {
+                        Text(
+                            "Belum ada resep tersimpan. Generate resep dari kulkasmu dulu.",
+                            color = HabisinTheme.colors.textMuted,
+                            fontSize = 14.sp
+                        )
+                    } else {
+                        saved.forEach { recipe ->
+                            SavedRecipeCard(recipe = recipe, onClick = { onSavedRecipeClick(recipe.id) })
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+                    }
+                  }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SavedRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }
+    ) {
+        Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier.size(48.dp).clip(RoundedCornerShape(10.dp)).background(HabisinTheme.colors.onLimeCard),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(Icons.Default.Restaurant, contentDescription = null, tint = HabisinTheme.colors.limeCard)
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(recipe.resepDescription, fontSize = 12.sp, color = HabisinTheme.colors.textMuted, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecipeModeToggle(showSaved: Boolean, onChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(50))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        ToggleChip("Katalog", selected = !showSaved, modifier = Modifier.weight(1f)) { onChange(false) }
+        ToggleChip("Tersimpan", selected = showSaved, modifier = Modifier.weight(1f)) { onChange(true) }
+    }
+}
+
+@Composable
+private fun ToggleChip(label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(50))
+            .background(if (selected) HabisinTheme.colors.action else androidx.compose.ui.graphics.Color.Transparent)
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            label,
+            color = if (selected) HabisinTheme.colors.onAction else MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp
+        )
     }
 }
 

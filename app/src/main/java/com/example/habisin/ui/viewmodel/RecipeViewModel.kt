@@ -74,6 +74,30 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // ─── SAVED RECIPES (user's generated/saved, from /api/resep/all) ───
+    fun loadSavedRecipes() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getAllResep()
+                if (response.isSuccessful) {
+                    val saved = response.body()?.data?.map {
+                        RecipeModel(
+                            id = it.id,
+                            resepName = it.resepName,
+                            resepDescription = it.resepDescription,
+                            resepCategory = it.resepCategory,
+                            resepIngredients = it.resepIngredients,
+                            resepDirections = it.resepDirections
+                        )
+                    } ?: emptyList()
+                    _uiState.value = _uiState.value.copy(savedRecipes = saved)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("RECIPE_VM", "Saved load failed: ${e.message}")
+            }
+        }
+    }
+
     // ─── CATALOG DETAIL (ingredients + directions) ─────────
     fun loadCatalogDetail(id: Int) {
         viewModelScope.launch {
