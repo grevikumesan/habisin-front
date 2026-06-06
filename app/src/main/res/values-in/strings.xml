@@ -153,4 +153,12 @@
     <string name="notif_threshold_q">Ingatkan berapa hari sebelumnya?</string>
     <string name="notif_threshold_value">%1$d hari sebelum kedaluwarsa</string>
     <string name="notif_test">Kirim notifikasi percobaan</string>
+
+    <!-- Settings screens -->
+    <string name="theme_description">Pilih tampilan Habisin. \"Ikuti Sistem\" mengikuti pengaturan perangkatmu.</string>
+    <string name="lang_description">Pilih bahasa yang kamu inginkan. Perubahan berlaku ke seluruh aplikasi.</string>
+    <string name="faq_coming_soon">Konten FAQ akan ditambahkan nanti.</string>
+
+    <!-- Generate loading -->
+    <string name="recipe_generating_message">Meracik resep dari bahanmu… ini bisa sampai 15 detik.</string>
 </resources>

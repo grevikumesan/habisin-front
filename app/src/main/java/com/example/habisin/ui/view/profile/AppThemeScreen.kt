@@ -14,10 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habisin.R
 import com.example.habisin.data.local.AppTheme
 import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.SettingsViewModel
@@ -33,7 +35,7 @@ fun AppThemeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("App Theme", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_app_theme), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -54,17 +56,17 @@ fun AppThemeScreen(
                 .padding(20.dp)
         ) {
             Text(
-                "Pick how Habisin looks. \"System\" follows your device setting.",
+                stringResource(R.string.theme_description),
                 color    = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp
             )
             Spacer(Modifier.height(20.dp))
 
-            ThemeOption("Light",  current == AppTheme.LIGHT)  { viewModel.setTheme(AppTheme.LIGHT) }
+            ThemeOption(stringResource(R.string.theme_light),  current == AppTheme.LIGHT)  { viewModel.setTheme(AppTheme.LIGHT) }
             Spacer(Modifier.height(12.dp))
-            ThemeOption("Dark",   current == AppTheme.DARK)   { viewModel.setTheme(AppTheme.DARK) }
+            ThemeOption(stringResource(R.string.theme_dark),   current == AppTheme.DARK)   { viewModel.setTheme(AppTheme.DARK) }
             Spacer(Modifier.height(12.dp))
-            ThemeOption("System", current == AppTheme.SYSTEM) { viewModel.setTheme(AppTheme.SYSTEM) }
+            ThemeOption(stringResource(R.string.theme_system), current == AppTheme.SYSTEM) { viewModel.setTheme(AppTheme.SYSTEM) }
         }
     }
 }

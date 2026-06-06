@@ -14,10 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habisin.R
 import com.example.habisin.data.local.AppLanguage
 import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.SettingsViewModel
@@ -33,7 +35,7 @@ fun AppLanguageScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("App Language", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_app_language), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -54,15 +56,15 @@ fun AppLanguageScreen(
                 .padding(20.dp)
         ) {
             Text(
-                "Choose your preferred language. Changes apply to the whole app.",
+                stringResource(R.string.lang_description),
                 color    = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp
             )
             Spacer(Modifier.height(20.dp))
 
-            LanguageOption("English",          current == AppLanguage.EN) { viewModel.setLanguage(AppLanguage.EN) }
+            LanguageOption(stringResource(R.string.lang_english),    current == AppLanguage.EN) { viewModel.setLanguage(AppLanguage.EN) }
             Spacer(Modifier.height(12.dp))
-            LanguageOption("Bahasa Indonesia", current == AppLanguage.ID) { viewModel.setLanguage(AppLanguage.ID) }
+            LanguageOption(stringResource(R.string.lang_indonesian), current == AppLanguage.ID) { viewModel.setLanguage(AppLanguage.ID) }
         }
     }
 }

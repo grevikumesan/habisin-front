@@ -22,7 +22,7 @@ fun AboutScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("About Habisin!", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_about), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

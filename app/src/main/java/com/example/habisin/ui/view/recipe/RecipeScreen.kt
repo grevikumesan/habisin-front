@@ -217,6 +217,37 @@ fun RecipeScreen(
                   }
                 }
             }
+
+            // Generate can take a few seconds (Gemini latency) — show a clear blocking overlay.
+            if (detailUiState.isGenerating) {
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.45f))
+                        .clickable {},                       // swallow taps while generating
+                    contentAlignment = Alignment.Center
+                ) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.padding(32.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            CircularProgressIndicator(color = HabisinTheme.colors.action)
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                stringResource(R.string.recipe_generating_message),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

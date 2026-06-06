@@ -151,4 +151,12 @@
     <string name="notif_threshold_q">How many days before to remind you?</string>
     <string name="notif_threshold_value">%1$d days before expiry</string>
     <string name="notif_test">Send a test notification</string>
+
+    <!-- Settings screens -->
+    <string name="theme_description">Pick how Habisin looks. \"System\" follows your device setting.</string>
+    <string name="lang_description">Choose your preferred language. Changes apply to the whole app.</string>
+    <string name="faq_coming_soon">FAQ content will be added later.</string>
+
+    <!-- Generate loading -->
+    <string name="recipe_generating_message">Whipping up a recipe from your ingredients… this can take up to 15 seconds.</string>
 </resources>

@@ -69,7 +69,7 @@ fun NotificationScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("Notification", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_notification), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
