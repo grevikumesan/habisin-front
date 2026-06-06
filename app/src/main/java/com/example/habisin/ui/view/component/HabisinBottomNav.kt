@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -24,29 +25,29 @@ fun HabisinBottomNav(
     onNavigate: (String) -> Unit,
     onPlusClick: () -> Unit
 ) {
+    // Box wraps the bar's height (no leftover transparent strip). The FAB is offset
+    // upward so it straddles the bar's top edge; only the FAB itself overflows above.
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.BottomCenter
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
-                .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
                 .background(HabisinTheme.colors.navBar)
-                .padding(bottom = 20.dp),
+                .navigationBarsPadding()              // sit above the real system nav inset
+                .padding(top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-            NavIcon(Icons.Default.Home,     "Home",    currentRoute == "Home")    { onNavigate("Home") }
-            NavIcon(Icons.Default.Kitchen,  "Fridge",  currentRoute == "Fridge")  { onNavigate("Fridge") }
+            NavIcon(Icons.Default.Home,    "Home",    currentRoute == "Home")    { onNavigate("Home") }
+            NavIcon(Icons.Default.Kitchen, "Fridge",  currentRoute == "Fridge")  { onNavigate("Fridge") }
 
-            Spacer(modifier = Modifier.width(64.dp))
+            Spacer(modifier = Modifier.width(72.dp))  // gap for the FAB
 
-            NavIcon(Icons.Default.MenuBook, "Recipe",  currentRoute == "Recipe")  { onNavigate("Recipe") }
-            NavIcon(Icons.Default.Person,   "Profile", currentRoute == "Profile") { onNavigate("Profile") }
+            NavIcon(Icons.AutoMirrored.Filled.MenuBook, "Recipe",  currentRoute == "Recipe")  { onNavigate("Recipe") }
+            NavIcon(Icons.Default.Person,                "Profile", currentRoute == "Profile") { onNavigate("Profile") }
         }
 
         FloatingActionButton(
@@ -56,9 +57,10 @@ fun HabisinBottomNav(
             contentColor   = HabisinTheme.colors.onFab,
             modifier       = Modifier
                 .align(Alignment.TopCenter)
-                .size(64.dp)
+                .offset(y = (-24).dp)                 // raise so it sits on the bar's top edge
+                .size(60.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(36.dp))
+            Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(32.dp))
         }
     }
 }
