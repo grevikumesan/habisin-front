@@ -28,6 +28,19 @@ object ApiConfig {
                 Build.HARDWARE.contains("goldfish") ||
                 Build.HARDWARE.contains("ranchu")
 
+    private val host: String
+        get() = if (isEmulator) "http://10.0.2.2:3000" else "http://$LAN_HOST:3000"
+
     val BASE_URL: String
-        get() = if (isEmulator) "http://10.0.2.2:3000/api/" else "http://$LAN_HOST:3000/api/"
+        get() = "$host/api/"
+
+    /**
+     * Resolve an image path for Coil: full http(s) URLs pass through (e.g. Open Food Facts),
+     * relative ones like "/uploads/abc.jpg" get the backend host prepended. Null/blank → null.
+     */
+    fun imageUrl(path: String?): String? = when {
+        path.isNullOrBlank() -> null
+        path.startsWith("http", ignoreCase = true) -> path
+        else -> "$host/${path.trimStart('/')}"
+    }
 }

@@ -299,7 +299,7 @@ private fun RecipeGridCard(recipe: RecipeModel, width: Dp, imageHeight: Dp, onCl
             ) {
                 if (!recipe.imageUrl.isNullOrBlank()) {
                     AsyncImage(
-                        model = recipe.imageUrl,
+                        model = com.example.habisin.data.remote.ApiConfig.imageUrl(recipe.imageUrl),
                         contentDescription = recipe.resepName,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()

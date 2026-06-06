@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.habisin.data.remote.ApiConfig
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
@@ -166,9 +167,9 @@ fun ProductCardItem(product: ProductModel) {
                 contentAlignment = Alignment.Center
             ) {
                 if (!product.imageUrl.isNullOrEmpty()) {
-                    // Tampilkan gambar dari Backend menggunakan AsyncImage (Coil library)
+                    // Resolve relative /uploads paths to a full URL so Coil can load them.
                     AsyncImage(
-                        model = product.imageUrl,
+                        model = ApiConfig.imageUrl(product.imageUrl),
                         contentDescription = "${product.name}",
                         contentScale = ContentScale.Crop, // Agar gambar pas di dalam lingkaran
                         modifier = Modifier.fillMaxSize()

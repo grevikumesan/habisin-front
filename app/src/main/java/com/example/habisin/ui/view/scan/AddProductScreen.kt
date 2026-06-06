@@ -104,9 +104,10 @@ fun AddProductScreen(
                 colors = CardDefaults.cardColors(containerColor = HabisinTheme.colors.limeCard),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                if (uiState.imageUri != null) {
+                val previewImage = uiState.imageUri ?: uiState.imageUrl
+                if (previewImage != null) {
                     AsyncImage(
-                        model = uiState.imageUri,
+                        model = previewImage,
                         contentDescription = "Selected product image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop

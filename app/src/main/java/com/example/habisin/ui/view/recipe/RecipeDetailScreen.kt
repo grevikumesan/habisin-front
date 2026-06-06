@@ -61,7 +61,7 @@ fun RecipeDetailScreen(
         ) {
             if (!recipeImg.isNullOrBlank()) {
                 AsyncImage(
-                    model = recipeImg,
+                    model = com.example.habisin.data.remote.ApiConfig.imageUrl(recipeImg),
                     contentDescription = detailState.recipe?.resepName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
