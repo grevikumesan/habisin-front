@@ -46,7 +46,13 @@ class ExpiryNotificationWorker(
 
         val expired = data.expired
         val expiring = data.expiringSoon
-        if (expired.isEmpty() && expiring.isEmpty()) return Result.success()
+        val isTest = inputData.getBoolean(NotificationScheduler.KEY_TEST, false)
+
+        if (expired.isEmpty() && expiring.isEmpty()) {
+            // A manual test should always confirm it works, even when nothing's expiring.
+            if (isTest) postNotification("Notifikasi aktif ✓", "Belum ada bahan yang mendekati kedaluwarsa.")
+            return Result.success()
+        }
 
         val (title, body) = buildMessage(expired, expiring)
         postNotification(title, body)

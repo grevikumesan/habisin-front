@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,14 +46,21 @@ fun NotificationScreen(
         viewModel.setNotifEnabled(granted)
     }
 
+    fun needsNotifPermission(): Boolean =
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
+        android.content.pm.PackageManager.PERMISSION_GRANTED
+
     fun enableWithPermission() {
-        val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
-            android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (needsPermission) {
+        if (needsNotifPermission()) permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        else viewModel.setNotifEnabled(true)
+    }
+
+    // It's enabled by default, so on first open we may still lack the runtime permission
+    // (Android 13+). Request it once so notifications can actually post.
+    LaunchedEffect(Unit) {
+        if (enabled && needsNotifPermission()) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        } else {
-            viewModel.setNotifEnabled(true)
         }
     }
 
@@ -173,7 +181,10 @@ fun NotificationScreen(
 
                 // ── Test button ──
                 OutlinedButton(
-                    onClick = { viewModel.sendTestNotification() },
+                    onClick = {
+                        if (needsNotifPermission()) permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        else viewModel.sendTestNotification()
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = HabisinTheme.colors.action),
                     border = androidx.compose.foundation.BorderStroke(1.5.dp, HabisinTheme.colors.action),

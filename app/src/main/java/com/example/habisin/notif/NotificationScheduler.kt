@@ -8,6 +8,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.workDataOf
 import java.util.concurrent.TimeUnit
 
 /** Owns the notification channel + (un)scheduling of the periodic expiry check. */
@@ -15,6 +16,7 @@ object NotificationScheduler {
 
     const val CHANNEL_ID = "habisin_expiry"
     const val NOTIFICATION_ID = 1001
+    const val KEY_TEST = "is_test"
     private const val PERIODIC_WORK = "habisin_expiry_periodic"
     private const val ONE_TIME_WORK = "habisin_expiry_once"
 
@@ -53,7 +55,9 @@ object NotificationScheduler {
     /** Fire one check right now — used by the "Test notification" button. */
     fun runOnce(context: Context) {
         ensureChannel(context)
-        val request = OneTimeWorkRequestBuilder<ExpiryNotificationWorker>().build()
+        val request = OneTimeWorkRequestBuilder<ExpiryNotificationWorker>()
+            .setInputData(workDataOf(KEY_TEST to true))
+            .build()
         WorkManager.getInstance(context).enqueueUniqueWork(
             ONE_TIME_WORK,
             androidx.work.ExistingWorkPolicy.REPLACE,
