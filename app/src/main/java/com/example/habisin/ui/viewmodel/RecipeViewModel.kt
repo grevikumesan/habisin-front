@@ -45,6 +45,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
+                            imageUrl = it.imageUrl,
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
                         )
@@ -112,6 +113,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
+                            imageUrl = it.imageUrl,
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
                         )

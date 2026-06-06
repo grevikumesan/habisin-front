@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import coil.compose.AsyncImage
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.animateContentSize
@@ -29,6 +31,7 @@ private val HabisinDarkGreen = Color(0xFF1B4332)
 private val HabisinMidGreen = Color(0xFF2D6A4F)
 private val HabisinAccentGreen = Color(0xFFB7E4C7)
 private val HabisinLightCream = Color(0xFFFFF3D6)
+private val HabisinDetailAccent = Color(0xFFFF8666)  // coral numbered circles (matches design)
 
 // Enum biar type-safe (lebih baik daripada String)
 private enum class DetailTab { Ingredients, Directions }
@@ -49,20 +52,30 @@ fun RecipeDetailScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-        // ── Full-bleed background image (placeholder until real photos exist) ──
+        // ── Full-bleed background image (covers every screen edge) ──
+        val recipeImg = detailState.recipe?.imageUrl
         Box(
             modifier = Modifier
-                .fillMaxSize()                 // covers every screen edge
+                .fillMaxSize()
                 .background(HabisinMidGreen)
         ) {
-            // Emoji sits in the visible top area (the content block covers the bottom 60%).
-            Text(
-                "🍜",
-                fontSize = 96.sp,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 96.dp)
-            )
+            if (!recipeImg.isNullOrBlank()) {
+                AsyncImage(
+                    model = recipeImg,
+                    contentDescription = detailState.recipe?.resepName,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                // Placeholder: emoji in the visible top area (block covers the bottom 60%).
+                Text(
+                    "🍜",
+                    fontSize = 96.sp,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 96.dp)
+                )
+            }
         }
 
         // ── Back button (top-left) ──
@@ -247,14 +260,14 @@ private fun IngredientRow(index: Int, text: String) {
             modifier = Modifier
                 .size(28.dp)
                 .clip(CircleShape)
-                .background(HabisinLightCream),
+                .background(HabisinDetailAccent),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = HabisinDarkGreen
+                color = Color.White
             )
         }
         Spacer(Modifier.width(12.dp))
@@ -269,14 +282,14 @@ private fun DirectionRow(index: Int, text: String) {
             modifier = Modifier
                 .size(28.dp)
                 .clip(CircleShape)
-                .background(HabisinLightCream),
+                .background(HabisinDetailAccent),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = HabisinDarkGreen
+                color = Color.White
             )
         }
         Spacer(Modifier.width(12.dp))

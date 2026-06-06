@@ -22,6 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -171,16 +173,16 @@ fun RecipeScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             items(recommendedRecipes) { recipe ->
-                                RecipeGridCard(recipe = recipe, width = 180.dp, onClick = { onRecipeClick(recipe.id) })
+                                RecipeGridCard(recipe = recipe, width = 300.dp, imageHeight = 160.dp, onClick = { onRecipeClick(recipe.id) })
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
                     if (otherRecipes.isNotEmpty()) {
-                        Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
+                        Text("Other Recipes", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         Spacer(modifier = Modifier.height(12.dp))
-                        Box(modifier = Modifier.height(340.dp)) {
+                        Box(modifier = Modifier.height(400.dp)) {
                             LazyHorizontalGrid(
                                 rows = GridCells.Fixed(2),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -188,7 +190,7 @@ fun RecipeScreen(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 items(otherRecipes) { recipe ->
-                                    RecipeGridCard(recipe = recipe, width = 165.dp, onClick = { onRecipeClick(recipe.id) })
+                                    RecipeGridCard(recipe = recipe, width = 165.dp, imageHeight = 110.dp, onClick = { onRecipeClick(recipe.id) })
                                 }
                             }
                         }
@@ -279,33 +281,44 @@ private fun ToggleChip(label: String, selected: Boolean, modifier: Modifier = Mo
 
 /** Vertical recipe card: image on top, then name + one-line (…) description, left-aligned. */
 @Composable
-private fun RecipeGridCard(recipe: RecipeModel, width: Dp, onClick: () -> Unit) {
+private fun RecipeGridCard(recipe: RecipeModel, width: Dp, imageHeight: Dp, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier.width(width).clickable { onClick() }
     ) {
-        Column {
-            // Food image area (placeholder until real photos are bundled).
+        Column(modifier = Modifier.padding(8.dp)) {
+            // Food image (rounded, inset). Real photo when present, else a placeholder.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(96.dp)
+                    .height(imageHeight)
+                    .clip(RoundedCornerShape(12.dp))
                     .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Default.Restaurant,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(34.dp)
-                )
+                if (!recipe.imageUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model = recipe.imageUrl,
+                        contentDescription = recipe.resepName,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.Restaurant,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(34.dp)
+                    )
+                }
             }
-            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp)) {
                 Text(
                     recipe.resepName,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
+                    fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
