@@ -13,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.width
 import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
@@ -25,7 +27,7 @@ fun CategoryItem(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(horizontal = 8.dp) // Pasang modifier di sini
+        modifier = modifier.padding(horizontal = 8.dp).width(76.dp) // fixed width so all chips align
     ) {
         Box(
             modifier = Modifier
@@ -46,7 +48,12 @@ fun CategoryItem(
             text = label,
             fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-            color = if (isSelected) MaterialTheme.colorScheme.onBackground else HabisinTheme.colors.textMuted
+            color = if (isSelected) MaterialTheme.colorScheme.onBackground else HabisinTheme.colors.textMuted,
+            textAlign = TextAlign.Center,
+            minLines = 2,          // reserve 2 lines so long & short names line up
+            maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            lineHeight = 14.sp
         )
     }
 }

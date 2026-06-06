@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 // IMPORT KOMPONEN BUATANMU:
@@ -170,7 +171,7 @@ fun RecipeScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             items(recommendedRecipes) { recipe ->
-                                RecommendedRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                                RecipeGridCard(recipe = recipe, width = 180.dp, onClick = { onRecipeClick(recipe.id) })
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))
@@ -179,7 +180,7 @@ fun RecipeScreen(
                     if (otherRecipes.isNotEmpty()) {
                         Text("Recipe Others", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         Spacer(modifier = Modifier.height(12.dp))
-                        Box(modifier = Modifier.height(260.dp)) {
+                        Box(modifier = Modifier.height(340.dp)) {
                             LazyHorizontalGrid(
                                 rows = GridCells.Fixed(2),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -187,7 +188,7 @@ fun RecipeScreen(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 items(otherRecipes) { recipe ->
-                                    OtherRecipeCard(recipe = recipe, onClick = { onRecipeClick(recipe.id) })
+                                    RecipeGridCard(recipe = recipe, width = 165.dp, onClick = { onRecipeClick(recipe.id) })
                                 }
                             }
                         }
@@ -276,49 +277,47 @@ private fun ToggleChip(label: String, selected: Boolean, modifier: Modifier = Mo
 
 // ─── PRIVATE COMPOSABLE UNTUK CARD (Langsung taruh di sini saja) ───────────
 
+/** Vertical recipe card: image on top, then name + one-line (…) description, left-aligned. */
 @Composable
-private fun RecommendedRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
+private fun RecipeGridCard(recipe: RecipeModel, width: Dp, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        modifier = Modifier.width(260.dp).height(140.dp).clickable { onClick() }
+        modifier = Modifier.width(width).clickable { onClick() }
     ) {
-        Row(modifier = Modifier.fillMaxSize().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column {
+            // Food image area (placeholder until real photos are bundled).
             Box(
-                modifier = Modifier.size(70.dp).clip(CircleShape).background(HabisinTheme.colors.onLimeCard),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(96.dp)
+                    .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Default.Restaurant, contentDescription = null, tint = HabisinTheme.colors.limeCard)
+                Icon(
+                    Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(34.dp)
+                )
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(recipe.resepDescription, fontSize = 12.sp, color = HabisinTheme.colors.textMuted, maxLines = 3, overflow = TextOverflow.Ellipsis)
-            }
-        }
-    }
-}
-
-@Composable
-private fun OtherRecipeCard(recipe: RecipeModel, onClick: () -> Unit) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        modifier = Modifier.width(220.dp).height(110.dp).clickable { onClick() }
-    ) {
-        Row(modifier = Modifier.fillMaxSize().padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier.size(50.dp).clip(RoundedCornerShape(8.dp)).background(HabisinTheme.colors.onLimeCard),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Restaurant, contentDescription = null, tint = HabisinTheme.colors.limeCard)
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(recipe.resepName, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp)) {
+                Text(
+                    recipe.resepName,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = Modifier.height(2.dp))
-                Text(recipe.resepDescription, fontSize = 11.sp, color = HabisinTheme.colors.textMuted, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(
+                    recipe.resepDescription,
+                    fontSize = 12.sp,
+                    color = HabisinTheme.colors.textMuted,
+                    maxLines = 1,                       // one line; "…" shows it's longer
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

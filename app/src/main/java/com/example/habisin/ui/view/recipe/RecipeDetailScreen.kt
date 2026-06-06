@@ -49,15 +49,20 @@ fun RecipeDetailScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 
-        // ── Background image placeholder (karena belum ada imageUrl) ──
+        // ── Full-bleed background image (placeholder until real photos exist) ──
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.45f)
-                .background(HabisinMidGreen),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()                 // covers every screen edge
+                .background(HabisinMidGreen)
         ) {
-            Text("🍜", fontSize = 100.sp)
+            // Emoji sits in the visible top area (the content block covers the bottom 60%).
+            Text(
+                "🍜",
+                fontSize = 96.sp,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 96.dp)
+            )
         }
 
         // ── Back button (top-left) ──
@@ -96,7 +101,7 @@ fun RecipeDetailScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.65f)
+                        .fillMaxHeight(0.6f)
                         .align(Alignment.BottomCenter),
                     color = HabisinMidGreen,
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
