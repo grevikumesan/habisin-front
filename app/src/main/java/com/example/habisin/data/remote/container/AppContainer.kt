@@ -51,7 +51,15 @@ class AppContainer(context: Context) {
             } else {
                 chain.request()
             }
-            chain.proceed(request)
+            val response = chain.proceed(request)
+
+            // Token ditolak BE (expired / user ke-reseed) → buang session biar app
+            // balik ke Login otomatis. Cuma kalau tadi emang ngirim token (jadi 401 dari
+            // login yg salah password nggak ke-clear apa-apa).
+            if (response.code == 401 && !token.isNullOrEmpty()) {
+                runBlocking { sessionManager.clearSession() }
+            }
+            response
         }
         .addInterceptor(loggingInterceptor)
         .build()

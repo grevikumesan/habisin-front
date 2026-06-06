@@ -97,6 +97,20 @@ fun AppRouter() {
             currentRoute !in screensWithoutBottomBar &&
             !currentRoute.startsWith("RecipeDetail")
 
+    // Kalau session ke-clear pas lagi login (logout / token 401 expired), balik ke Login.
+    // Pakai guard wasLoggedIn biar nggak salah-trigger pas cold start (false → true).
+    var wasLoggedIn by remember { mutableStateOf(false) }
+    LaunchedEffect(isLoggedIn) {
+        if (wasLoggedIn && !isLoggedIn &&
+            currentRoute != Routes.LOGIN && currentRoute != Routes.REGISTER
+        ) {
+            navController.navigate(Routes.LOGIN) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        wasLoggedIn = isLoggedIn
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color    = MaterialTheme.colorScheme.background
