@@ -42,7 +42,7 @@ fun ExpiringSoonCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text       = "ATTENTION REQUIRED",
-                color      = HabisinTheme.colors.onAttentionCard,
+                color      = HabisinTheme.colors.onAttentionCard.copy(alpha = 0.6f),
                 fontSize   = 11.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
@@ -51,7 +51,8 @@ fun ExpiringSoonCard(
             Text(
                 text       = if (items.isEmpty()) "Nothing expiring soon"
                 else "${items.size} items expiring soon",
-                color      = HabisinTheme.colors.onAttentionCard,
+                color      = if (items.isEmpty()) HabisinTheme.colors.onAttentionCard
+                             else HabisinTheme.colors.action,   // coral count = the urgency accent
                 fontSize   = 22.sp,
                 fontWeight = FontWeight.Bold,
                 lineHeight = 28.sp
@@ -204,7 +205,7 @@ fun SectionHeader(
         if (actionLabel != null) {
             Text(
                 text       = actionLabel,
-                color      = HabisinTheme.colors.action,
+                color      = HabisinTheme.colors.textMuted,
                 fontSize   = 13.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier   = Modifier.clickable(onClick = onActionClick)

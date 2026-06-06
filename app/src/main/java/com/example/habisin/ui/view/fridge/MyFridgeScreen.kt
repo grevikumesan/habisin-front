@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -199,7 +200,8 @@ fun ProductCardItem(product: ProductModel) {
             }
         }
 
-        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft)
+        val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft, isDark)
         Box(
             modifier = Modifier
                 .wrapContentWidth()
@@ -219,11 +221,16 @@ fun ProductCardItem(product: ProductModel) {
     }
 }
 
-fun getBadgeColor(days: Int): Pair<Color, Color> {
-    return when {
-        days < 0 -> Pair(Color(0xFF8B0000), Color.White)
-        days <= 2 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))   // peach + brown (urgent)
-        else      -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))   // green (safe)
+fun getBadgeColor(days: Int, isDark: Boolean): Pair<Color, Color> {
+    // Semantic status colors, muted and tuned per theme so they don't look like bright stickers.
+    return if (isDark) when {
+        days < 0  -> Pair(Color(0xFF4A2420), Color(0xFFFFB4A8))   // expired
+        days <= 2 -> Pair(Color(0xFF3E331F), Color(0xFFE8C58A))   // urgent (amber)
+        else      -> Pair(Color(0xFF273620), Color(0xFFB8D89A))   // safe (green)
+    } else when {
+        days < 0  -> Pair(Color(0xFFF4D7D7), Color(0xFF8B0000))
+        days <= 2 -> Pair(Color(0xFFF6E2C6), Color(0xFF8D5524))
+        else      -> Pair(Color(0xFFDDEAD0), Color(0xFF2E4600))
     }
 }
 

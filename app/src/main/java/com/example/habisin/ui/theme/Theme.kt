@@ -46,47 +46,49 @@ data class HabisinColors(
     val divider: Color,
 )
 
+// Minimal & cohesive: neutral surfaces everywhere, coral only as the action accent,
+// green only on the nav bar. Selected states are a hueless inverted neutral.
 private val LightHabisinColors = HabisinColors(
     action              = HabisinCoral,
     onAction            = HabisinWhite,
     textMuted           = HabisinTextMuted,
     navBar              = HabisinOlive,
-    onNavBar            = HabisinWhite,
-    navSelected         = HabisinPeach,
-    fab                 = HabisinLime,
+    onNavBar            = HabisinWhite.copy(alpha = 0.55f),  // dimmed unselected
+    navSelected         = HabisinWhite,                      // bright selected, no coral
+    fab                 = HabisinLime,                       // FAB stays in the nav's green family
     onFab               = HabisinOlive,
-    limeCard            = HabisinLime,
-    onLimeCard          = HabisinOlive,
-    peachCard           = HabisinPeach,
+    limeCard            = HabisinLightGray,                  // neutral cards
+    onLimeCard          = HabisinTextDark,
+    peachCard           = HabisinLightGray,
     onPeachCard         = HabisinTextDark,
-    selectedContainer   = HabisinLime,    // light keeps the brand lime highlight
-    onSelectedContainer = HabisinOlive,
-    attentionCard       = HabisinCoral,
+    selectedContainer   = HabisinTextDark,                  // inverted neutral = hueless selection
+    onSelectedContainer = HabisinWhite,
+    attentionCard       = HabisinLightGray,                 // neutral alert card (+ coral count accent at call site)
     onAttentionCard     = HabisinTextDark,
-    attentionRow        = HabisinPeach,
+    attentionRow        = HabisinWhite,
     fieldBg             = HabisinLightGray,
     fieldHint           = HabisinTextMuted,
     divider             = DividerGray,
 )
 
 private val DarkHabisinColors = HabisinColors(
-    action              = HabisinCoralDarkMode,   // softened coral for dark
+    action              = HabisinCoralDarkMode,   // softened coral, buttons only
     onAction            = HabisinWhite,
     textMuted           = HabisinDarkMuted,
     navBar              = HabisinDarkNav,         // the only green in dark
-    onNavBar            = HabisinDarkText,
-    navSelected         = HabisinCoralDarkMode,    // selected nav = coral accent (softened)
+    onNavBar            = HabisinDarkText.copy(alpha = 0.55f),
+    navSelected         = HabisinDarkText,        // bright white selected, no coral
     fab                 = HabisinDarkFab,
     onFab               = HabisinDarkFabIcon,
-    limeCard            = HabisinDarkSurface2,     // neutral, not olive
+    limeCard            = HabisinDarkSurface2,     // neutral
     onLimeCard          = HabisinDarkText,
-    peachCard           = HabisinDarkSurface2,     // neutral, not brown
+    peachCard           = HabisinDarkSurface2,
     onPeachCard         = HabisinDarkText,
-    selectedContainer   = HabisinDarkSelected,     // coral-tinted = visible selection
-    onSelectedContainer = HabisinDarkOnSelected,
-    attentionCard       = HabisinDarkAttention,    // muted warm-dark, not bright coral
+    selectedContainer   = HabisinDarkText,         // inverted near-white = hueless selection
+    onSelectedContainer = HabisinDarkBg,
+    attentionCard       = HabisinDarkSurface2,     // neutral
     onAttentionCard     = HabisinDarkText,
-    attentionRow        = HabisinDarkAttentionRow,
+    attentionRow        = HabisinDarkSurface,
     fieldBg             = HabisinDarkSurface2,
     fieldHint           = HabisinDarkMuted,
     divider             = HabisinDarkDivider,

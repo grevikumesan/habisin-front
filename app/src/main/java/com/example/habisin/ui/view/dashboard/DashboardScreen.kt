@@ -143,8 +143,8 @@ private fun DashboardContent(
         ) {
             StatCard(
                 icon           = Icons.Default.Kitchen,
-                iconTint       = HabisinTeal,
-                iconBackground = Color.White,
+                iconTint       = MaterialTheme.colorScheme.onSurfaceVariant,
+                iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.totalItems.toString().padStart(2, '0').take(2)
                     .let { if (state.totalItems < 10) state.totalItems.toString() else it },
                 label          = "TOTAL ITEMS",
@@ -152,8 +152,8 @@ private fun DashboardContent(
             )
             StatCard(
                 icon           = Icons.Default.AccessTime,
-                iconTint       = HabisinTheme.colors.action,
-                iconBackground = Color.White,
+                iconTint       = MaterialTheme.colorScheme.onSurfaceVariant,
+                iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.expiringTotal.toString().padStart(2, '0'),    // ← ganti
                 label          = "EXPIRING",
                 modifier       = Modifier.weight(1f)

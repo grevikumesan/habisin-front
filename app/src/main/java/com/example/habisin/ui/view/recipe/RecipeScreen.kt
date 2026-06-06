@@ -260,14 +260,14 @@ private fun ToggleChip(label: String, selected: Boolean, modifier: Modifier = Mo
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(50))
-            .background(if (selected) HabisinTheme.colors.action else androidx.compose.ui.graphics.Color.Transparent)
+            .background(if (selected) HabisinTheme.colors.selectedContainer else androidx.compose.ui.graphics.Color.Transparent)
             .clickable(onClick = onClick)
             .padding(vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             label,
-            color = if (selected) HabisinTheme.colors.onAction else MaterialTheme.colorScheme.onSurface,
+            color = if (selected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp
         )
