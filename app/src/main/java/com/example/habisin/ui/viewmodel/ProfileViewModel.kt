@@ -16,12 +16,31 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
     private val container = AppContainer(app)
     private val sessionManager = container.sessionManager
     private val authRepository = container.authRepository
+    private val paymentRepository = container.paymentRepository
 
     var profileUiState: ProfileUiState by mutableStateOf(ProfileUiState.Loading)
         private set
 
+    // Whether the user already has an active PRO subscription (drives the Profile upsell card).
+    var isPro: Boolean by mutableStateOf(false)
+        private set
+
     init {
         loadProfile()
+        loadSubscriptionStatus()
+    }
+
+    private fun loadSubscriptionStatus() {
+        viewModelScope.launch {
+            try {
+                val response = paymentRepository.getStatus()
+                if (response.isSuccessful) {
+                    isPro = response.body()?.data?.isActive ?: false
+                }
+            } catch (_: Exception) {
+                // leave isPro = false on error; the upsell just shows "Upgrade"
+            }
+        }
     }
 
     fun loadProfile() {

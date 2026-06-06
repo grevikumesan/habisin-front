@@ -74,8 +74,8 @@ fun ProfileScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // ── Upgrade To Pro ──
-        UpgradeToProCard(onClick = onNavigateToSubscription)
+        // ── Pro status / upsell ──
+        UpgradeToProCard(isPro = viewModel.isPro, onClick = onNavigateToSubscription)
 
         Spacer(Modifier.height(28.dp))
 
@@ -141,7 +141,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun UpgradeToProCard(onClick: () -> Unit) {
+private fun UpgradeToProCard(isPro: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -168,21 +168,30 @@ private fun UpgradeToProCard(onClick: () -> Unit) {
         Spacer(Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                "Upgrade To Pro",
+                if (isPro) "Habisin PRO" else "Upgrade To Pro",
                 color = HabisinTheme.colors.onLimeCard,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
             )
             Text(
-                "Buka semua resep eksklusif & masak tanpa batas",
+                if (isPro) "Langganan aktif — semua fitur terbuka"
+                else "Buka semua resep eksklusif & masak tanpa batas",
                 color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.75f),
                 fontSize = 12.sp
             )
         }
-        Icon(
-            imageVector        = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint               = HabisinTheme.colors.onLimeCard
-        )
+        if (isPro) {
+            Icon(
+                imageVector        = Icons.Default.CheckCircle,
+                contentDescription = null,
+                tint               = HabisinTheme.colors.onLimeCard
+            )
+        } else {
+            Icon(
+                imageVector        = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint               = HabisinTheme.colors.onLimeCard
+            )
+        }
     }
 }
