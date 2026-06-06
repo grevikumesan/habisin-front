@@ -13,6 +13,7 @@ import androidx.core.os.LocaleListCompat
 import com.example.habisin.data.local.AppLanguage
 import com.example.habisin.data.local.AppTheme
 import com.example.habisin.data.local.SettingsManager
+import com.example.habisin.notif.NotificationScheduler
 import com.example.habisin.ui.router.AppRouter
 import com.example.habisin.ui.theme.HabisInTheme
 import kotlinx.coroutines.flow.first
@@ -32,6 +33,12 @@ class MainActivity : ComponentActivity() {
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.forLanguageTags(tag)
         )
+
+        // Expiry notifications: create channel + (re)schedule the background poll if enabled.
+        NotificationScheduler.ensureChannel(applicationContext)
+        if (runBlocking { settings.isNotifEnabled() }) {
+            NotificationScheduler.schedulePeriodic(applicationContext)
+        }
 
         setContent {
             val themePref by settings.themeFlow.collectAsState(initial = AppTheme.SYSTEM)

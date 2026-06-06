@@ -10,6 +10,7 @@ import com.example.habisin.data.remote.repository.RecipeRepository
 import com.example.habisin.data.remote.service.AuthService
 import com.example.habisin.data.remote.service.DashboardService
 import com.example.habisin.data.remote.service.FoodService
+import com.example.habisin.data.remote.service.NotificationApiService
 import com.example.habisin.data.remote.service.OpenFoodService
 import com.example.habisin.data.remote.service.PaymentService
 import com.example.habisin.data.remote.service.RecipeService
@@ -76,6 +77,7 @@ class AppContainer(context: Context) {
     private val foodService: FoodService = retrofit.create(FoodService::class.java)
     private val recipeService: RecipeService = retrofit.create(RecipeService::class.java)
     private val paymentService: PaymentService = retrofit.create(PaymentService::class.java)
+    val notificationService: NotificationApiService = retrofit.create(NotificationApiService::class.java)
 
     val authRepository: AuthRepository = AuthRepository(authService, sessionManager)
     val dashboardRepository: DashboardRepository = DashboardRepository(dashboardService, sessionManager)
