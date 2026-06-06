@@ -47,9 +47,11 @@ val HabisinDarkNav       = Color(0xFF18230F)  // bottom nav (deep olive)
 val HabisinDarkFab       = Color(0xFF3A4A12)  // FAB surface
 val HabisinDarkFabIcon   = Color(0xFFD7E59A)  // FAB icon
 
-// Coral accent, softened for dark mode so it doesn't vibrate against near-black
-// (pure #FF8666 reads as harsh/over-saturated on dark surfaces).
-val HabisinCoralDarkMode  = Color(0xFFE57E61)  // muted terracotta-coral for dark
+// Warm accent — harmonizes with the green brand, reads as "food/appetite", and (unlike
+// pink-coral) a honey-amber sits calmly on near-black instead of vibrating. Tuned per theme.
+val HabisinAccentLight    = Color(0xFFE0702A)  // rich warm orange (on light → white text)
+val HabisinAccentDark     = Color(0xFFE8A55A)  // softer honey-amber (on dark → dark text)
+val HabisinCoralDarkMode  = Color(0xFFE57E61)  // (legacy)
 val HabisinDarkSelected    = Color(0xFF3A2922)  // coral-tinted dark surface
 val HabisinDarkOnSelected  = HabisinCoralDarkMode
 

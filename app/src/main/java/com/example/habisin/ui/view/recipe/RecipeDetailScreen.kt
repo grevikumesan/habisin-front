@@ -31,7 +31,7 @@ private val HabisinDarkGreen = Color(0xFF1B4332)
 private val HabisinMidGreen = Color(0xFF2D6A4F)
 private val HabisinAccentGreen = Color(0xFFB7E4C7)
 private val HabisinLightCream = Color(0xFFFFF3D6)
-private val HabisinDetailAccent = Color(0xFFFF8666)  // coral numbered circles (matches design)
+private val HabisinDetailAccent = Color(0xFFE8A55A)  // honey-amber numbered circles
 
 // Enum biar type-safe (lebih baik daripada String)
 private enum class DetailTab { Ingredients, Directions }
@@ -267,7 +267,7 @@ private fun IngredientRow(index: Int, text: String) {
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = Color.White
+                color = HabisinDarkGreen
             )
         }
         Spacer(Modifier.width(12.dp))
@@ -289,7 +289,7 @@ private fun DirectionRow(index: Int, text: String) {
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = Color.White
+                color = HabisinDarkGreen
             )
         }
         Spacer(Modifier.width(12.dp))

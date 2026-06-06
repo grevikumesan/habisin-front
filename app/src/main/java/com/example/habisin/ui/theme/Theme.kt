@@ -49,7 +49,7 @@ data class HabisinColors(
 // Minimal & cohesive: neutral surfaces everywhere, coral only as the action accent,
 // green only on the nav bar. Selected states are a hueless inverted neutral.
 private val LightHabisinColors = HabisinColors(
-    action              = HabisinCoral,
+    action              = HabisinAccentLight,
     onAction            = HabisinWhite,
     textMuted           = HabisinTextMuted,
     navBar              = HabisinOlive,
@@ -72,8 +72,8 @@ private val LightHabisinColors = HabisinColors(
 )
 
 private val DarkHabisinColors = HabisinColors(
-    action              = HabisinCoralDarkMode,   // softened coral, buttons only
-    onAction            = HabisinWhite,
+    action              = HabisinAccentDark,      // honey-amber, calm on near-black
+    onAction            = HabisinDarkBg,          // dark text on the light amber for contrast
     textMuted           = HabisinDarkMuted,
     navBar              = HabisinDarkNav,         // the only green in dark
     onNavBar            = HabisinDarkText.copy(alpha = 0.55f),
@@ -105,7 +105,7 @@ object HabisinTheme {
 
 //Light scheme — coral is the primary (interactive) color; olive/teal are brand support.
 private val HabisinLightColors = lightColorScheme(
-    primary          = HabisinCoral,
+    primary          = HabisinAccentLight,
     onPrimary        = HabisinWhite,
     secondary        = HabisinOlive,
     onSecondary      = HabisinWhite,
@@ -122,8 +122,8 @@ private val HabisinLightColors = lightColorScheme(
 
 //Dark scheme — "Verdant Dark". Opaque surfaces, coral stays the interactive color (softened).
 private val HabisinDarkColors = darkColorScheme(
-    primary          = HabisinCoralDarkMode,
-    onPrimary        = HabisinWhite,
+    primary          = HabisinAccentDark,
+    onPrimary        = HabisinDarkBg,
     secondary        = HabisinLime,
     onSecondary      = HabisinOlive,
     tertiary         = HabisinTeal,
