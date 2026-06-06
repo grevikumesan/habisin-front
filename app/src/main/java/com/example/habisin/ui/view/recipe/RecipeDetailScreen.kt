@@ -36,13 +36,16 @@ private enum class DetailTab { Ingredients, Directions }
 @Composable
 fun RecipeDetailScreen(
     recipeId: Int,
+    isCatalog: Boolean = true,
     viewModel: RecipeViewModel,
     onBack: () -> Unit
 ) {
     val detailState by viewModel.detailUiState.collectAsState()
 
-    // Fetch detail saat masuk screen (atau saat id berubah)
-    LaunchedEffect(recipeId) { viewModel.getResepById(recipeId) }
+    // Catalog browse → /catalog/:id ; generated/saved recipe → /resep/:id
+    LaunchedEffect(recipeId, isCatalog) {
+        if (isCatalog) viewModel.loadCatalogDetail(recipeId) else viewModel.getResepById(recipeId)
+    }
 
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
 

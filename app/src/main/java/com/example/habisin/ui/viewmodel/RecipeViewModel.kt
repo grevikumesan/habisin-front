@@ -30,47 +30,79 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
         _generatedRecipeId.value = null
     }
 
-// ─── GET ALL ───────────────────────────────────────────
+// ─── BROWSE CATALOG (the 16 seeded recipes shown on the Recipe tab) ───────
     fun loadRecipes() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
             try {
-                val response = repository.getAllResep()
+                // Fetch the whole catalog (limit high enough for all of it); the screen
+                // does its own search/category filtering client-side.
+                val response = repository.getCatalog(page = 1, limit = 100)
                 if (response.isSuccessful) {
                     val recipes = response.body()?.data?.map {
                         RecipeModel(
                             id = it.id,
-                            resepName = it.resepName,
-                            resepDescription = it.resepDescription,
-                            resepCategory = it.resepCategory,
-                            resepIngredients = it.resepIngredients,
-                            resepDirections = it.resepDirections
+                            resepName = it.name ?: "",
+                            resepDescription = it.description ?: "",
+                            resepCategory = it.category ?: "",
+                            resepIngredients = it.ingredients,
+                            resepDirections = it.directions
                         )
                     } ?: emptyList()
 
-                    android.util.Log.d("RECIPE_VM", "Success, ${recipes.size} recipes loaded, needsSubscription set to false")
+                    android.util.Log.d("RECIPE_VM", "Catalog loaded: ${recipes.size} recipes")
 
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         recipes = recipes,
-                        needsSubscription = false  // ← penting! clear flag dari fetch sebelumnya
+                        needsSubscription = false
                     )
                 } else {
-                    val errorBody = response.errorBody()?.string()
-                    val isSubRequired = response.code() == 403 &&
-                            errorBody?.contains("\"subscriptionRequired\":true") == true
-
-                    android.util.Log.d("RECIPE_VM", "Failed: code=${response.code()}, isSubRequired=$isSubRequired")
-
+                    android.util.Log.d("RECIPE_VM", "Catalog failed: code=${response.code()}")
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = if (isSubRequired) null else "Gagal memuat resep (${response.code()})",
-                        needsSubscription = isSubRequired
+                        errorMessage = "Gagal memuat resep (${response.code()})"
                     )
                 }
             } catch (e: Exception) {
                 android.util.Log.e("RECIPE_VM", "Exception: ${e.message}")
                 _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    errorMessage = e.message ?: "Terjadi kesalahan"
+                )
+            }
+        }
+    }
+
+    // ─── CATALOG DETAIL (ingredients + directions) ─────────
+    fun loadCatalogDetail(id: Int) {
+        viewModelScope.launch {
+            _detailUiState.value = _detailUiState.value.copy(isLoading = true, errorMessage = null)
+            try {
+                val response = repository.getCatalogById(id)
+                if (response.isSuccessful) {
+                    val data = response.body()?.data
+                    val recipe = data?.let {
+                        RecipeModel(
+                            id = it.id,
+                            resepName = it.name ?: "",
+                            resepDescription = it.description ?: "",
+                            resepCategory = it.category ?: "",
+                            resepIngredients = it.ingredients,
+                            resepDirections = it.directions
+                        )
+                    }
+                    _detailUiState.value = _detailUiState.value.copy(isLoading = false, recipe = recipe)
+                } else {
+                    val isSubRequired = response.code() == 403
+                    _detailUiState.value = _detailUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = if (isSubRequired) "Resep ini khusus PRO. Upgrade untuk membukanya."
+                                       else "Resep tidak ditemukan (${response.code()})"
+                    )
+                }
+            } catch (e: Exception) {
+                _detailUiState.value = _detailUiState.value.copy(
                     isLoading = false,
                     errorMessage = e.message ?: "Terjadi kesalahan"
                 )

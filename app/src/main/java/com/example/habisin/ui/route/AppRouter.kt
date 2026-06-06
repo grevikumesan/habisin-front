@@ -55,7 +55,7 @@ object Routes {
     const val RECIPE          = "Recipe"
     const val PROFILE         = "Profile"
     const val ADD_PRODUCT     = "AddProduct"
-    const val RECIPE_DETAIL   = "RecipeDetail/{recipeId}"
+    const val RECIPE_DETAIL   = "RecipeDetail/{recipeId}?catalog={catalog}"
     const val LANGUAGE        = "Language"
     const val THEME           = "Theme"
     const val NOTIFICATION    = "Notification"
@@ -64,7 +64,8 @@ object Routes {
     const val SUBSCRIPTION    = "Subscription"
     const val BARCODE_SCANNER = "BarcodeScanner"
 
-    fun recipeDetail(id: Int) = "RecipeDetail/$id"
+    // catalog=true → browse catalog detail (GET /catalog/:id); false → saved/generated (GET /resep/:id)
+    fun recipeDetail(id: Int, catalog: Boolean = true) = "RecipeDetail/$id?catalog=$catalog"
 }
 
 @Composable
@@ -211,7 +212,7 @@ fun AppRouter() {
                     // Navigate to detail when generate succeeds
                     LaunchedEffect(generatedRecipeId) {                                           // ← add
                         generatedRecipeId?.let { id ->
-                            navController.navigate(Routes.recipeDetail(id))
+                            navController.navigate(Routes.recipeDetail(id, catalog = false))
                             recipeViewModel.clearGeneratedRecipeId()
                         }
                     }
@@ -323,12 +324,17 @@ fun AppRouter() {
 
                 composable(
                     route = Routes.RECIPE_DETAIL,
-                    arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                    arguments = listOf(
+                        navArgument("recipeId") { type = NavType.IntType },
+                        navArgument("catalog") { type = NavType.BoolType; defaultValue = true }
+                    )
                 ) { backStackEntry ->
                     val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: return@composable
+                    val isCatalog = backStackEntry.arguments?.getBoolean("catalog") ?: true
                     val recipeViewModel: RecipeViewModel = viewModel()
                     RecipeDetailScreen(
                         recipeId = recipeId,
+                        isCatalog = isCatalog,
                         viewModel = recipeViewModel,
                         onBack = { navController.popBackStack() }
                     )
