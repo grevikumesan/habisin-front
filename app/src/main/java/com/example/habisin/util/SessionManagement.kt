@@ -17,6 +17,8 @@ class SessionManager(private val context: Context) {
     //Keys
     companion object {
         private val KEY_TOKEN      = stringPreferencesKey("token")
+        private val KEY_USERNAME   = stringPreferencesKey("username")
+        private val KEY_EMAIL      = stringPreferencesKey("email")
     }
 
     //Write
@@ -24,6 +26,14 @@ class SessionManager(private val context: Context) {
     suspend fun saveSession(token: String) {
         store.edit { prefs ->
             prefs[KEY_TOKEN]      = token
+        }
+    }
+
+    /** Simpan identitas user buat ditampilin di Profile (login cuma balikin token). */
+    suspend fun saveUserInfo(username: String?, email: String?) {
+        store.edit { prefs ->
+            username?.let { prefs[KEY_USERNAME] = it }
+            email?.let { prefs[KEY_EMAIL] = it }
         }
     }
 
@@ -35,6 +45,12 @@ class SessionManager(private val context: Context) {
 
     suspend fun getToken(): String? =
         store.data.map { it[KEY_TOKEN] }.first()
+
+    suspend fun getUsername(): String? =
+        store.data.map { it[KEY_USERNAME] }.first()
+
+    suspend fun getEmail(): String? =
+        store.data.map { it[KEY_EMAIL] }.first()
 
     suspend fun isLoggedIn(): Boolean =
         getToken() != null

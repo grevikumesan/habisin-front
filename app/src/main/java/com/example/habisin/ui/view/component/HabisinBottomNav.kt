@@ -16,10 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.habisin.ui.theme.HabisinLime
-import com.example.habisin.ui.theme.HabisinOlive
-import com.example.habisin.ui.theme.HabisinPeach
-import com.example.habisin.ui.theme.HabisinWhite
+import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
 fun HabisinBottomNav(
@@ -38,7 +35,7 @@ fun HabisinBottomNav(
                 .height(90.dp)
                 .align(Alignment.BottomCenter)
                 .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                .background(HabisinOlive)
+                .background(HabisinTheme.colors.navBar)
                 .padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment     = Alignment.CenterVertically
@@ -55,8 +52,8 @@ fun HabisinBottomNav(
         FloatingActionButton(
             onClick        = onPlusClick,
             shape          = CircleShape,
-            containerColor = HabisinLime,
-            contentColor   = HabisinOlive,
+            containerColor = HabisinTheme.colors.fab,
+            contentColor   = HabisinTheme.colors.onFab,
             modifier       = Modifier
                 .align(Alignment.TopCenter)
                 .size(64.dp)
@@ -76,7 +73,7 @@ private fun NavIcon(
     Icon(
         imageVector        = icon,
         contentDescription = label,
-        tint               = if (isSelected) HabisinPeach else HabisinWhite,
+        tint               = if (isSelected) HabisinTheme.colors.navSelected else HabisinTheme.colors.onNavBar,
         modifier           = Modifier
             .size(28.dp)
             .clickable(onClick = onClick)

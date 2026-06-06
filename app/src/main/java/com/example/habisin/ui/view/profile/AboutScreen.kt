@@ -9,13 +9,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habisin.ui.components.LogoPlaceholder
-import com.example.habisin.ui.theme.HabisinTextDark
-import com.example.habisin.ui.theme.HabisinTextMuted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,10 +26,14 @@ fun AboutScreen(onBack: () -> Unit) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                )
             )
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -46,16 +47,16 @@ fun AboutScreen(onBack: () -> Unit) {
 
             Spacer(Modifier.height(16.dp))
 
-            Text("Habisin!", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = HabisinTextDark)
+            Text("Habisin!", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.height(4.dp))
-            Text("Segera Dihabiskan", color = HabisinTextMuted, fontSize = 13.sp)
+            Text("Segera Dihabiskan", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp)
 
             Spacer(Modifier.height(20.dp))
 
             Text(
                 "Habisin is a kitchen companion app that helps you keep track of what's in your fridge, " +
                         "discover recipes that use what you already have, and reduce food waste at home.",
-                color     = HabisinTextDark,
+                color     = MaterialTheme.colorScheme.onBackground,
                 fontSize  = 14.sp
             )
 
@@ -67,7 +68,7 @@ fun AboutScreen(onBack: () -> Unit) {
 
             Spacer(Modifier.height(24.dp))
 
-            Text("© 2026 Habisin. All rights reserved.", color = HabisinTextMuted, fontSize = 12.sp)
+            Text("© 2026 Habisin. All rights reserved.", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 12.sp)
         }
     }
 }
@@ -79,7 +80,7 @@ private fun InfoLine(label: String, value: String) {
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     ) {
-        Text(label, color = HabisinTextMuted, fontSize = 13.sp, modifier = Modifier.weight(1f))
-        Text(value, color = HabisinTextDark, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 13.sp, modifier = Modifier.weight(1f))
+        Text(value, color = MaterialTheme.colorScheme.onBackground, fontSize = 13.sp, fontWeight = FontWeight.Medium)
     }
 }

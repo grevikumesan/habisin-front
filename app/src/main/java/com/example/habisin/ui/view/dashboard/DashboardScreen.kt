@@ -32,11 +32,11 @@ import coil.compose.AsyncImage
 import com.example.habisin.ui.view.component.ExpiringSoonCard
 import com.example.habisin.ui.view.component.SectionHeader
 import com.example.habisin.ui.view.component.StatCard
+import androidx.compose.material3.MaterialTheme
 import com.example.habisin.ui.theme.HabisinCoral
 import com.example.habisin.ui.theme.HabisinOlive
 import com.example.habisin.ui.theme.HabisinTeal
-import com.example.habisin.ui.theme.HabisinTextDark
-import com.example.habisin.ui.theme.HabisinTextMuted
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.uistate.DashboardUiState
 import com.example.habisin.ui.viewmodel.DashboardViewModel
 
@@ -66,7 +66,7 @@ fun DashboardScreen(
         }
         is DashboardUiState.Error -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(state.message, color = HabisinTextDark)
+                Text(state.message, color = MaterialTheme.colorScheme.onBackground)
             }
         }
         is DashboardUiState.Success -> {
@@ -106,14 +106,14 @@ private fun DashboardContent(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text       = "Welcome, ${state.username}",
-                    color      = HabisinTextDark,
+                    color      = MaterialTheme.colorScheme.onBackground,
                     fontSize   = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text     = "It's time to empty your fridge!",
-                    color    = HabisinTextMuted,
+                    color    = HabisinTheme.colors.textMuted,
                     fontSize = 13.sp
                 )
             }

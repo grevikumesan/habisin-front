@@ -3,6 +3,7 @@ package com.example.habisin.ui.router
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -98,10 +99,12 @@ fun AppRouter() {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color    = Color.White
+        color    = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier  = Modifier.fillMaxSize(),
+            // transparent so the themed Surface above shows through (Scaffold defaults to a light surface)
+            containerColor = Color.Transparent,
             bottomBar = {
                 if (showBottomBar) {
                     HabisinBottomNav(
@@ -247,7 +250,8 @@ fun AppRouter() {
                         onNavigateToTheme        = { navController.navigate(Routes.THEME) },
                         onNavigateToNotification = { navController.navigate(Routes.NOTIFICATION) },
                         onNavigateToFaq          = { navController.navigate(Routes.FAQ) },
-                        onNavigateToAbout        = { navController.navigate(Routes.ABOUT) }
+                        onNavigateToAbout        = { navController.navigate(Routes.ABOUT) },
+                        onNavigateToSubscription = { navController.navigate(Routes.SUBSCRIPTION) }
                     )
                 }
 

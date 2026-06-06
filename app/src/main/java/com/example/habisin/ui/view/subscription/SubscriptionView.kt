@@ -22,12 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.SubscriptionViewModel
-
-private val HabisinDarkGreen = Color(0xFF1B4332)
-private val HabisinMidGreen = Color(0xFF2D6A4F)
-private val HabisinLightGreen = Color(0xFFD8F3DC)
-private val HabisinAccent = Color(0xFFB7E4C7)
 
 @Composable
 fun SubscriptionView (
@@ -55,7 +51,7 @@ fun SubscriptionView (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Back button
         IconButton(
@@ -68,7 +64,7 @@ fun SubscriptionView (
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = HabisinDarkGreen
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -83,13 +79,13 @@ fun SubscriptionView (
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(HabisinLightGreen, RoundedCornerShape(50)),
+                    .background(HabisinTheme.colors.limeCard, RoundedCornerShape(50)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.Star,
                     contentDescription = null,
-                    tint = HabisinMidGreen,
+                    tint = HabisinTheme.colors.action,
                     modifier = Modifier.size(56.dp)
                 )
             }
@@ -99,54 +95,56 @@ fun SubscriptionView (
             // ── Title ──
             if (state.isActive) {
                 Text(
-                    "Subscription Aktif",
+                    "Kamu Sudah PRO 🎉",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = HabisinDarkGreen
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Sisa ${state.daysRemaining} hari",
+                    "Sisa ${state.daysRemaining} hari langganan",
                     fontSize = 16.sp,
-                    color = HabisinMidGreen
+                    color = HabisinTheme.colors.action,
+                    fontWeight = FontWeight.SemiBold
                 )
                 if (state.expiresAt != null) {
                     Text(
                         "Berakhir pada ${state.expiresAt!!.substring(0, 10)}",
                         fontSize = 13.sp,
-                        color = Color.Gray,
+                        color = HabisinTheme.colors.textMuted,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             } else {
                 Text(
-                    "Habisin Premium",
+                    "Habisin PRO",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = HabisinDarkGreen
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Akses penuh fitur Recipe AI",
+                    "Buka semua resep eksklusif & masak tanpa batas",
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = HabisinTheme.colors.textMuted
                 )
             }
 
             Spacer(Modifier.height(32.dp))
 
             // ── Benefits list ──
-            BenefitItem("Generate resep berdasarkan stok bahan kamu")
-            BenefitItem("Akses semua resep premium")
-            BenefitItem("Update resep otomatis dari AI")
+            // Notifikasi & pencatatan kulkas tetap GRATIS — PRO cuma buka konten resep.
+            BenefitItem("Buka semua resep eksklusif khas Indonesia")
+            BenefitItem("Generate resep AI tanpa batas kuota harian")
             BenefitItem("Tanpa iklan, fokus masak")
+            BenefitItem("Dukung pengembangan Habisin")
 
             Spacer(Modifier.weight(1f))
 
             // ── Pricing ──
             if (!state.isActive) {
                 Surface(
-                    color = HabisinLightGreen,
+                    color = HabisinTheme.colors.limeCard,
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -158,12 +156,12 @@ fun SubscriptionView (
                             "Rp 15.000",
                             fontSize = 32.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = HabisinDarkGreen
+                            color = HabisinTheme.colors.onLimeCard
                         )
                         Text(
-                            "per 30 hari",
+                            "per 30 hari · batal kapan saja",
                             fontSize = 14.sp,
-                            color = HabisinMidGreen
+                            color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -173,16 +171,12 @@ fun SubscriptionView (
 
             // ── CTA Button ──
             Button(
-                onClick = {
-                    if (state.isActive) {
-                        // Already active — bisa perpanjang
-                        viewModel.subscribe()
-                    } else {
-                        viewModel.subscribe()
-                    }
-                },
+                onClick = { viewModel.subscribe() },
                 enabled = !state.isLoading,
-                colors = ButtonDefaults.buttonColors(containerColor = HabisinDarkGreen),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = HabisinTheme.colors.action,
+                    contentColor   = HabisinTheme.colors.onAction
+                ),
                 shape = RoundedCornerShape(28.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -190,19 +184,27 @@ fun SubscriptionView (
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
-                        color = Color.White,
+                        color = HabisinTheme.colors.onAction,
                         strokeWidth = 2.dp,
                         modifier = Modifier.size(20.dp)
                     )
                 } else {
                     Text(
-                        if (state.isActive) "Perpanjang Subscription"
-                        else "Berlangganan Sekarang",
+                        if (state.isActive) "Perpanjang Langganan"
+                        else "Langganan Sekarang",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                 }
             }
+
+            // Catatan: di mode demo (PAYMENTS_ENABLED=false) semua fitur PRO sudah terbuka.
+            Spacer(Modifier.height(10.dp))
+            Text(
+                "Notifikasi & pencatatan kulkas selalu gratis.",
+                fontSize = 12.sp,
+                color = HabisinTheme.colors.textMuted
+            )
 
             // ── Error message ──
             if (state.errorMessage != null) {
@@ -213,7 +215,7 @@ fun SubscriptionView (
                 ) {
                     Text(
                         state.errorMessage!!,
-                        color = Color.Red,
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 13.sp,
                         modifier = Modifier.weight(1f)
                     )
@@ -221,7 +223,7 @@ fun SubscriptionView (
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "Dismiss",
-                            tint = Color.Red,
+                            tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -244,11 +246,11 @@ private fun BenefitItem(text: String) {
         Icon(
             Icons.Default.CheckCircle,
             contentDescription = null,
-            tint = HabisinMidGreen,
+            tint = HabisinTheme.colors.action,
             modifier = Modifier.size(20.dp)
         )
         Spacer(Modifier.width(12.dp))
-        Text(text, fontSize = 14.sp, color = HabisinDarkGreen)
+        Text(text, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
     }
 }
 
@@ -375,7 +377,7 @@ private fun MidtransWebViewScreen(
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = HabisinDarkGreen
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -394,7 +396,7 @@ private fun MidtransWebViewScreen(
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Close",
-                tint = HabisinDarkGreen
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

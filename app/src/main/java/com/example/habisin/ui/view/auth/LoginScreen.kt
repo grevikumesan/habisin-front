@@ -21,9 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habisin.ui.components.FieldLabel
 import com.example.habisin.ui.components.FilledField
 import com.example.habisin.ui.components.LogoPlaceholder
-import com.example.habisin.ui.theme.BrandBlue
-import com.example.habisin.ui.theme.DividerGray
-import com.example.habisin.ui.theme.LabelColor
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.uistate.LoginUiState
 import com.example.habisin.ui.viewmodel.LoginViewModel
 import androidx.compose.ui.res.stringResource
@@ -49,7 +47,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -83,7 +81,7 @@ fun LoginScreen(
                         else Icons.Default.Visibility,
                         contentDescription = if (passwordVisible) stringResource(R.string.hide_password)
                         else stringResource(R.string.show_password),
-                        tint = Color(0xFF555555)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -99,7 +97,7 @@ fun LoginScreen(
                 onClick        = onForgotPassword,
                 contentPadding = PaddingValues(0.dp)
             ) {
-                Text(stringResource(R.string.forgot_password), color = BrandBlue, fontWeight = FontWeight.Medium)
+                Text(stringResource(R.string.forgot_password), color = HabisinTheme.colors.action, fontWeight = FontWeight.Medium)
             }
         }
 
@@ -122,15 +120,15 @@ fun LoginScreen(
                 .height(52.dp),
             shape  = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BrandBlue,
-                contentColor   = Color.White
+                containerColor = HabisinTheme.colors.action,
+                contentColor   = HabisinTheme.colors.onAction
             )
         ) {
             if (state is LoginUiState.Loading) {
                 CircularProgressIndicator(
                     modifier    = Modifier.size(20.dp),
                     strokeWidth = 2.dp,
-                    color       = Color.White
+                    color       = HabisinTheme.colors.onAction
                 )
             } else {
                 Text(stringResource(R.string.sign_in), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
@@ -138,7 +136,7 @@ fun LoginScreen(
         }
 
         Spacer(Modifier.height(20.dp))
-        HorizontalDivider(color = DividerGray)
+        HorizontalDivider(color = HabisinTheme.colors.divider)
         Spacer(Modifier.height(12.dp))
 
         Row(
@@ -146,13 +144,13 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-            Text(stringResource(R.string.dont_have_an_account), color = LabelColor)
+            Text(stringResource(R.string.dont_have_an_account), color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.width(6.dp))
             TextButton(
                 onClick        = onNavigateToRegister,
                 contentPadding = PaddingValues(0.dp)
             ) {
-                Text(stringResource(R.string.sign_up_now), color = BrandBlue, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.sign_up_now), color = HabisinTheme.colors.action, fontWeight = FontWeight.SemiBold)
             }
         }
     }

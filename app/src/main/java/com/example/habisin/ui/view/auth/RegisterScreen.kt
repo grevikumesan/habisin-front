@@ -23,9 +23,7 @@ import com.example.habisin.R
 import com.example.habisin.ui.components.FieldLabel
 import com.example.habisin.ui.components.FilledField
 import com.example.habisin.ui.components.LogoPlaceholder
-import com.example.habisin.ui.theme.BrandBlue
-import com.example.habisin.ui.theme.DividerGray
-import com.example.habisin.ui.theme.LabelColor
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.uistate.RegisterUiState
 import com.example.habisin.ui.viewmodel.RegisterViewModel
 
@@ -49,7 +47,7 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -93,7 +91,7 @@ fun RegisterScreen(
                         imageVector = if (passwordVisible) Icons.Default.VisibilityOff
                         else Icons.Default.Visibility,
                         contentDescription = null,
-                        tint = Color(0xFF555555)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -116,7 +114,7 @@ fun RegisterScreen(
                         imageVector = if (confirmVisible) Icons.Default.VisibilityOff
                         else Icons.Default.Visibility,
                         contentDescription = null,
-                        tint = Color(0xFF555555)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -141,15 +139,15 @@ fun RegisterScreen(
                 .height(52.dp),
             shape  = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = BrandBlue,
-                contentColor   = Color.White
+                containerColor = HabisinTheme.colors.action,
+                contentColor   = HabisinTheme.colors.onAction
             )
         ) {
             if (state is RegisterUiState.Loading) {
                 CircularProgressIndicator(
                     modifier    = Modifier.size(20.dp),
                     strokeWidth = 2.dp,
-                    color       = Color.White
+                    color       = HabisinTheme.colors.onAction
                 )
             } else {
                 Text(stringResource(R.string.sign_up), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
@@ -157,7 +155,7 @@ fun RegisterScreen(
         }
 
         Spacer(Modifier.height(20.dp))
-        HorizontalDivider(color = DividerGray)
+        HorizontalDivider(color = HabisinTheme.colors.divider)
         Spacer(Modifier.height(12.dp))
 
         Row(
@@ -165,13 +163,13 @@ fun RegisterScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment     = Alignment.CenterVertically
         ) {
-            Text(stringResource(R.string.already_have_an_account), color = LabelColor)
+            Text(stringResource(R.string.already_have_an_account), color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.width(6.dp))
             TextButton(
                 onClick        = onNavigateToLogin,
                 contentPadding = PaddingValues(0.dp)
             ) {
-                Text(stringResource(R.string.log_in), color = BrandBlue, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.log_in), color = HabisinTheme.colors.action, fontWeight = FontWeight.SemiBold)
             }
         }
     }

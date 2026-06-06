@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -14,19 +15,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habisin.ui.theme.FieldBg
-import com.example.habisin.ui.theme.FieldHint
-import com.example.habisin.ui.theme.LabelColor
+import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
 fun FieldLabel(text: String) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Text(
             text       = text,
-            color      = LabelColor,
+            color      = MaterialTheme.colorScheme.onBackground,
             fontSize   = 14.sp,
             fontWeight = FontWeight.Medium
         )
@@ -47,16 +45,19 @@ fun FilledField(
     TextField(
         value                = value,
         onValueChange        = onValueChange,
-        placeholder          = { Text(placeholder, color = FieldHint) },
+        placeholder          = { Text(placeholder, color = HabisinTheme.colors.fieldHint) },
         singleLine           = true,
         visualTransformation = visualTransformation,
         keyboardOptions      = KeyboardOptions(keyboardType = keyboardType),
         trailingIcon         = trailingIcon,
         shape                = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.colors(
-            focusedContainerColor   = FieldBg,
-            unfocusedContainerColor = FieldBg,
-            disabledContainerColor  = FieldBg,
+            focusedContainerColor   = HabisinTheme.colors.fieldBg,
+            unfocusedContainerColor = HabisinTheme.colors.fieldBg,
+            disabledContainerColor  = HabisinTheme.colors.fieldBg,
+            focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+            cursorColor             = MaterialTheme.colorScheme.primary,
             focusedIndicatorColor   = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor  = Color.Transparent

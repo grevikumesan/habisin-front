@@ -5,6 +5,7 @@ import com.example.habisin.data.remote.dto.LoginRequest
 import com.example.habisin.data.remote.dto.RegisterRequest
 import com.example.habisin.data.remote.service.AuthService
 import com.example.habisin.util.SessionManager
+import com.example.habisin.util.decodeJwtClaims
 import retrofit2.Response
 
 class AuthRepository(
@@ -17,6 +18,12 @@ class AuthRepository(
         if (response.isSuccessful) {
             response.body()?.data?.token?.let { token ->
                 sessionManager.saveSession(token)
+                // Login cuma balikin token → ambil identitas dari JWT, fallback email yg diketik.
+                val claims = decodeJwtClaims(token)
+                sessionManager.saveUserInfo(
+                    username = claims.username,
+                    email    = claims.email ?: email
+                )
             }
         }
         return response
@@ -27,6 +34,8 @@ class AuthRepository(
         if (response.isSuccessful) {
             response.body()?.data?.token?.let { token ->
                 sessionManager.saveSession(token)
+                // Register: kita udah punya username & email dari form.
+                sessionManager.saveUserInfo(username = username, email = email)
             }
         }
         return response

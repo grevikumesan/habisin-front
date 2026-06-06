@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.habisin.ui.model.ProductModel
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.util.getProductEmoji
 
@@ -39,12 +40,12 @@ fun MyFridgeScreen(
         topBar = {
             Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)) {
                 Column {
-                    Text("My Fridge", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Text("${uiState.products.size} items available", fontSize = 14.sp, color = Color.Gray)
+                    Text("My Fridge", fontWeight = FontWeight.Bold, fontSize = 24.sp, color = MaterialTheme.colorScheme.onBackground)
+                    Text("${uiState.products.size} items available", fontSize = 14.sp, color = HabisinTheme.colors.textMuted)
                 }
             }
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -56,16 +57,19 @@ fun MyFridgeScreen(
             OutlinedTextField(
                 value         = uiState.searchQuery,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
-                placeholder   = { Text("Search Ingredients", fontSize = 14.sp, color = Color.Gray) },
-                leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+                placeholder   = { Text("Search Ingredients", fontSize = 14.sp, color = HabisinTheme.colors.fieldHint) },
+                leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null, tint = HabisinTheme.colors.fieldHint) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor      = Color.Transparent,
                     unfocusedBorderColor    = Color.Transparent,
-                    focusedContainerColor   = Color(0xFFF5F5F5),
-                    unfocusedContainerColor = Color(0xFFF5F5F5)
+                    focusedContainerColor   = HabisinTheme.colors.fieldBg,
+                    unfocusedContainerColor = HabisinTheme.colors.fieldBg,
+                    focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+                    cursorColor             = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -83,8 +87,10 @@ fun MyFridgeScreen(
                         onClick  = { viewModel.onCategorySelected(cat) },
                         label    = { Text(cat) },
                         colors   = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color(0xFFD7E9C5),
-                            selectedLabelColor     = Color.Black
+                            containerColor         = HabisinTheme.colors.fieldBg,
+                            labelColor             = MaterialTheme.colorScheme.onSurface,
+                            selectedContainerColor = HabisinTheme.colors.limeCard,
+                            selectedLabelColor     = HabisinTheme.colors.onLimeCard
                         ),
                         shape = RoundedCornerShape(50)
                     )
@@ -108,7 +114,7 @@ fun MyFridgeScreen(
                         modifier         = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(uiState.errorMessage!!, color = Color.Red)
+                        Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
                     }
                 }
                 uiState.filteredProducts.isEmpty() -> {
@@ -118,7 +124,7 @@ fun MyFridgeScreen(
                     ) {
                         Text(
                             "No food yet, try adding some",
-                            color    = Color.Gray,
+                            color    = HabisinTheme.colors.textMuted,
                             fontSize = 14.sp
                         )
                     }
@@ -144,7 +150,7 @@ fun ProductCardItem(product: ProductModel) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFF7F4EE))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment     = Alignment.CenterVertically
@@ -177,13 +183,14 @@ fun ProductCardItem(product: ProductModel) {
                     text = product.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1, // Mencegah teks turun baris
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
                     text     = "${product.quantity} ${product.unit}",
                     fontSize = 12.sp,
-                    color    = Color.Gray,
+                    color    = HabisinTheme.colors.textMuted,
                     maxLines = 1,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )

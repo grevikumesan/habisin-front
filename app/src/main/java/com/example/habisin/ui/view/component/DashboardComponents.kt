@@ -19,12 +19,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.MaterialTheme
 import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.theme.HabisinCoral
-import com.example.habisin.ui.theme.HabisinLime
-import com.example.habisin.ui.theme.HabisinOlive
 import com.example.habisin.ui.theme.HabisinPeach
 import com.example.habisin.ui.theme.HabisinTextDark
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.util.getProductEmoji
 
 @Composable
@@ -171,7 +171,7 @@ fun StatCard(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(HabisinLime)
+            .background(HabisinTheme.colors.limeCard)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -192,13 +192,13 @@ fun StatCard(
 
         Text(
             text       = value,
-            color      = HabisinOlive,
+            color      = HabisinTheme.colors.onLimeCard,
             fontSize   = 32.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
             text       = label,
-            color      = HabisinOlive,
+            color      = HabisinTheme.colors.onLimeCard,
             fontSize   = 11.sp,
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 1.sp
@@ -219,14 +219,14 @@ fun SectionHeader(
     ) {
         Text(
             text       = title,
-            color      = HabisinTextDark,
+            color      = MaterialTheme.colorScheme.onBackground,
             fontSize   = 18.sp,
             fontWeight = FontWeight.Bold
         )
         if (actionLabel != null) {
             Text(
                 text       = actionLabel,
-                color      = HabisinOlive,
+                color      = HabisinTheme.colors.action,
                 fontSize   = 13.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier   = Modifier.clickable(onClick = onActionClick)
