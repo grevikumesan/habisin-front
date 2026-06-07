@@ -1,15 +1,21 @@
 package com.example.habisin.ui.view.profile
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -40,6 +46,33 @@ fun NotificationScreen(
     val context = LocalContext.current
     val enabled by viewModel.notifEnabled.collectAsState()
     val threshold by viewModel.notifThreshold.collectAsState()
+    val soundName by viewModel.notifSoundName.collectAsState()
+
+    // System sound picker. Returns the chosen URI (null = "Silent"/none → fall back to default).
+    val soundPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            @Suppress("DEPRECATION")
+            val uri: Uri? = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            if (uri == null) {
+                viewModel.setNotifSound(null, null)
+            } else {
+                val title = RingtoneManager.getRingtone(context, uri)?.getTitle(context)
+                viewModel.setNotifSound(uri.toString(), title)
+            }
+        }
+    }
+    val pickerTitle = stringResource(R.string.notif_sound_picker_title)
+    fun openSoundPicker() {
+        val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
+            putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, pickerTitle)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
+        }
+        soundPicker.launch(intent)
+    }
 
     // Android 13+ runtime permission for posting notifications.
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -179,6 +212,50 @@ fun NotificationScreen(
                             }
                         }
                     }
+                }
+
+                // ── Notification sound ──
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { openSoundPicker() }
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.MusicNote,
+                        contentDescription = null,
+                        tint = HabisinTheme.colors.action
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.notif_sound),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            soundName ?: stringResource(R.string.notif_sound_default),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+                if (soundName != null) {
+                    Text(
+                        stringResource(R.string.notif_sound_reset),
+                        color = HabisinTheme.colors.action,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable { viewModel.setNotifSound(null, null) }
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
                 }
 
                 // ── Test button ──

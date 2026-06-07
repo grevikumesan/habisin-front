@@ -151,6 +151,10 @@
     <string name="notif_threshold_q">How many days before to remind you?</string>
     <string name="notif_threshold_value">%1$d days before expiry</string>
     <string name="notif_test">Send a test notification</string>
+    <string name="notif_sound">Notification sound</string>
+    <string name="notif_sound_default">Habisin default</string>
+    <string name="notif_sound_picker_title">Pick a notification sound</string>
+    <string name="notif_sound_reset">Reset to Habisin default</string>
 
     <!-- Settings screens -->
     <string name="theme_description">Pick how Habisin looks. \"System\" follows your device setting.</string>

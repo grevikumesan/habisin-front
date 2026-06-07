@@ -92,13 +92,18 @@ class ExpiryNotificationWorker(
 
         NotificationScheduler.ensureChannel(applicationContext)
 
-        val notification = NotificationCompat.Builder(applicationContext, NotificationScheduler.CHANNEL_ID)
+        val notification = NotificationCompat.Builder(
+            applicationContext,
+            NotificationScheduler.channelId(applicationContext)
+        )
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)   // heads-up on Android < 8 too
-            .setDefaults(NotificationCompat.DEFAULT_ALL)     // sound + vibration
+            // On Android 8+ the channel controls the sound; this covers < 8.
+            .setSound(NotificationScheduler.resolveSoundUri(applicationContext))
+            .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
             .setAutoCancel(true)
             .build()
 

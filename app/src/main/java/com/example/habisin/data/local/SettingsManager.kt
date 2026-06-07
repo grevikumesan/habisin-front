@@ -23,6 +23,8 @@ class SettingsManager(private val context: Context) {
         val PROFILE_PIC      = stringPreferencesKey("profile_picture_uri")
         val NOTIF_ENABLED    = booleanPreferencesKey("notif_enabled")
         val NOTIF_THRESHOLD  = intPreferencesKey("notif_threshold_days")
+        val NOTIF_SOUND_URI  = stringPreferencesKey("notif_sound_uri")
+        val NOTIF_SOUND_NAME = stringPreferencesKey("notif_sound_name")
     }
 
     companion object {
@@ -54,8 +56,27 @@ class SettingsManager(private val context: Context) {
         prefs[Keys.NOTIF_THRESHOLD] ?: DEFAULT_THRESHOLD_DAYS
     }
 
+    /** User-chosen notification sound URI (null = use the Habisin/default sound). */
+    val notifSoundUriFlow: Flow<String?> = context.settingsDataStore.data.map { prefs ->
+        prefs[Keys.NOTIF_SOUND_URI]
+    }
+
+    val notifSoundNameFlow: Flow<String?> = context.settingsDataStore.data.map { prefs ->
+        prefs[Keys.NOTIF_SOUND_NAME]
+    }
+
     suspend fun isNotifEnabled(): Boolean = notifEnabledFlow.first()
     suspend fun getNotifThreshold(): Int = notifThresholdFlow.first()
+    suspend fun getNotifSoundUri(): String? = notifSoundUriFlow.first()
+
+    suspend fun setNotifSound(uri: String?, name: String?) {
+        context.settingsDataStore.edit { prefs ->
+            if (uri == null) prefs.remove(Keys.NOTIF_SOUND_URI)
+            else prefs[Keys.NOTIF_SOUND_URI] = uri
+            if (name == null) prefs.remove(Keys.NOTIF_SOUND_NAME)
+            else prefs[Keys.NOTIF_SOUND_NAME] = name
+        }
+    }
 
     suspend fun setNotifEnabled(enabled: Boolean) {
         context.settingsDataStore.edit { it[Keys.NOTIF_ENABLED] = enabled }
