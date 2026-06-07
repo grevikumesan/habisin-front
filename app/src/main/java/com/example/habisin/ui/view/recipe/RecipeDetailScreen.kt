@@ -75,7 +75,12 @@ fun RecipeDetailScreen(
                     model = com.example.habisin.data.remote.ApiConfig.imageUrl(recipeImg),
                     contentDescription = detailState.recipe?.resepName,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    // Top-half banner so the photo frames naturally instead of being scaled to
+                    // cover the whole tall screen (over-zoomed). The content block overlaps it.
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.5f)
+                        .align(Alignment.TopCenter)
                 )
             }
         }
