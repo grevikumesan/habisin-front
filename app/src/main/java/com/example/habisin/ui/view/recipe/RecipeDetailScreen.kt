@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import coil.compose.AsyncImage
 import com.example.habisin.R
+import com.example.habisin.ui.theme.HabisinTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.animation.animateContentSize
@@ -59,7 +60,7 @@ fun RecipeDetailScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(HabisinMidGreen)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             // Placeholder behind, shown if the image is absent or fails to load.
             Text(
@@ -117,7 +118,7 @@ fun RecipeDetailScreen(
                         .fillMaxWidth()
                         .fillMaxHeight(0.62f)
                         .align(Alignment.BottomCenter),
-                    color = HabisinMidGreen,
+                    color = MaterialTheme.colorScheme.surface,    // neutral, adapts to light/dark
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                     shadowElevation = 16.dp   // makes the block float in front, overlapping the photo
                 ) {
@@ -130,7 +131,7 @@ fun RecipeDetailScreen(
                             text = recipe.resepName,
                             fontSize = 26.sp,
                             fontWeight = FontWeight.ExtraBold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -139,12 +140,12 @@ fun RecipeDetailScreen(
                             text = stringResource(R.string.recipe_description),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = HabisinAccentGreen
+                            color = HabisinTheme.colors.action        // amber accent heading
                         )
                         Text(
                             text = recipe.resepDescription,
                             fontSize = 14.sp,
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             lineHeight = 20.sp,
                             modifier = Modifier.padding(top = 4.dp)
                         )
@@ -210,7 +211,7 @@ private fun AnimatedTabSwitcher(
     onTabChange: (DetailTab) -> Unit
 ) {
     Surface(
-        color = Color.White,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         shape = CircleShape,
         modifier = Modifier
             .fillMaxWidth()
@@ -221,12 +222,12 @@ private fun AnimatedTabSwitcher(
                 val isSelected = activeTab == tab
                 // Animasi warna background pill saat berpindah
                 val animatedBg by animateColorAsState(
-                    targetValue = if (isSelected) HabisinAccentGreen else Color.Transparent,
+                    targetValue = if (isSelected) HabisinTheme.colors.action else Color.Transparent,
                     animationSpec = tween(300),
                     label = "tab-bg"
                 )
                 val animatedTextColor by animateColorAsState(
-                    targetValue = if (isSelected) HabisinDarkGreen else Color.Gray,
+                    targetValue = if (isSelected) HabisinTheme.colors.onAction else MaterialTheme.colorScheme.onSurfaceVariant,
                     animationSpec = tween(300),
                     label = "tab-text"
                 )
@@ -265,18 +266,18 @@ private fun IngredientRow(index: Int, text: String) {
             modifier = Modifier
                 .size(28.dp)
                 .clip(CircleShape)
-                .background(HabisinDetailAccent),
+                .background(HabisinTheme.colors.action),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = HabisinDarkGreen
+                color = HabisinTheme.colors.onAction
             )
         }
         Spacer(Modifier.width(12.dp))
-        Text(text = text, color = Color.White, fontSize = 14.sp)
+        Text(text = text, color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp)
     }
 }
 
@@ -287,17 +288,17 @@ private fun DirectionRow(index: Int, text: String) {
             modifier = Modifier
                 .size(28.dp)
                 .clip(CircleShape)
-                .background(HabisinDetailAccent),
+                .background(HabisinTheme.colors.action),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 "$index",
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
-                color = HabisinDarkGreen
+                color = HabisinTheme.colors.onAction
             )
         }
         Spacer(Modifier.width(12.dp))
-        Text(text = text, color = Color.White, fontSize = 14.sp, lineHeight = 20.sp)
+        Text(text = text, color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp, lineHeight = 20.sp)
     }
 }

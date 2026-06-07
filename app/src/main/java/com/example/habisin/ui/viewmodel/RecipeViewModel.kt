@@ -7,6 +7,7 @@ import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.ui.model.RecipeModel
 import com.example.habisin.ui.uistate.RecipeDetailUiState
 import com.example.habisin.ui.uistate.RecipeUiState
+import com.example.habisin.util.curatedRecipeImage
 import com.example.habisin.util.recipeStockImageUrl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,6 +48,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
                             imageUrl = it.imageUrl?.takeIf { u -> u.isNotBlank() }
+                                ?: curatedRecipeImage(it.name)
                                 ?: recipeStockImageUrl(it.name ?: "", it.id),
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
@@ -118,6 +120,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
                             imageUrl = it.imageUrl?.takeIf { u -> u.isNotBlank() }
+                                ?: curatedRecipeImage(it.name)
                                 ?: recipeStockImageUrl(it.name ?: "", it.id),
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
