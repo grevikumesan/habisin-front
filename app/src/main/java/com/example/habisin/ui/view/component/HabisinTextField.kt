@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
 fun HabisinTextField(
@@ -31,16 +33,17 @@ fun HabisinTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.fillMaxWidth(),
-        placeholder = { Text(text = placeholder, color = Color.Gray) },
+        placeholder = { Text(text = placeholder, color = HabisinTheme.colors.fieldHint) },
         leadingIcon = leadingIcon,
         shape = RoundedCornerShape(12.dp),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = Color(0xFFF0F0F0),   // Warna abu-abu terang
-            unfocusedContainerColor = Color(0xFFF0F0F0), // Warna abu-abu terang
-            focusedBorderColor = Color.Transparent,      // Tanpa garis pinggir
-            unfocusedBorderColor = Color.Transparent,
-            focusedTextColor = Color.Black,
-            unfocusedTextColor = Color.Black
+            focusedContainerColor   = HabisinTheme.colors.fieldBg,
+            unfocusedContainerColor = HabisinTheme.colors.fieldBg,
+            focusedBorderColor      = Color.Transparent,   // Tanpa garis pinggir
+            unfocusedBorderColor    = Color.Transparent,
+            focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+            cursorColor             = MaterialTheme.colorScheme.primary
         ),
         singleLine = true
     )

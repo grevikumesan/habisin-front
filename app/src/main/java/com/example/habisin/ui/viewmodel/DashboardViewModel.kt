@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.local.SettingsManager
 import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.ui.uistate.DashboardUiState
+import com.example.habisin.util.decodeJwtClaims
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -31,7 +32,12 @@ class DashboardViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             dashboardUiState = DashboardUiState.Loading
 
-            val username   = "Hans"
+            // Real logged-in user (saved at login, else decoded from the JWT, else email prefix).
+            val sm = container.sessionManager
+            val username = sm.getUsername()
+                ?: decodeJwtClaims(sm.getToken()).username
+                ?: sm.getEmail()?.substringBefore("@")?.replaceFirstChar { it.uppercase() }
+                ?: "there"
             val profilePic = settings.profilePictureFlow.first()
 
             container.dashboardRepository.getDashboard()

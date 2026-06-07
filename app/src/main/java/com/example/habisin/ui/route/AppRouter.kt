@@ -3,6 +3,7 @@ package com.example.habisin.ui.router
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -54,7 +55,7 @@ object Routes {
     const val RECIPE          = "Recipe"
     const val PROFILE         = "Profile"
     const val ADD_PRODUCT     = "AddProduct"
-    const val RECIPE_DETAIL   = "RecipeDetail/{recipeId}"
+    const val RECIPE_DETAIL   = "RecipeDetail/{recipeId}?catalog={catalog}"
     const val LANGUAGE        = "Language"
     const val THEME           = "Theme"
     const val NOTIFICATION    = "Notification"
@@ -63,7 +64,8 @@ object Routes {
     const val SUBSCRIPTION    = "Subscription"
     const val BARCODE_SCANNER = "BarcodeScanner"
 
-    fun recipeDetail(id: Int) = "RecipeDetail/$id"
+    // catalog=true → browse catalog detail (GET /catalog/:id); false → saved/generated (GET /resep/:id)
+    fun recipeDetail(id: Int, catalog: Boolean = true) = "RecipeDetail/$id?catalog=$catalog"
 }
 
 @Composable
@@ -96,23 +98,44 @@ fun AppRouter() {
             currentRoute !in screensWithoutBottomBar &&
             !currentRoute.startsWith("RecipeDetail")
 
+    // Kalau session ke-clear pas lagi login (logout / token 401 expired), balik ke Login.
+    // Pakai guard wasLoggedIn biar nggak salah-trigger pas cold start (false → true).
+    var wasLoggedIn by remember { mutableStateOf(false) }
+    LaunchedEffect(isLoggedIn) {
+        if (wasLoggedIn && !isLoggedIn &&
+            currentRoute != Routes.LOGIN && currentRoute != Routes.REGISTER
+        ) {
+            navController.navigate(Routes.LOGIN) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+        wasLoggedIn = isLoggedIn
+    }
+
+    // Single tab-switch behaviour for BOTH the bottom nav and in-screen tab jumps
+    // (e.g. dashboard → Fridge). Mixing a plain navigate() with this pattern corrupts
+    // saveState/restoreState and traps the user on one tab.
+    val navigateToTab: (String) -> Unit = { route ->
+        navController.navigate(route) {
+            launchSingleTop = true
+            popUpTo(Routes.HOME) { saveState = true }
+            restoreState = true
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color    = Color.White
+        color    = MaterialTheme.colorScheme.background
     ) {
         Scaffold(
-            modifier = Modifier.fillMaxSize(),
+            modifier  = Modifier.fillMaxSize(),
+            // transparent so the themed Surface above shows through (Scaffold defaults to a light surface)
+            containerColor = Color.Transparent,
             bottomBar = {
                 if (showBottomBar) {
                     HabisinBottomNav(
                         currentRoute = currentRoute ?: Routes.HOME,
-                        onNavigate   = { route ->
-                            navController.navigate(route) {
-                                launchSingleTop = true
-                                popUpTo(Routes.HOME) { saveState = true }
-                                restoreState = true
-                            }
-                        },
+                        onNavigate   = navigateToTab,
                         onPlusClick  = { navController.navigate(Routes.ADD_PRODUCT) }
                     )
                 }
@@ -163,9 +186,9 @@ fun AppRouter() {
 
                     DashboardScreen(
                         onPlusClick    = { navController.navigate(Routes.ADD_PRODUCT) },
-                        onItemClick    = { navController.navigate(Routes.FRIDGE) },
-                        onViewAllClick = { navController.navigate(Routes.FRIDGE) },
-                        onProfileClick = { navController.navigate(Routes.PROFILE) }
+                        onItemClick    = { navigateToTab(Routes.FRIDGE) },
+                        onViewAllClick = { navigateToTab(Routes.FRIDGE) },
+                        onProfileClick = { navigateToTab(Routes.PROFILE) }
                     )
                 }
 
@@ -194,7 +217,7 @@ fun AppRouter() {
                     // Navigate to detail when generate succeeds
                     LaunchedEffect(generatedRecipeId) {                                           // ← add
                         generatedRecipeId?.let { id ->
-                            navController.navigate(Routes.recipeDetail(id))
+                            navController.navigate(Routes.recipeDetail(id, catalog = false))
                             recipeViewModel.clearGeneratedRecipeId()
                         }
                     }
@@ -214,6 +237,9 @@ fun AppRouter() {
                         viewModel = recipeViewModel,
                         onRecipeClick = { recipeId ->
                             navController.navigate(Routes.recipeDetail(recipeId))
+                        },
+                        onSavedRecipeClick = { recipeId ->
+                            navController.navigate(Routes.recipeDetail(recipeId, catalog = false))
                         },
                         onNavigateToSubscription = {
                             navController.navigate(Routes.SUBSCRIPTION)
@@ -247,7 +273,8 @@ fun AppRouter() {
                         onNavigateToTheme        = { navController.navigate(Routes.THEME) },
                         onNavigateToNotification = { navController.navigate(Routes.NOTIFICATION) },
                         onNavigateToFaq          = { navController.navigate(Routes.FAQ) },
-                        onNavigateToAbout        = { navController.navigate(Routes.ABOUT) }
+                        onNavigateToAbout        = { navController.navigate(Routes.ABOUT) },
+                        onNavigateToSubscription = { navController.navigate(Routes.SUBSCRIPTION) }
                     )
                 }
 
@@ -305,12 +332,17 @@ fun AppRouter() {
 
                 composable(
                     route = Routes.RECIPE_DETAIL,
-                    arguments = listOf(navArgument("recipeId") { type = NavType.IntType })
+                    arguments = listOf(
+                        navArgument("recipeId") { type = NavType.IntType },
+                        navArgument("catalog") { type = NavType.BoolType; defaultValue = true }
+                    )
                 ) { backStackEntry ->
                     val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: return@composable
+                    val isCatalog = backStackEntry.arguments?.getBoolean("catalog") ?: true
                     val recipeViewModel: RecipeViewModel = viewModel()
                     RecipeDetailScreen(
                         recipeId = recipeId,
+                        isCatalog = isCatalog,
                         viewModel = recipeViewModel,
                         onBack = { navController.popBackStack() }
                     )

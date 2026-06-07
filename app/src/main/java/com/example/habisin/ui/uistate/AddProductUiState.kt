@@ -9,7 +9,8 @@ data class AddProductUiState(
     val bestBeforeDate: Date? = Date(),
     val daysLeft: Int = 0,
     val quantity: Int = 1,
-    val imageUri: Uri? = null,
+    val imageUri: Uri? = null,        // local photo picked from gallery
+    val imageUrl: String? = null,     // external image from a barcode (Open Food Facts)
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isSuccess: Boolean = false

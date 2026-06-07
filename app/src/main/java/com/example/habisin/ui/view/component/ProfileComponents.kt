@@ -18,9 +18,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habisin.ui.theme.HabisinOlive
-import com.example.habisin.ui.theme.HabisinTextDark
-import com.example.habisin.ui.theme.HabisinTextMuted
+import androidx.compose.material3.MaterialTheme
+import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
 fun SectionTitle(text: String) {
@@ -28,7 +27,7 @@ fun SectionTitle(text: String) {
         text       = text,
         fontSize   = 18.sp,
         fontWeight = FontWeight.Bold,
-        color      = HabisinTextDark,
+        color      = MaterialTheme.colorScheme.onBackground,
         modifier   = Modifier.padding(bottom = 8.dp)
     )
 }
@@ -66,13 +65,13 @@ fun SettingRow(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(HabisinOlive),
+                .background(HabisinTheme.colors.onLimeCard),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector        = icon,
                 contentDescription = title,
-                tint               = Color.White,
+                tint               = HabisinTheme.colors.limeCard,
                 modifier           = Modifier.size(20.dp)
             )
         }
@@ -80,16 +79,16 @@ fun SettingRow(
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, color = HabisinTextDark, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+            Text(title, color = HabisinTheme.colors.onLimeCard, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
             if (subtitle != null) {
-                Text(subtitle, color = HabisinTextMuted, fontSize = 12.sp)
+                Text(subtitle, color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.7f), fontSize = 12.sp)
             }
         }
 
         Icon(
             imageVector        = Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint               = HabisinTextDark
+            tint               = HabisinTheme.colors.onLimeCard
         )
     }
 }

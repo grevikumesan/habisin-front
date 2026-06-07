@@ -7,13 +7,21 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.data.remote.dto.AddFoodRequest
+import com.example.habisin.ui.model.ProductModel
 import com.example.habisin.ui.uistate.AddProductScanUiStates
 import com.example.habisin.ui.uistate.AddProductUiState
+import com.example.habisin.util.uriToFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 class AddProductViewModel(app: Application) : AndroidViewModel(app) {
@@ -27,9 +35,9 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
     val uiState: StateFlow<AddProductUiState> = _uiState.asStateFlow()
     val uiStateBarcode: StateFlow<AddProductScanUiStates> = _uiStateBarcode.asStateFlow()
 
-    // Kept for when image upload is implemented
     fun onImageSelected(uri: Uri?) {
-        _uiState.value = _uiState.value.copy(imageUri = uri)
+        // A locally-picked photo replaces any external (barcode) image.
+        _uiState.value = _uiState.value.copy(imageUri = uri, imageUrl = null)
     }
 
     fun onItemNameChange(name: String) {
@@ -67,18 +75,26 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _uiState.value = state.copy(isLoading = true, errorMessage = null)
 
-            val request = AddFoodRequest(
-                foodName        = state.itemName.trim(),
-                descriptionFood = "",
-                bestBefore      = state.bestBeforeDate,
-                quantity        = state.quantity,
-                category        = state.category.uppercase()
-            )
+            // Local gallery photo → multipart upload; otherwise JSON (carries the
+            // barcode imageUrl if present). Previously the local photo was never sent,
+            // so it never appeared on the fridge item.
+            val result = if (state.imageUri != null) {
+                uploadWithImage(state)
+            } else {
+                container.foodRepository.create(
+                    AddFoodRequest(
+                        foodName        = state.itemName.trim(),
+                        descriptionFood = "",
+                        bestBefore      = state.bestBeforeDate,
+                        quantity        = state.quantity,
+                        category        = state.category.uppercase(),
+                        imageUrl        = state.imageUrl
+                    )
+                )
+            }
 
-            container.foodRepository.create(request)
-                .onSuccess {
-                    _uiState.value = AddProductUiState(isSuccess = true)
-                }
+            result
+                .onSuccess { _uiState.value = AddProductUiState(isSuccess = true) }
                 .onFailure { error ->
                     _uiState.value = state.copy(
                         isLoading    = false,
@@ -88,14 +104,45 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private suspend fun uploadWithImage(state: AddProductUiState): Result<ProductModel> {
+        val ctx = getApplication<Application>()
+        val file = uriToFile(ctx, state.imageUri!!)
+            ?: return Result.failure(Exception("Couldn't read the selected image"))
+
+        fun textPart(value: String) = value.toRequestBody("text/plain".toMediaTypeOrNull())
+        // Match the date format the JSON path (Gson) uses, so the BE parses it the same way.
+        val dateStr = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+            .format(state.bestBeforeDate!!)
+        val imagePart = MultipartBody.Part.createFormData(
+            "image", file.name, file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        )
+
+        return container.foodRepository.createWithImage(
+            foodName        = textPart(state.itemName.trim()),
+            descriptionFood = textPart(""),
+            category        = textPart(state.category.uppercase()),
+            bestBefore      = textPart(dateStr),
+            quantity        = textPart(state.quantity.toString()),
+            image           = imagePart
+        )
+    }
+
     fun fetchProductByBarcode(barcode: String) {
         viewModelScope.launch {
             _uiStateBarcode.value = AddProductScanUiStates.Loading
 
             openFoodRepository.getProduct(barcode)
-                .onSuccess { productName ->
-                    Log.d("BarcodeScan", "SUCCESS: Found product '$productName' for barcode: $barcode")
-                    _uiStateBarcode.value = AddProductScanUiStates.Success(itemName = productName)
+                .onSuccess { product ->
+                    Log.d("BarcodeScan", "SUCCESS: '${product.name}' cat=${product.category} img=${product.imageUrl}")
+                    // Prefill the form: name + best-effort category + product image.
+                    _uiState.value = _uiState.value.copy(
+                        itemName     = product.name.ifBlank { _uiState.value.itemName },
+                        category     = product.category,
+                        imageUrl     = product.imageUrl,
+                        imageUri     = null,
+                        errorMessage = null
+                    )
+                    _uiStateBarcode.value = AddProductScanUiStates.Success(itemName = product.name)
                 }
                 .onFailure { error ->
                     Log.e("BarcodeScan", "FAILURE: Failed to fetch barcode: $barcode. Error: ${error.message}", error)

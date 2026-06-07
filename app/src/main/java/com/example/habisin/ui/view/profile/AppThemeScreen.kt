@@ -14,15 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habisin.R
 import com.example.habisin.data.local.AppTheme
-import com.example.habisin.ui.theme.HabisinLime
-import com.example.habisin.ui.theme.HabisinOlive
-import com.example.habisin.ui.theme.HabisinTextDark
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,16 +35,20 @@ fun AppThemeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("App Theme", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_app_theme), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                )
             )
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -53,17 +56,17 @@ fun AppThemeScreen(
                 .padding(20.dp)
         ) {
             Text(
-                "Pick how Habisin looks. \"System\" follows your device setting.",
-                color    = HabisinTextDark,
+                stringResource(R.string.theme_description),
+                color    = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp
             )
             Spacer(Modifier.height(20.dp))
 
-            ThemeOption("Light",  current == AppTheme.LIGHT)  { viewModel.setTheme(AppTheme.LIGHT) }
+            ThemeOption(stringResource(R.string.theme_light),  current == AppTheme.LIGHT)  { viewModel.setTheme(AppTheme.LIGHT) }
             Spacer(Modifier.height(12.dp))
-            ThemeOption("Dark",   current == AppTheme.DARK)   { viewModel.setTheme(AppTheme.DARK) }
+            ThemeOption(stringResource(R.string.theme_dark),   current == AppTheme.DARK)   { viewModel.setTheme(AppTheme.DARK) }
             Spacer(Modifier.height(12.dp))
-            ThemeOption("System", current == AppTheme.SYSTEM) { viewModel.setTheme(AppTheme.SYSTEM) }
+            ThemeOption(stringResource(R.string.theme_system), current == AppTheme.SYSTEM) { viewModel.setTheme(AppTheme.SYSTEM) }
         }
     }
 }
@@ -74,20 +77,20 @@ private fun ThemeOption(label: String, selected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(if (selected) HabisinLime else Color(0xFFF2F2F2))
+            .background(if (selected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             label,
-            color      = HabisinTextDark,
+            color      = if (selected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurface,
             fontSize   = 15.sp,
             fontWeight = FontWeight.Medium,
             modifier   = Modifier.weight(1f)
         )
         if (selected) {
-            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinOlive)
+            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinTheme.colors.onSelectedContainer)
         }
     }
 }

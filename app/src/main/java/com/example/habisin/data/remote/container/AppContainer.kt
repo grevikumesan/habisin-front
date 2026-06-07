@@ -10,6 +10,7 @@ import com.example.habisin.data.remote.repository.RecipeRepository
 import com.example.habisin.data.remote.service.AuthService
 import com.example.habisin.data.remote.service.DashboardService
 import com.example.habisin.data.remote.service.FoodService
+import com.example.habisin.data.remote.service.NotificationApiService
 import com.example.habisin.data.remote.service.OpenFoodService
 import com.example.habisin.data.remote.service.PaymentService
 import com.example.habisin.data.remote.service.RecipeService
@@ -51,14 +52,22 @@ class AppContainer(context: Context) {
             } else {
                 chain.request()
             }
-            chain.proceed(request)
+            val response = chain.proceed(request)
+
+            // Token ditolak BE (expired / user ke-reseed) → buang session biar app
+            // balik ke Login otomatis. Cuma kalau tadi emang ngirim token (jadi 401 dari
+            // login yg salah password nggak ke-clear apa-apa).
+            if (response.code == 401 && !token.isNullOrEmpty()) {
+                runBlocking { sessionManager.clearSession() }
+            }
+            response
         }
         .addInterceptor(loggingInterceptor)
         .build()
 
     // ── Main API (auth, dashboard, food, recipe, payment) ──
     private val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http://192.168.1.92:3000/api/")
+        .baseUrl(com.example.habisin.data.remote.ApiConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
@@ -68,6 +77,7 @@ class AppContainer(context: Context) {
     private val foodService: FoodService = retrofit.create(FoodService::class.java)
     private val recipeService: RecipeService = retrofit.create(RecipeService::class.java)
     private val paymentService: PaymentService = retrofit.create(PaymentService::class.java)
+    val notificationService: NotificationApiService = retrofit.create(NotificationApiService::class.java)
 
     val authRepository: AuthRepository = AuthRepository(authService, sessionManager)
     val dashboardRepository: DashboardRepository = DashboardRepository(dashboardService, sessionManager)

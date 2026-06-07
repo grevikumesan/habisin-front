@@ -9,15 +9,15 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-//Brand auth
-val BrandBlue   = Color(0xFF2D8CFF)
+//Brand auth (legacy — kept for source compat; BrandBlue is being retired in favour of the coral action color)
+val BrandBlue   = Color(0xFFFF8666) // re-pointed to coral so any straggler reference stays on-brand
 val FieldBg     = Color(0xFFEDEDED)
 val FieldHint   = Color(0xFF9A9A9A)
 val LabelColor  = Color(0xFF2C2C2C)
 val DividerGray = Color(0xFFE0E0E0)
 val LogoBg      = Color(0xFFF2F4F7)
 
-//Habisin
+//Habisin — light brand palette
 val HabisinWhite     = Color(0xFFFFFFFF)
 val HabisinBlack     = Color(0xFF111111)
 val HabisinTextDark  = Color(0xFF292D2F)
@@ -25,16 +25,36 @@ val HabisinTextMuted = Color(0xFF666666)
 val HabisinLightGray = Color(0xFFEFEFED)
 val HabisinCream     = Color(0xFFF5ECE3)
 val HabisinPeach     = Color(0xFFFFC79B)
-val HabisinCoral     = Color(0xFFFF8666)
+val HabisinCoral     = Color(0xFFFF8666)   // ← THE single action color (buttons, links, CTAs)
+val HabisinCoralDark = Color(0xFFE96B4D)   // pressed/contrast variant of the action color
 val HabisinLime      = Color(0xFFDDEB8F)
 val HabisinOlive     = Color(0xFF4C610D)
 val HabisinTeal      = Color(0xFF0F7180)
 val HabisinOrange    = Color(0xFFFF9E0D)
 
-//Dark mode
-val HabisinDarkBg       = Color(0xFF1A1D1F)
-val HabisinDarkSurface  = Color(0xFF26292B)
-val HabisinDarkText     = Color(0xFFE8E8E8)
-val HabisinDarkMuted    = Color(0xFFAAAAAA)
-val HabisinDarkLime     = Color(0xFF6B7A2E)
-val HabisinDarkPeach    = Color(0xFFB8866A)
+//Habisin — "Verdant Dark" palette.
+// Color-theory discipline (60-30-10): one NEUTRAL surface family for all cards, brand GREEN
+// only as the nav anchor, CORAL as the single accent (incl. selected states). Opaque, no alpha.
+val HabisinDarkBg        = Color(0xFF121417)  // app background (near-black neutral)
+val HabisinDarkSurface   = Color(0xFF1C1F23)  // cards / sheets
+val HabisinDarkSurface2  = Color(0xFF24282D)  // raised surface / fields / chips / neutral cards
+val HabisinDarkText      = Color(0xFFECEEF0)
+val HabisinDarkMuted     = Color(0xFF9AA0A6)
+val HabisinDarkDivider   = Color(0xFF2E3338)
+
+// Brand green anchor — used ONLY for the bottom nav + FAB, nowhere else in dark.
+val HabisinDarkNav       = Color(0xFF18230F)  // bottom nav (deep olive)
+val HabisinDarkFab       = Color(0xFF3A4A12)  // FAB surface
+val HabisinDarkFabIcon   = Color(0xFFD7E59A)  // FAB icon
+
+// Warm accent — harmonizes with the green brand, reads as "food/appetite", and (unlike
+// pink-coral) a honey-amber sits calmly on near-black instead of vibrating. Tuned per theme.
+val HabisinAccentLight    = Color(0xFFE0702A)  // rich warm orange (on light → white text)
+val HabisinAccentDark     = Color(0xFFE8A55A)  // softer honey-amber (on dark → dark text)
+val HabisinCoralDarkMode  = Color(0xFFE57E61)  // (legacy)
+val HabisinDarkSelected    = Color(0xFF3A2922)  // coral-tinted dark surface
+val HabisinDarkOnSelected  = HabisinCoralDarkMode
+
+// Home "attention required" block in dark = muted warm surfaces (not bright coral).
+val HabisinDarkAttention    = Color(0xFF402A22)  // the block
+val HabisinDarkAttentionRow = Color(0xFF4E372D)  // item rows inside it

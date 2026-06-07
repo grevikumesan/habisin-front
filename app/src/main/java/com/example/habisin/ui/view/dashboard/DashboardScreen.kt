@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.habisin.R
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,11 +34,11 @@ import coil.compose.AsyncImage
 import com.example.habisin.ui.view.component.ExpiringSoonCard
 import com.example.habisin.ui.view.component.SectionHeader
 import com.example.habisin.ui.view.component.StatCard
+import androidx.compose.material3.MaterialTheme
 import com.example.habisin.ui.theme.HabisinCoral
 import com.example.habisin.ui.theme.HabisinOlive
 import com.example.habisin.ui.theme.HabisinTeal
-import com.example.habisin.ui.theme.HabisinTextDark
-import com.example.habisin.ui.theme.HabisinTextMuted
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.uistate.DashboardUiState
 import com.example.habisin.ui.viewmodel.DashboardViewModel
 
@@ -66,7 +68,7 @@ fun DashboardScreen(
         }
         is DashboardUiState.Error -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(state.message, color = HabisinTextDark)
+                Text(state.message, color = MaterialTheme.colorScheme.onBackground)
             }
         }
         is DashboardUiState.Success -> {
@@ -105,15 +107,15 @@ private fun DashboardContent(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text       = "Welcome, ${state.username}",
-                    color      = HabisinTextDark,
+                    text       = stringResource(R.string.dashboard_welcome, state.username),
+                    color      = MaterialTheme.colorScheme.onBackground,
                     fontSize   = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text     = "It's time to empty your fridge!",
-                    color    = HabisinTextMuted,
+                    text     = stringResource(R.string.dashboard_subtitle),
+                    color    = HabisinTheme.colors.textMuted,
                     fontSize = 13.sp
                 )
             }
@@ -130,8 +132,8 @@ private fun DashboardContent(
 
         // ── At a Glance ──
         SectionHeader(
-            title         = "At a Glance",
-            actionLabel   = "View All",
+            title         = stringResource(R.string.dashboard_at_a_glance),
+            actionLabel   = stringResource(R.string.dashboard_view_all),
             onActionClick = onViewAllClick
         )
 
@@ -143,19 +145,19 @@ private fun DashboardContent(
         ) {
             StatCard(
                 icon           = Icons.Default.Kitchen,
-                iconTint       = HabisinTeal,
-                iconBackground = Color.White,
+                iconTint       = MaterialTheme.colorScheme.onSurfaceVariant,
+                iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.totalItems.toString().padStart(2, '0').take(2)
                     .let { if (state.totalItems < 10) state.totalItems.toString() else it },
-                label          = "TOTAL ITEMS",
+                label          = stringResource(R.string.dashboard_total_items),
                 modifier       = Modifier.weight(1f)
             )
             StatCard(
                 icon           = Icons.Default.AccessTime,
-                iconTint       = HabisinCoral,
-                iconBackground = Color.White,
+                iconTint       = MaterialTheme.colorScheme.onSurfaceVariant,
+                iconBackground = MaterialTheme.colorScheme.surface,
                 value          = state.expiringTotal.toString().padStart(2, '0'),    // ← ganti
-                label          = "EXPIRING",
+                label          = stringResource(R.string.dashboard_expiring),
                 modifier       = Modifier.weight(1f)
             )
         }

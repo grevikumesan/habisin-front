@@ -58,4 +58,109 @@
     <string name="enter_password">Enter password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="re_enter_password">Re-enter password</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Welcome, %1$s</string>
+    <string name="dashboard_subtitle">It\'s time to empty your fridge!</string>
+    <string name="dashboard_attention">ATTENTION REQUIRED</string>
+    <string name="dashboard_expiring_count">%1$d items expiring soon</string>
+    <string name="dashboard_nothing_expiring">Nothing expiring soon</string>
+    <string name="dashboard_no_food">No food yet, try adding some</string>
+    <string name="dashboard_at_a_glance">At a Glance</string>
+    <string name="dashboard_view_all">View All</string>
+    <string name="dashboard_total_items">TOTAL ITEMS</string>
+    <string name="dashboard_expiring">EXPIRING</string>
+
+    <!-- Fridge -->
+    <string name="fridge_title">My Fridge</string>
+    <string name="fridge_items_available">%1$d items available</string>
+    <string name="fridge_search">Search Ingredients</string>
+    <string name="fridge_no_food">No food yet, try adding some</string>
+    <string name="filter_all">All</string>
+    <string name="filter_expiring">Expiring</string>
+    <string name="filter_produce">Produce</string>
+    <string name="filter_dairy">Dairy</string>
+    <string name="filter_meat">Meat</string>
+    <string name="filter_other">Other</string>
+
+    <!-- Pro -->
+    <string name="profile_upgrade_pro">Upgrade To Pro</string>
+    <string name="profile_upgrade_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
+    <string name="profile_pro_active">Habisin PRO</string>
+    <string name="profile_pro_active_subtitle">Langganan aktif — semua fitur terbuka</string>
+
+    <!-- Recipe -->
+    <string name="recipe_title">Recipe</string>
+    <string name="recipe_search">Search Recipes</string>
+    <string name="recipe_catalog">Catalog</string>
+    <string name="recipe_saved">Saved</string>
+    <string name="recipe_recommended">Recommended</string>
+    <string name="recipe_other">Other Recipes</string>
+    <string name="recipe_generate">Generate Recipe</string>
+    <string name="recipe_generating">Generating…</string>
+    <string name="recipe_no_saved">No saved recipes yet. Generate one from your fridge first.</string>
+    <string name="recipe_premium_title">Premium Feature</string>
+    <string name="recipe_premium_subtitle">Subscribe to access thousands of AI recipes</string>
+    <string name="recipe_description">Description</string>
+    <string name="recipe_ingredients">Ingredients</string>
+    <string name="recipe_directions">Directions</string>
+
+    <!-- Add product -->
+    <string name="add_input_products">Input Products</string>
+    <string name="add_photo_product">Photo Product</string>
+    <string name="add_upload_photo">Upload Photo from Gallery</string>
+    <string name="add_manual_input">Manual Input</string>
+    <string name="add_item_hint">e.g. Organic Avocados</string>
+    <string name="add_category">CATEGORY</string>
+    <string name="add_best_before">BEST BEFORE</string>
+    <string name="add_quantity">QUANTITY</string>
+    <string name="add_to_fridge">Add to Fridge</string>
+    <string name="add_scan_barcode">Scan Barcode</string>
+    <string name="cat_produce">PRODUCE</string>
+    <string name="cat_dairy">DAIRY</string>
+    <string name="cat_meat">MEAT</string>
+    <string name="cat_other">OTHER</string>
+
+    <!-- Subscription -->
+    <string name="sub_pro_title">Habisin PRO</string>
+    <string name="sub_pro_subtitle">Unlock all exclusive recipes &amp; cook without limits</string>
+    <string name="sub_benefit_1">Unlock all exclusive Indonesian recipes</string>
+    <string name="sub_benefit_2">Generate AI recipes with no daily limit</string>
+    <string name="sub_benefit_3">No ads — just cooking</string>
+    <string name="sub_benefit_4">Support Habisin\'s development</string>
+    <string name="sub_per_period">per 30 days · cancel anytime</string>
+    <string name="sub_subscribe">Subscribe Now</string>
+    <string name="sub_renew">Renew Subscription</string>
+    <string name="sub_active_title">You\'re PRO</string>
+    <string name="sub_days_remaining">%1$d days left</string>
+    <string name="sub_expires_on">Ends on %1$s</string>
+    <string name="sub_free_note">Notifications &amp; fridge tracking are always free.</string>
+
+    <!-- About -->
+    <string name="about_tagline">Segera Dihabiskan</string>
+    <string name="about_body">Habisin is a kitchen companion app that helps you keep track of what\'s in your fridge, discover recipes that use what you already have, and reduce food waste at home.</string>
+    <string name="about_version">Version</string>
+    <string name="about_build">Build</string>
+    <string name="about_made_by">Made by</string>
+    <string name="about_copyright">© 2026 Habisin. All rights reserved.</string>
+
+    <!-- Notification settings -->
+    <string name="notif_desc">Get reminded before food in your fridge expires.</string>
+    <string name="notif_reminder_title">Expiry reminders</string>
+    <string name="notif_reminder_subtitle">Automatic notifications from your fridge</string>
+    <string name="notif_threshold_q">How many days before to remind you?</string>
+    <string name="notif_threshold_value">%1$d days before expiry</string>
+    <string name="notif_test">Send a test notification</string>
+    <string name="notif_sound">Notification sound</string>
+    <string name="notif_sound_default">Habisin default</string>
+    <string name="notif_sound_picker_title">Pick a notification sound</string>
+    <string name="notif_sound_reset">Reset to Habisin default</string>
+
+    <!-- Settings screens -->
+    <string name="theme_description">Pick how Habisin looks. \"System\" follows your device setting.</string>
+    <string name="lang_description">Choose your preferred language. Changes apply to the whole app.</string>
+    <string name="faq_coming_soon">FAQ content will be added later.</string>
+
+    <!-- Generate loading -->
+    <string name="recipe_generating_message">Whipping up a recipe from your ingredients… this can take up to 15 seconds.</string>
 </resources>

@@ -33,3 +33,41 @@ data class ResepDeleteResponse(
     val success: Boolean,
     val message: String
 )
+
+// ── Catalog (browse) — GET /api/catalog, /catalog/:id, /catalog/categories ──
+data class CatalogItem(
+    val id: Int,
+    val name: String? = null,
+    val description: String? = null,
+    val category: String? = null,
+    val imageUrl: String? = null,
+    val isPremium: Boolean = false,
+    val locked: Boolean = false,
+    // Nullable: the list endpoint omits these (Gson would otherwise inject null
+    // into a non-null field and crash). Only the detail endpoint populates them.
+    val ingredients: List<String>? = null,
+    val directions: List<String>? = null
+)
+
+data class CatalogPagination(
+    val total: Int = 0,
+    val page: Int = 1,
+    val limit: Int = 10,
+    val totalPages: Int = 1
+)
+
+data class CatalogListResponse(
+    val success: Boolean = false,
+    val data: List<CatalogItem> = emptyList(),
+    val pagination: CatalogPagination? = null
+)
+
+data class CatalogDetailResponse(
+    val success: Boolean = false,
+    val data: CatalogItem? = null
+)
+
+data class CatalogCategoriesResponse(
+    val success: Boolean = false,
+    val data: List<String> = emptyList()
+)

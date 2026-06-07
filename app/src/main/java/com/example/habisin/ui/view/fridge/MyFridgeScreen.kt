@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,7 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import androidx.compose.ui.res.stringResource
+import com.example.habisin.R
+import com.example.habisin.data.remote.ApiConfig
 import com.example.habisin.ui.model.ProductModel
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.MyFridgeViewModel
 import com.example.habisin.util.getProductEmoji
 
@@ -39,12 +44,14 @@ fun MyFridgeScreen(
         topBar = {
             Box(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 16.dp)) {
                 Column {
-                    Text("My Fridge", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    Text("${uiState.products.size} items available", fontSize = 14.sp, color = Color.Gray)
+                    Text(stringResource(R.string.fridge_title), fontWeight = FontWeight.Bold, fontSize = 24.sp, color = MaterialTheme.colorScheme.onBackground)
+                    Text(stringResource(R.string.fridge_items_available, uiState.products.size), fontSize = 14.sp, color = HabisinTheme.colors.textMuted)
                 }
             }
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background,
+        // Outer AppRouter Scaffold already applies system-bar insets; don't double them.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -56,16 +63,19 @@ fun MyFridgeScreen(
             OutlinedTextField(
                 value         = uiState.searchQuery,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
-                placeholder   = { Text("Search Ingredients", fontSize = 14.sp, color = Color.Gray) },
-                leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.Gray) },
+                placeholder   = { Text(stringResource(R.string.fridge_search), fontSize = 14.sp, color = HabisinTheme.colors.fieldHint) },
+                leadingIcon   = { Icon(Icons.Default.Search, contentDescription = null, tint = HabisinTheme.colors.fieldHint) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp)),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor      = Color.Transparent,
                     unfocusedBorderColor    = Color.Transparent,
-                    focusedContainerColor   = Color(0xFFF5F5F5),
-                    unfocusedContainerColor = Color(0xFFF5F5F5)
+                    focusedContainerColor   = HabisinTheme.colors.fieldBg,
+                    unfocusedContainerColor = HabisinTheme.colors.fieldBg,
+                    focusedTextColor        = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor      = MaterialTheme.colorScheme.onSurface,
+                    cursorColor             = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(16.dp)
             )
@@ -78,13 +88,23 @@ fun MyFridgeScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 listOf("All", "Expiring", "Produce", "Dairy", "Meat", "Other").forEach { cat ->
+                    val catLabel = when (cat) {
+                        "All"      -> stringResource(R.string.filter_all)
+                        "Expiring" -> stringResource(R.string.filter_expiring)
+                        "Produce"  -> stringResource(R.string.filter_produce)
+                        "Dairy"    -> stringResource(R.string.filter_dairy)
+                        "Meat"     -> stringResource(R.string.filter_meat)
+                        else       -> stringResource(R.string.filter_other)
+                    }
                     FilterChip(
-                        selected = uiState.selectedCategory == cat,
+                        selected = uiState.selectedCategory == cat,   // key stays English for filtering
                         onClick  = { viewModel.onCategorySelected(cat) },
-                        label    = { Text(cat) },
+                        label    = { Text(catLabel) },
                         colors   = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = Color(0xFFD7E9C5),
-                            selectedLabelColor     = Color.Black
+                            containerColor         = HabisinTheme.colors.fieldBg,
+                            labelColor             = MaterialTheme.colorScheme.onSurface,
+                            selectedContainerColor = HabisinTheme.colors.selectedContainer,
+                            selectedLabelColor     = HabisinTheme.colors.onSelectedContainer
                         ),
                         shape = RoundedCornerShape(50)
                     )
@@ -108,7 +128,7 @@ fun MyFridgeScreen(
                         modifier         = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(uiState.errorMessage!!, color = Color.Red)
+                        Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
                     }
                 }
                 uiState.filteredProducts.isEmpty() -> {
@@ -117,8 +137,8 @@ fun MyFridgeScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "No food yet, try adding some",
-                            color    = Color.Gray,
+                            stringResource(R.string.fridge_no_food),
+                            color    = HabisinTheme.colors.textMuted,
                             fontSize = 14.sp
                         )
                     }
@@ -144,7 +164,7 @@ fun ProductCardItem(product: ProductModel) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFF7F4EE))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment     = Alignment.CenterVertically
@@ -157,9 +177,9 @@ fun ProductCardItem(product: ProductModel) {
                 contentAlignment = Alignment.Center
             ) {
                 if (!product.imageUrl.isNullOrEmpty()) {
-                    // Tampilkan gambar dari Backend menggunakan AsyncImage (Coil library)
+                    // Resolve relative /uploads paths to a full URL so Coil can load them.
                     AsyncImage(
-                        model = product.imageUrl,
+                        model = ApiConfig.imageUrl(product.imageUrl),
                         contentDescription = "${product.name}",
                         contentScale = ContentScale.Crop, // Agar gambar pas di dalam lingkaran
                         modifier = Modifier.fillMaxSize()
@@ -177,20 +197,22 @@ fun ProductCardItem(product: ProductModel) {
                     text = product.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1, // Mencegah teks turun baris
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
                     text     = "${product.quantity} ${product.unit}",
                     fontSize = 12.sp,
-                    color    = Color.Gray,
+                    color    = HabisinTheme.colors.textMuted,
                     maxLines = 1,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
             }
         }
 
-        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft)
+        val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
+        val (badgeColor, textColor) = getBadgeColor(product.computedDaysLeft, isDark)
         Box(
             modifier = Modifier
                 .wrapContentWidth()
@@ -210,11 +232,16 @@ fun ProductCardItem(product: ProductModel) {
     }
 }
 
-fun getBadgeColor(days: Int): Pair<Color, Color> {
-    return when {
-        days < 0 -> Pair(Color(0xFF8B0000), Color.White)
-        days <= 2 -> Pair(Color(0xFFF2D4B6), Color(0xFF8D5524))   // peach + brown (urgent)
-        else      -> Pair(Color(0xFFD7E9C5), Color(0xFF2E4600))   // green (safe)
+fun getBadgeColor(days: Int, isDark: Boolean): Pair<Color, Color> {
+    // Semantic status colors, muted and tuned per theme so they don't look like bright stickers.
+    return if (isDark) when {
+        days < 0  -> Pair(Color(0xFF4A2420), Color(0xFFFFB4A8))   // expired
+        days <= 2 -> Pair(Color(0xFF3E331F), Color(0xFFE8C58A))   // urgent (amber)
+        else      -> Pair(Color(0xFF273620), Color(0xFFB8D89A))   // safe (green)
+    } else when {
+        days < 0  -> Pair(Color(0xFFF4D7D7), Color(0xFF8B0000))
+        days <= 2 -> Pair(Color(0xFFF6E2C6), Color(0xFF8D5524))
+        else      -> Pair(Color(0xFFDDEAD0), Color(0xFF2E4600))
     }
 }
 

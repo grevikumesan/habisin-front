@@ -40,4 +40,129 @@
     <!-- Language -->
     <string name="lang_english">English</string>
     <string name="lang_indonesian">Bahasa Indonesia</string>
+
+    <!-- Auth (lowercase keys the Login/Register screens actually use) -->
+    <string name="forgot_password">Lupa kata sandi?</string>
+    <string name="password">Kata Sandi</string>
+    <string name="login">Masuk</string>
+    <string name="hide_password">Sembunyikan kata sandi</string>
+    <string name="show_password">Tampilkan kata sandi</string>
+    <string name="dont_have_an_account">Belum punya akun?</string>
+    <string name="sign_up_now">Daftar sekarang</string>
+    <string name="sign_in">Masuk</string>
+    <string name="sign_up">Daftar</string>
+    <string name="already_have_an_account">Sudah punya akun?</string>
+    <string name="log_in">Masuk</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="enter_username">Masukkan nama pengguna</string>
+    <string name="email">Email</string>
+    <string name="enter_email">Masukkan Email</string>
+    <string name="enter_password">Masukkan kata sandi</string>
+    <string name="confirm_password">Konfirmasi kata sandi</string>
+    <string name="re_enter_password">Masukkan ulang kata sandi</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Halo, %1$s</string>
+    <string name="dashboard_subtitle">Saatnya habiskan isi kulkasmu!</string>
+    <string name="dashboard_attention">PERLU PERHATIAN</string>
+    <string name="dashboard_expiring_count">%1$d bahan segera kedaluwarsa</string>
+    <string name="dashboard_nothing_expiring">Tidak ada yang akan kedaluwarsa</string>
+    <string name="dashboard_no_food">Belum ada bahan, tambah dulu yuk</string>
+    <string name="dashboard_at_a_glance">Ringkasan</string>
+    <string name="dashboard_view_all">Lihat Semua</string>
+    <string name="dashboard_total_items">TOTAL BAHAN</string>
+    <string name="dashboard_expiring">SEGERA HABIS</string>
+
+    <!-- Fridge -->
+    <string name="fridge_title">Kulkasku</string>
+    <string name="fridge_items_available">%1$d bahan tersedia</string>
+    <string name="fridge_search">Cari bahan</string>
+    <string name="fridge_no_food">Belum ada bahan, tambah dulu yuk</string>
+    <string name="filter_all">Semua</string>
+    <string name="filter_expiring">Segera Habis</string>
+    <string name="filter_produce">Sayur/Buah</string>
+    <string name="filter_dairy">Susu</string>
+    <string name="filter_meat">Daging</string>
+    <string name="filter_other">Lainnya</string>
+
+    <!-- Pro -->
+    <string name="profile_upgrade_pro">Upgrade ke Pro</string>
+    <string name="profile_upgrade_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
+    <string name="profile_pro_active">Habisin PRO</string>
+    <string name="profile_pro_active_subtitle">Langganan aktif — semua fitur terbuka</string>
+
+    <!-- Recipe -->
+    <string name="recipe_title">Resep</string>
+    <string name="recipe_search">Cari Resep</string>
+    <string name="recipe_catalog">Katalog</string>
+    <string name="recipe_saved">Tersimpan</string>
+    <string name="recipe_recommended">Rekomendasi</string>
+    <string name="recipe_other">Resep Lainnya</string>
+    <string name="recipe_generate">Buat Resep</string>
+    <string name="recipe_generating">Membuat…</string>
+    <string name="recipe_no_saved">Belum ada resep tersimpan. Buat resep dari kulkasmu dulu.</string>
+    <string name="recipe_premium_title">Fitur Premium</string>
+    <string name="recipe_premium_subtitle">Berlangganan untuk akses ribuan resep AI</string>
+    <string name="recipe_description">Deskripsi</string>
+    <string name="recipe_ingredients">Bahan</string>
+    <string name="recipe_directions">Cara Membuat</string>
+
+    <!-- Add product -->
+    <string name="add_input_products">Input Produk</string>
+    <string name="add_photo_product">Foto Produk</string>
+    <string name="add_upload_photo">Unggah Foto dari Galeri</string>
+    <string name="add_manual_input">Input Manual</string>
+    <string name="add_item_hint">mis. Alpukat Organik</string>
+    <string name="add_category">KATEGORI</string>
+    <string name="add_best_before">KEDALUWARSA</string>
+    <string name="add_quantity">JUMLAH</string>
+    <string name="add_to_fridge">Tambah ke Kulkas</string>
+    <string name="add_scan_barcode">Pindai Barcode</string>
+    <string name="cat_produce">SAYUR/BUAH</string>
+    <string name="cat_dairy">SUSU</string>
+    <string name="cat_meat">DAGING</string>
+    <string name="cat_other">LAINNYA</string>
+
+    <!-- Subscription -->
+    <string name="sub_pro_title">Habisin PRO</string>
+    <string name="sub_pro_subtitle">Buka semua resep eksklusif &amp; masak tanpa batas</string>
+    <string name="sub_benefit_1">Buka semua resep eksklusif khas Indonesia</string>
+    <string name="sub_benefit_2">Buat resep AI tanpa batas kuota harian</string>
+    <string name="sub_benefit_3">Tanpa iklan, fokus masak</string>
+    <string name="sub_benefit_4">Dukung pengembangan Habisin</string>
+    <string name="sub_per_period">per 30 hari · batal kapan saja</string>
+    <string name="sub_subscribe">Langganan Sekarang</string>
+    <string name="sub_renew">Perpanjang Langganan</string>
+    <string name="sub_active_title">Kamu Sudah PRO</string>
+    <string name="sub_days_remaining">Sisa %1$d hari langganan</string>
+    <string name="sub_expires_on">Berakhir pada %1$s</string>
+    <string name="sub_free_note">Notifikasi &amp; pencatatan kulkas selalu gratis.</string>
+
+    <!-- About -->
+    <string name="about_tagline">Segera Dihabiskan</string>
+    <string name="about_body">Habisin adalah aplikasi pendamping dapur yang membantu kamu melacak isi kulkas, menemukan resep dari bahan yang sudah ada, dan mengurangi limbah makanan di rumah.</string>
+    <string name="about_version">Versi</string>
+    <string name="about_build">Build</string>
+    <string name="about_made_by">Dibuat oleh</string>
+    <string name="about_copyright">© 2026 Habisin. Hak cipta dilindungi.</string>
+
+    <!-- Notification settings -->
+    <string name="notif_desc">Dapatkan pengingat sebelum bahan di kulkasmu kedaluwarsa.</string>
+    <string name="notif_reminder_title">Pengingat kedaluwarsa</string>
+    <string name="notif_reminder_subtitle">Notifikasi otomatis dari isi kulkas</string>
+    <string name="notif_threshold_q">Ingatkan berapa hari sebelumnya?</string>
+    <string name="notif_threshold_value">%1$d hari sebelum kedaluwarsa</string>
+    <string name="notif_test">Kirim notifikasi percobaan</string>
+    <string name="notif_sound">Suara notifikasi</string>
+    <string name="notif_sound_default">Bawaan Habisin</string>
+    <string name="notif_sound_picker_title">Pilih suara notifikasi</string>
+    <string name="notif_sound_reset">Kembalikan ke bawaan Habisin</string>
+
+    <!-- Settings screens -->
+    <string name="theme_description">Pilih tampilan Habisin. \"Ikuti Sistem\" mengikuti pengaturan perangkatmu.</string>
+    <string name="lang_description">Pilih bahasa yang kamu inginkan. Perubahan berlaku ke seluruh aplikasi.</string>
+    <string name="faq_coming_soon">Konten FAQ akan ditambahkan nanti.</string>
+
+    <!-- Generate loading -->
+    <string name="recipe_generating_message">Meracik resep dari bahanmu… ini bisa sampai 15 detik.</string>
 </resources>

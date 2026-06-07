@@ -11,18 +11,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import android.app.Activity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habisin.R
 import com.example.habisin.data.local.AppLanguage
-import com.example.habisin.ui.theme.HabisinLime
-import com.example.habisin.ui.theme.HabisinOlive
-import com.example.habisin.ui.theme.HabisinTextDark
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,20 +33,25 @@ fun AppLanguageScreen(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val current by viewModel.language.collectAsState()
+    val activity = LocalContext.current as? Activity
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title          = { Text("App Language", fontWeight = FontWeight.SemiBold) },
+                title          = { Text(stringResource(R.string.profile_app_language), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                )
             )
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -53,15 +59,19 @@ fun AppLanguageScreen(
                 .padding(20.dp)
         ) {
             Text(
-                "Choose your preferred language. Changes apply to the whole app.",
-                color    = HabisinTextDark,
+                stringResource(R.string.lang_description),
+                color    = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp
             )
             Spacer(Modifier.height(20.dp))
 
-            LanguageOption("English",          current == AppLanguage.EN) { viewModel.setLanguage(AppLanguage.EN) }
+            LanguageOption(stringResource(R.string.lang_english),    current == AppLanguage.EN) {
+                viewModel.setLanguage(AppLanguage.EN) { activity?.recreate() }
+            }
             Spacer(Modifier.height(12.dp))
-            LanguageOption("Bahasa Indonesia", current == AppLanguage.ID) { viewModel.setLanguage(AppLanguage.ID) }
+            LanguageOption(stringResource(R.string.lang_indonesian), current == AppLanguage.ID) {
+                viewModel.setLanguage(AppLanguage.ID) { activity?.recreate() }
+            }
         }
     }
 }
@@ -72,20 +82,20 @@ private fun LanguageOption(label: String, selected: Boolean, onClick: () -> Unit
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(if (selected) HabisinLime else Color(0xFFF2F2F2))
+            .background(if (selected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surfaceVariant)
             .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             label,
-            color      = HabisinTextDark,
+            color      = if (selected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurface,
             fontSize   = 15.sp,
             fontWeight = FontWeight.Medium,
             modifier   = Modifier.weight(1f)
         )
         if (selected) {
-            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinOlive)
+            Icon(Icons.Default.Check, contentDescription = "Selected", tint = HabisinTheme.colors.onSelectedContainer)
         }
     }
 }

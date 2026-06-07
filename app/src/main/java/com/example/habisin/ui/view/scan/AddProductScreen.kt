@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,13 +25,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.habisin.R
 import com.example.habisin.ui.uistate.AddProductScanUiStates
 import coil.compose.AsyncImage
+import com.example.habisin.ui.theme.HabisinTheme
 import com.example.habisin.ui.viewmodel.AddProductViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -76,13 +80,13 @@ fun AddProductScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onBackground)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Input Products", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(stringResource(R.string.add_input_products), fontWeight = FontWeight.Bold, fontSize = 20.sp, color = MaterialTheme.colorScheme.onBackground)
             }
         },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -99,12 +103,13 @@ fun AddProductScreen(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 },
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFE6EDD3)),
+                colors = CardDefaults.cardColors(containerColor = HabisinTheme.colors.limeCard),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                if (uiState.imageUri != null) {
+                val previewImage = uiState.imageUri ?: uiState.imageUrl
+                if (previewImage != null) {
                     AsyncImage(
-                        model = uiState.imageUri,
+                        model = previewImage,
                         contentDescription = "Selected product image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -118,61 +123,64 @@ fun AddProductScreen(
                         Icon(
                             Icons.Default.CameraAlt,
                             contentDescription = null,
-                            tint = Color(0xFF4B5C28),
+                            tint = HabisinTheme.colors.onLimeCard,
                             modifier = Modifier.size(80.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Photo Product", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text("Upload Photo from Gallery", fontSize = 12.sp, color = Color.Gray)
+                        Text(stringResource(R.string.add_photo_product), fontWeight = FontWeight.Bold, fontSize = 16.sp, color = HabisinTheme.colors.onLimeCard)
+                        Text(stringResource(R.string.add_upload_photo), fontSize = 12.sp, color = HabisinTheme.colors.onLimeCard.copy(alpha = 0.7f))
                     }
                 }
             }
 
             // 📝 Manual Input
-            Text("Manual Input", fontWeight = FontWeight.Medium, fontSize = 14.sp)
+            Text(stringResource(R.string.add_manual_input), fontWeight = FontWeight.Medium, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground)
 
             TextField(
                 value = uiState.itemName,
                 onValueChange = { viewModel.onItemNameChange(it) },
-                placeholder = { Text("e.g. Organic Avocados", color = Color.Gray) },
+                placeholder = { Text(stringResource(R.string.add_item_hint), color = HabisinTheme.colors.fieldHint) },
                 modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(0xFFF7F4EE),
-                    unfocusedContainerColor = Color(0xFFF7F4EE),
+                    focusedContainerColor = HabisinTheme.colors.fieldBg,
+                    unfocusedContainerColor = HabisinTheme.colors.fieldBg,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 )
             )
 
             // 🏷️ CATEGORY WITH ICONS
-            Text("CATEGORY", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Gray)
+            Text(stringResource(R.string.add_category), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 CategoryIconChip(
-                    title = "PRODUCE",
+                    title = stringResource(R.string.cat_produce),
                     icon = Icons.Default.Yard,
                     isSelected = uiState.category == "PRODUCE",
                     onClick = { viewModel.onCategorySelected("PRODUCE") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "DAIRY",
+                    title = stringResource(R.string.cat_dairy),
                     icon = Icons.Default.LocalDrink,
                     isSelected = uiState.category == "DAIRY",
                     onClick = { viewModel.onCategorySelected("DAIRY") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "MEAT",
+                    title = stringResource(R.string.cat_meat),
                     icon = Icons.Default.KebabDining,
                     isSelected = uiState.category == "MEAT",
                     onClick = { viewModel.onCategorySelected("MEAT") },
                     modifier = Modifier.weight(1f)
                 )
                 CategoryIconChip(
-                    title = "OTHER",
+                    title = stringResource(R.string.cat_other),
                     icon = Icons.Default.Inventory,
                     isSelected = uiState.category == "OTHER",
                     onClick = { viewModel.onCategorySelected("OTHER") },
@@ -186,13 +194,13 @@ fun AddProductScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("BEST BEFORE", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Gray)
+                    Text(stringResource(R.string.add_best_before), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
                     Spacer(modifier = Modifier.height(4.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .background(Color(0xFFF7F4EE))
+                            .background(HabisinTheme.colors.fieldBg)
                             .clickable { showDatePicker = true }
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
@@ -203,31 +211,32 @@ fun AddProductScreen(
                         ) {
                             Text(
                                 uiState.bestBeforeDate?.formatDate() ?: "Oct 28, 2023",
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
-                            Icon(Icons.Default.CalendarToday, contentDescription = null, tint = Color.Gray)
+                            Icon(Icons.Default.CalendarToday, contentDescription = null, tint = HabisinTheme.colors.fieldHint)
                         }
                     }
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("QUANTITY", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.Gray)
+                    Text(stringResource(R.string.add_quantity), fontWeight = FontWeight.Bold, fontSize = 12.sp, color = HabisinTheme.colors.textMuted)
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(12.dp))
-                            .background(Color(0xFFF7F4EE))
+                            .background(HabisinTheme.colors.fieldBg)
                             .padding(4.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = { viewModel.onQuantityChange(uiState.quantity - 1) }) {
-                            Icon(Icons.Default.Remove, contentDescription = null)
+                            Icon(Icons.Default.Remove, contentDescription = "Decrease", tint = MaterialTheme.colorScheme.onSurface)
                         }
-                        Text(uiState.quantity.toString(), fontWeight = FontWeight.Bold)
+                        Text(uiState.quantity.toString(), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         IconButton(onClick = { viewModel.onQuantityChange(uiState.quantity + 1) }) {
-                            Icon(Icons.Default.Add, contentDescription = null)
+                            Icon(Icons.Default.Add, contentDescription = "Increase", tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 }
@@ -236,12 +245,12 @@ fun AddProductScreen(
             uiState.errorMessage?.let { error ->
                 Text(
                     text = error,
-                    color = Color.Red,
+                    color = MaterialTheme.colorScheme.error,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(horizontal = 4.dp)
                 )
             }
-            //  Buttons
+            //  Buttons — both are primary actions, so both use the single coral action color
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -249,18 +258,22 @@ fun AddProductScreen(
                 Button(
                     onClick = { viewModel.addProduct() },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = HabisinTheme.colors.action,
+                        contentColor   = HabisinTheme.colors.onAction
+                    ),
                     shape = RoundedCornerShape(50)
                 ) {
-                    Text("Add to Fridge", color = Color(0xFF8D5524), fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.add_to_fridge), fontWeight = FontWeight.Bold)
                 }
-                Button(
+                OutlinedButton(
                     onClick = { onNavigateToScanner() },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF2D4B6)),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = HabisinTheme.colors.action),
+                    border = BorderStroke(1.5.dp, HabisinTheme.colors.action),
                     shape = RoundedCornerShape(50)
                 ) {
-                    Text("Scan Barcode", color = Color(0xFF8D5524), fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.add_scan_barcode), fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -299,9 +312,9 @@ fun CategoryIconChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (isSelected) Color(0xFFD7E9C5) else Color.White
-    val borderColor = if (isSelected) Color(0xFFD7E9C5) else Color(0xFFE0E0E0)
-    val contentColor = if (isSelected) Color(0xFF2E4600) else Color.Gray
+    val backgroundColor = if (isSelected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surface
+    val borderColor = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.outline
+    val contentColor = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurfaceVariant
 
     Box(
         modifier = modifier

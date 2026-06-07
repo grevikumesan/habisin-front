@@ -6,15 +6,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.width
+import com.example.habisin.ui.theme.HabisinTheme
 
 @Composable
 fun CategoryItem(
@@ -24,19 +27,19 @@ fun CategoryItem(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(horizontal = 8.dp) // Pasang modifier di sini
+        modifier = modifier.padding(horizontal = 8.dp).width(76.dp) // fixed width so all chips align
     ) {
         Box(
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape)
-                .background(if (isSelected) Color(0xFFB7E4C7) else Color(0xFFF0F0F0)),
+                .background(if (isSelected) HabisinTheme.colors.selectedContainer else MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.Restaurant,
                 contentDescription = label,
-                tint = if (isSelected) Color(0xFF1B4332) else Color.Gray,
+                tint = if (isSelected) HabisinTheme.colors.onSelectedContainer else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(28.dp)
             )
         }
@@ -45,7 +48,12 @@ fun CategoryItem(
             text = label,
             fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-            color = if (isSelected) Color(0xFF1B4332) else Color.Gray
+            color = if (isSelected) MaterialTheme.colorScheme.onBackground else HabisinTheme.colors.textMuted,
+            textAlign = TextAlign.Center,
+            minLines = 2,          // reserve 2 lines so long & short names line up
+            maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            lineHeight = 14.sp
         )
     }
 }
