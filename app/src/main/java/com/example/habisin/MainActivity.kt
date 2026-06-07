@@ -46,9 +46,9 @@ class MainActivity : ComponentActivity() {
         val settings = SettingsManager(applicationContext)
 
         // Expiry notifications: create channel + (re)schedule the background poll if enabled.
-        // Done off the main thread so DataStore/WorkManager never block startup (avoids ANR).
-        NotificationScheduler.ensureChannel(applicationContext)
+        // All off the main thread so DataStore/WorkManager never block startup (avoids ANR).
         lifecycleScope.launch {
+            NotificationScheduler.ensureChannel(applicationContext)
             if (settings.isNotifEnabled()) {
                 NotificationScheduler.schedulePeriodic(applicationContext)
             }
