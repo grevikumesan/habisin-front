@@ -89,7 +89,8 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
-                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
+                            // No stock photo for saved/AI recipes — the dish is invented, so a
+                            // representative photo would be misleading. Placeholder instead.
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -154,7 +155,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
-                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
+                            // Saved/AI recipe → no stock photo (invented dish). Placeholder.
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -191,7 +192,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
-                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
+                            // Generated dish has no real photo → placeholder, not a misleading stock image.
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
