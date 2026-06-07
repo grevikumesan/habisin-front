@@ -154,6 +154,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
+                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -190,6 +191,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
+                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
