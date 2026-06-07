@@ -11,8 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import android.app.Activity
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +33,7 @@ fun AppLanguageScreen(
     viewModel: SettingsViewModel = viewModel()
 ) {
     val current by viewModel.language.collectAsState()
+    val activity = LocalContext.current as? Activity
 
     Scaffold(
         topBar = {
@@ -62,9 +65,13 @@ fun AppLanguageScreen(
             )
             Spacer(Modifier.height(20.dp))
 
-            LanguageOption(stringResource(R.string.lang_english),    current == AppLanguage.EN) { viewModel.setLanguage(AppLanguage.EN) }
+            LanguageOption(stringResource(R.string.lang_english),    current == AppLanguage.EN) {
+                viewModel.setLanguage(AppLanguage.EN) { activity?.recreate() }
+            }
             Spacer(Modifier.height(12.dp))
-            LanguageOption(stringResource(R.string.lang_indonesian), current == AppLanguage.ID) { viewModel.setLanguage(AppLanguage.ID) }
+            LanguageOption(stringResource(R.string.lang_indonesian), current == AppLanguage.ID) {
+                viewModel.setLanguage(AppLanguage.ID) { activity?.recreate() }
+            }
         }
     }
 }

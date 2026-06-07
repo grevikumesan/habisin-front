@@ -1,8 +1,6 @@
 package com.example.habisin.ui.viewmodel
 
 import android.app.Application
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habisin.data.local.AppLanguage
@@ -70,17 +68,10 @@ class SettingsViewModel(app: Application) : AndroidViewModel(app) {
         NotificationScheduler.runOnce(getApplication())
     }
 
-    fun setLanguage(lang: AppLanguage) {
+    fun setLanguage(lang: AppLanguage, onApplied: () -> Unit = {}) {
         viewModelScope.launch {
-            settings.setLanguage(lang)
-
-            val tag = when (lang) {
-                AppLanguage.EN -> "en"
-                AppLanguage.ID -> "id"
-            }
-            AppCompatDelegate.setApplicationLocales(
-                LocaleListCompat.forLanguageTags(tag)
-            )
+            settings.setLanguage(lang)   // persist first, then recreate so the new locale loads
+            onApplied()
         }
     }
 }

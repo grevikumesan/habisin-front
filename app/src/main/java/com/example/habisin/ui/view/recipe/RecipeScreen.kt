@@ -330,19 +330,19 @@ private fun RecipeGridCard(recipe: RecipeModel, width: Dp, imageHeight: Dp, onCl
                     .background(MaterialTheme.colorScheme.surface),
                 contentAlignment = Alignment.Center
             ) {
+                // Placeholder behind, so a failed/absent image gracefully shows the icon.
+                Icon(
+                    Icons.Default.Restaurant,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(34.dp)
+                )
                 if (!recipe.imageUrl.isNullOrBlank()) {
                     AsyncImage(
                         model = com.example.habisin.data.remote.ApiConfig.imageUrl(recipe.imageUrl),
                         contentDescription = recipe.resepName,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Icon(
-                        Icons.Default.Restaurant,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(34.dp)
                     )
                 }
             }

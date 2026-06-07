@@ -61,21 +61,20 @@ fun RecipeDetailScreen(
                 .fillMaxSize()
                 .background(HabisinMidGreen)
         ) {
+            // Placeholder behind, shown if the image is absent or fails to load.
+            Text(
+                "🍜",
+                fontSize = 96.sp,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 96.dp)
+            )
             if (!recipeImg.isNullOrBlank()) {
                 AsyncImage(
                     model = com.example.habisin.data.remote.ApiConfig.imageUrl(recipeImg),
                     contentDescription = detailState.recipe?.resepName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
-                )
-            } else {
-                // Placeholder: emoji in the visible top area (block covers the bottom 60%).
-                Text(
-                    "🍜",
-                    fontSize = 96.sp,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 96.dp)
                 )
             }
         }
@@ -116,10 +115,11 @@ fun RecipeDetailScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.6f)
+                        .fillMaxHeight(0.62f)
                         .align(Alignment.BottomCenter),
                     color = HabisinMidGreen,
-                    shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+                    shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+                    shadowElevation = 16.dp   // makes the block float in front, overlapping the photo
                 ) {
                     Column(
                         modifier = Modifier

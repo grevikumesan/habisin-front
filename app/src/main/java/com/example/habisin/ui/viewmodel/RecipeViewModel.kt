@@ -7,6 +7,7 @@ import com.example.habisin.data.remote.container.AppContainer
 import com.example.habisin.ui.model.RecipeModel
 import com.example.habisin.ui.uistate.RecipeDetailUiState
 import com.example.habisin.ui.uistate.RecipeUiState
+import com.example.habisin.util.recipeStockImageUrl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,7 +46,8 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
-                            imageUrl = it.imageUrl,
+                            imageUrl = it.imageUrl?.takeIf { u -> u.isNotBlank() }
+                                ?: recipeStockImageUrl(it.name ?: "", it.id),
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
                         )
@@ -87,6 +89,7 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.resepName,
                             resepDescription = it.resepDescription,
                             resepCategory = it.resepCategory,
+                            imageUrl = recipeStockImageUrl(it.resepName, it.id),
                             resepIngredients = it.resepIngredients,
                             resepDirections = it.resepDirections
                         )
@@ -113,7 +116,8 @@ class RecipeViewModel(app: Application) : AndroidViewModel(app) {
                             resepName = it.name ?: "",
                             resepDescription = it.description ?: "",
                             resepCategory = it.category ?: "",
-                            imageUrl = it.imageUrl,
+                            imageUrl = it.imageUrl?.takeIf { u -> u.isNotBlank() }
+                                ?: recipeStockImageUrl(it.name ?: "", it.id),
                             resepIngredients = it.ingredients ?: emptyList(),
                             resepDirections = it.directions ?: emptyList()
                         )
